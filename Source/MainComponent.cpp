@@ -11,7 +11,10 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    setSize (600, 400);
+
+    addAndMakeVisible (track);
+
+    setSize (900, 600);
 }
 
 MainComponent::~MainComponent()
@@ -21,17 +24,23 @@ MainComponent::~MainComponent()
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
+    g.fillAll (Colours::black);
 
-    g.setFont (Font (16.0f));
-    g.setColour (Colours::white);
-    g.drawText ("Hello World!", getLocalBounds(), Justification::centred, true);
+    g.setFont (Font (40.0f));
+    g.setColour (Colours::darkred);
+    g.drawText ("New Mixer", getLocalBounds().removeFromTop (30), Justification::centred, true);
 }
 
 void MainComponent::resized()
 {
-    // This is called when the MainComponent is resized.
-    // If you add any child components, this is where you should
-    // update their positions.
+    track.setBounds (track.getX(), track.getY(), 50, 50);
+}
+
+void MainComponent::itemDropped (const SourceDetails& dragSourceDetails)
+{
+    Point<int> newPos = dragSourceDetails.localPosition;
+    newPos.x -= track.getWidth() / 2;
+    newPos.y -= track.getWidth() / 2;
+
+    track.setTopLeftPosition (newPos);
 }

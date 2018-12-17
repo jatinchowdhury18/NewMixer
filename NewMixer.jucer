@@ -2,6 +2,10 @@
 
 <JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.1">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
+    <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
+      <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
+      <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
+    </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
       <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
