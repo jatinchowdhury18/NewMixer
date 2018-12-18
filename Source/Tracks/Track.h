@@ -2,12 +2,15 @@
 #define TRACK_H_INCLUDED
 
 #include "JuceHeader.h"
+#include "../Processors/TrackProcessor.h"
 
 class Track : public Component,
               public SettableTooltipClient
 {
 public:
-    Track();
+    Track (File& file);
+
+    TrackProcessor* getProcessor() const { return processor; }
 
 private:
     void paint (Graphics& g) override;
@@ -20,6 +23,8 @@ private:
 
     bool isDragging = false;
     int lastDragLocation = 0;
+
+    ScopedPointer<TrackProcessor> processor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

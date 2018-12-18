@@ -2,6 +2,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "Tracks/Track.h"
+#include "Tracks/MasterTrack.h"
 
 //==============================================================================
 /*
@@ -26,8 +27,8 @@ public:
 
 private:
     //==============================================================================
-    // Your private member variables go here...
-    Track track;
+    ScopedPointer<MasterTrack> master;
+    ScopedPointer<Track> track;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

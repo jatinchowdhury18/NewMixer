@@ -1,7 +1,9 @@
 #include "Track.h"
 
-Track::Track()
+Track::Track (File& file)
 {
+    processor = new TrackProcessor (file);
+
     setTopLeftPosition (100, 100);
 
     setTooltip (name);

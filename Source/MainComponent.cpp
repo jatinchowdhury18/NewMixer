@@ -11,8 +11,11 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
+    File file = File ("C:/Users/jatin/Desktop/drums.wav");
+    track = new Track (file);
+    addAndMakeVisible (*track);
 
-    addAndMakeVisible (track);
+    master = new MasterTrack (track.get());
 
     setSize (900, 600);
 }
@@ -33,14 +36,14 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    track.setBounds (track.getX(), track.getY(), 50, 50);
+    track->setBounds (track->getX(), track->getY(), 50, 50);
 }
 
 void MainComponent::itemDropped (const SourceDetails& dragSourceDetails)
 {
     Point<int> newPos = dragSourceDetails.localPosition;
-    newPos.x -= track.getWidth() / 2;
-    newPos.y -= track.getWidth() / 2;
+    newPos.x -= track->getWidth() / 2;
+    newPos.y -= track->getWidth() / 2;
 
-    track.setTopLeftPosition (newPos);
+    track->setTopLeftPosition (newPos);
 }
