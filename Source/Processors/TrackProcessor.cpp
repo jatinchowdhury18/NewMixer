@@ -1,6 +1,6 @@
 #include "TrackProcessor.h"
 
-TrackProcessor::TrackProcessor (File& file)
+TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Processor"))
 {
     formatManager.registerBasicFormats();
 
@@ -17,7 +17,7 @@ void TrackProcessor::releaseResources()
 
 }
 
-void TrackProcessor::processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages)
+void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& /*midiMessages*/)
 {
     reader->read (&buffer, 0, buffer.getNumSamples(), readerStartSample, true, true);
 
