@@ -8,13 +8,19 @@ class Track : public Component,
               public SettableTooltipClient
 {
 public:
+    enum
+    {
+        maxWidth = 50,
+        minWidth = 5,
+    };
+
     Track (File& file, int x, int y);
 
     TrackProcessor* getProcessor() const { return processor; }
 
 private:
     void paint (Graphics& g) override;
-    //void resized() override;
+    void resized() override { processor->trackMoved (getX(),  getY(), getWidth()); }
 
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;

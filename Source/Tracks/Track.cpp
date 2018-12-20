@@ -32,10 +32,12 @@ void Track::mouseDrag (const MouseEvent& e)
         else if (curY > lastDragLocation)
             changeVal = -stepSize; //down
 
-        if (changeVal == 0)
+        int newSize = jlimit<int> (minWidth, maxWidth, initValue + changeVal);
+
+        if (newSize == initValue)
             return;
 
-        setSize (initValue + changeVal, initValue + changeVal);
+        setSize (newSize, newSize);
         isDragging = true;
         lastDragLocation = curY;
 
@@ -44,9 +46,9 @@ void Track::mouseDrag (const MouseEvent& e)
 
     DragAndDropContainer* dragContainer = DragAndDropContainer::findParentDragContainerFor (this); 
 
-    if (! dragContainer->isDragAndDropActive()) 
+    if (! dragContainer->isDragAndDropActive())
     {
-        dragContainer->startDragging(name, this); 
+        dragContainer->startDragging (name, this);
     }
 }
 

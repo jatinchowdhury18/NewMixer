@@ -4,10 +4,10 @@
 MainComponent::MainComponent()
 {
     File file = File ("C:/Users/jatin/Desktop/drums.wav");
-    tracks.add (new Track (file, 100, 100));
+    tracks.add (new Track (file, 400, 500));
 
     File file2 = File ("C:/Users/jatin/Desktop/test tone.wav");
-    tracks.add (new Track (file2, 200, 100));
+    tracks.add (new Track (file2, 500, 500));
 
     for (auto* track : tracks)
         addAndMakeVisible (track);
