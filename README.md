@@ -14,5 +14,5 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
 ## Rules for collaboration
   - Clone repository
   - Create local develop branch
-  - After pushing changes to your develop branch, make a pull request against the remote develop branch.
-  - Once your changes have been reviewed, and all checks are passing, your code can be merged into master.
+  - After pushing changes to your develop branch, make a pull request against the remote develop branch
+  - Once your changes have been reviewed, and all checks are passing, your code can be merged into master
