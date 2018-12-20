@@ -1,4 +1,4 @@
-# NewMixer    [![Build Status](https://travis-ci.com/jatinchowdhury18/NewMixer.svg?branch=master)](https://travis-ci.com/jatinchowdhury18/NewMixer)
+# NewMixer [![Build Status](https://travis-ci.com/jatinchowdhury18/NewMixer.svg?branch=master)](https://travis-ci.com/jatinchowdhury18/NewMixer)
 
 An audio mixing tool that allows the user to visualize audio sources by their location in space rather than as channels on a mixing board.
 
