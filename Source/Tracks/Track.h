@@ -8,7 +8,7 @@ class Track : public Component,
               public SettableTooltipClient
 {
 public:
-    Track (File& file);
+    Track (File& file, int x, int y);
 
     TrackProcessor* getProcessor() const { return processor; }
 

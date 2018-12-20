@@ -4,10 +4,15 @@
 MainComponent::MainComponent()
 {
     File file = File ("C:/Users/jatin/Desktop/drums.wav");
-    track = new Track (file);
-    addAndMakeVisible (*track);
+    tracks.add (new Track (file, 100, 100));
 
-    master = new MasterTrack (track.get());
+    File file2 = File ("C:/Users/jatin/Desktop/test tone.wav");
+    tracks.add (new Track (file2, 200, 100));
+
+    for (auto* track : tracks)
+        addAndMakeVisible (track);
+
+    master = new MasterTrack (tracks);
 
     setSize (900, 600);
 }
@@ -28,14 +33,22 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    track->setBounds (track->getX(), track->getY(), 50, 50);
+    for (auto track : tracks)
+        track->setBounds (track->getX(), track->getY(), 50, 50);
 }
 
 void MainComponent::itemDropped (const SourceDetails& dragSourceDetails)
 {
-    Point<int> newPos = dragSourceDetails.localPosition;
-    newPos.x -= track->getWidth() / 2;
-    newPos.y -= track->getWidth() / 2;
+    for (auto track : tracks)
+    {
+        if (dragSourceDetails.sourceComponent == track)
+        {
+            Point<int> newPos = dragSourceDetails.localPosition;
+            newPos.x -= track->getWidth() / 2;
+            newPos.y -= track->getWidth() / 2;
 
-    track->setTopLeftPosition (newPos);
+            track->setTopLeftPosition (newPos);
+            break;
+        }
+    }
 }

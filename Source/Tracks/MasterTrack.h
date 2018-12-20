@@ -10,15 +10,17 @@ public:
     using AudioGraphIOProcessor = AudioProcessorGraph::AudioGraphIOProcessor;
     using Node = AudioProcessorGraph::Node;
 
-    MasterTrack (Track* track);
+    MasterTrack (OwnedArray<Track>& tracks);
     ~MasterTrack();
 
 private:
+    void connectTracks();
+
     AudioDeviceManager deviceManager;
     AudioProcessorPlayer player;
 
     Node::Ptr audioOutputNode;
-    Node::Ptr trackNode;
+    Array<Node::Ptr> trackNodes;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrack)
 };

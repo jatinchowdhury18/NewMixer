@@ -28,7 +28,7 @@ public:
 private:
     //==============================================================================
     ScopedPointer<MasterTrack> master;
-    ScopedPointer<Track> track;
+    OwnedArray<Track> tracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
