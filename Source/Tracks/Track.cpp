@@ -1,6 +1,6 @@
 #include "Track.h"
 
-Track::Track (File& file, int x, int y)
+Track::Track (File& file, String name, int x, int y) : name (name)
 {
     processor = new TrackProcessor (file);
 

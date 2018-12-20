@@ -14,7 +14,7 @@ public:
         minWidth = 5,
     };
 
-    Track (File& file, int x, int y);
+    Track (File& file, String name, int x, int y);
 
     TrackProcessor* getProcessor() const { return processor; }
 
@@ -25,7 +25,7 @@ private:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
-    String name = String ("Name");
+    String name;
 
     bool isDragging = false;
     int lastDragLocation = 0;
