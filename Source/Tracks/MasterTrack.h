@@ -13,7 +13,6 @@ public:
     MasterTrack (Track* track);
     ~MasterTrack();
 
-
 private:
     AudioDeviceManager deviceManager;
     AudioProcessorPlayer player;

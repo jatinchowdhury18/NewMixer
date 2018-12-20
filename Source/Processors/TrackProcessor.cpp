@@ -5,6 +5,8 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
     formatManager.registerBasicFormats();
 
     reader.reset (formatManager.createReaderFor (file.createInputStream()));
+
+    setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
