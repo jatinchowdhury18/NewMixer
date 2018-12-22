@@ -14,7 +14,7 @@ MainComponent::MainComponent()
 
     master = new MasterTrack (tracks);
 
-    setSize (900, 600);
+    setSize (width, height);
 
     tooltipWindow = new TooltipWindow (this, 500);
 }
@@ -37,20 +37,4 @@ void MainComponent::resized()
 {
     for (auto track : tracks)
         track->setBounds (track->getX(), track->getY(), 50, 50);
-}
-
-void MainComponent::itemDropped (const SourceDetails& dragSourceDetails)
-{
-    for (auto track : tracks)
-    {
-        if (dragSourceDetails.sourceComponent == track)
-        {
-            Point<int> newPos = dragSourceDetails.localPosition;
-            newPos.x -= track->getWidth() / 2;
-            newPos.y -= track->getWidth() / 2;
-
-            track->setTopLeftPosition (newPos);
-            break;
-        }
-    }
 }

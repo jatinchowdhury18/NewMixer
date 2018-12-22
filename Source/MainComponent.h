@@ -9,11 +9,15 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent : public Component,
-                      public DragAndDropTarget,
-                      public DragAndDropContainer
+class MainComponent : public Component
 {
 public:
+    enum
+    {
+        width = 900,
+        height = 600,
+    };
+
     //==============================================================================
     MainComponent();
     ~MainComponent();
@@ -21,9 +25,6 @@ public:
     //==============================================================================
     void paint (Graphics&) override;
     void resized() override;
-
-    bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) override { return true; }
-    void itemDropped (const SourceDetails& dragSourceDetails) override;
 
 private:
     //==============================================================================

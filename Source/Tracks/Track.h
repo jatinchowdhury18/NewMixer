@@ -18,12 +18,15 @@ public:
 
     TrackProcessor* getProcessor() const { return processor; }
 
-private:
     void paint (Graphics& g) override;
     void resized() override { processor->trackMoved (getX(),  getY(), getWidth()); }
 
+private:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
+
+    void changeSize (const MouseEvent& e);
+    void changePosition (const MouseEvent& e);
 
     String name;
 

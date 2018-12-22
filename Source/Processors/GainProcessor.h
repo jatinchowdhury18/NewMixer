@@ -8,7 +8,12 @@ class GainProcessor : public ProcessorBase
 public:
     GainProcessor() : ProcessorBase (String ("Gain Processor")) {}
 
-    void prepareToPlay (double /*sampleRate*/, int /*maximumExpectedSamplesPerBlock*/) override { oldGain = 0.0f; }
+    void prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock) override
+    { 
+        setRateAndBufferSizeDetails (sampleRate, maximumExpectedSamplesPerBlock);
+        oldGain = 0.0f;
+    }
+
     void releaseResources() override {}
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& /*midiMessages*/) override
     {
