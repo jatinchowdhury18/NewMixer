@@ -1,25 +1,43 @@
 notifications:
   email: false
-
-os: osx
-sudo: false
+  
 language: cpp
+sudo: false
+
+matrix:
+  include:
+    - os: osx
+    - os: windows
+      env:
+        - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
 
 before_install:
-  - gem install xcpretty
-  - gem install xcpretty-travis-formatter
-  - cd $TRAVIS_BUILD_DIR/JUCE
-  # - git checkout tags/5.4.1
-  - cd extras/Projucer/Builds/MacOSX
-  - xcodebuild -project Projucer.xcodeproj > /dev/null
+  # mac instructions
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then gem install xcpretty; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then gem install xcpretty-travis-formatter; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
+  
+  # windows instructions
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
   
 script:
   - cd $TRAVIS_BUILD_DIR/
-  - export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer
-  - $PROJUCER --set-global-search-path osx defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017/x64/Debug/App/Projucer.exe; fi
+  
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then $PROJUCER --set-global-search-path osx defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then $PROJUCER --set-global-search-path windows defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules; fi
   - $PROJUCER --resave NewMixer.jucer
-  - cd $TRAVIS_BUILD_DIR/Builds/MacOSX/
-  - ls
-  - xcodebuild -project NewMixer.xcodeproj/ clean
-  - xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`
+  
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then cd $TRAVIS_BUILD_DIR/Builds/MacOSX/; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then cd $TRAVIS_BUILD_DIR/Builds/VisualStudio2017/; fi
+  
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ clean; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`; fi
+  # - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe NewMixer.sln /t:clean; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:normal NewMixer.sln; fi
   - echo "SUCCESS"
+
