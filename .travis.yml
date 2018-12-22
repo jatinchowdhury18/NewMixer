@@ -1,6 +1,9 @@
 notifications:
   email: false
 
+os: windows
+language: cpp
+
 os: osx
 sudo: false
 language: cpp
