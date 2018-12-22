@@ -1,5 +1,6 @@
 #include "TrackProcessor.h"
 #include "../Tracks/Track.h"
+#include "../MainComponent.h"
 
 TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Processor"))
 {
@@ -10,16 +11,19 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 
     gainProcessor = new GainProcessor;
+    panProcessor = new PanProcessor;
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     gainProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
+    panProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
 }
 
 void TrackProcessor::releaseResources()
 {
     gainProcessor->releaseResources();
+    panProcessor->releaseResources();
 }
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
@@ -32,10 +36,14 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
         readerStartSample = 0;
 
     gainProcessor->processBlock (buffer, midiMessages);
+    panProcessor->processBlock (buffer, midiMessages);
 }
 
 void TrackProcessor::trackMoved (int x, int y, int width)
 {
     float gain = powf ((float) width / (float) Track::maxWidth, 3.0f);
     gainProcessor->setGain (gain);
+
+    float pan = (float) x / (float) MainComponent::width;
+    panProcessor->setPan (pan);
 }
