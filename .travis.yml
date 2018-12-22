@@ -11,7 +11,7 @@ before_install:
   - cd $TRAVIS_BUILD_DIR/JUCE
   # - git checkout tags/5.4.1
   - cd extras/Projucer/Builds/MacOSX
-  - xcodebuild -project Projucer.xcodeproj > /dev/null
+  # - xcodebuild -project Projucer.xcodeproj > /dev/null
   
 script:
   - cd $TRAVIS_BUILD_DIR/
@@ -21,5 +21,5 @@ script:
   - cd $TRAVIS_BUILD_DIR/Builds/MacOSX/
   - ls
   - xcodebuild -project NewMixer.xcodeproj/ clean
-  - xcodebuild -quiet -project NewMixer.xcodeproj/ -configuration Release # | xcpretty -s -f `xcpretty-travis-formatter`
+  - xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -f `xcpretty-travis-formatter`
   - echo "SUCESS"
