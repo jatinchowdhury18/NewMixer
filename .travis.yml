@@ -9,7 +9,7 @@ env:
   - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
 script:
   - export PATH=$MSBUILD_PATH:$PATH
-  - ./build.bat
+  # - ./build.bat
   - cd $TRAVIS_BUILD_DIR/JUCE
   # - git checkout tags/5.4.1
   - cd extras/Projucer/Builds/VisualStudio2017
