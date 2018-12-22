@@ -21,5 +21,5 @@ script:
   - cd $TRAVIS_BUILD_DIR/Builds/MacOSX/
   - ls
   - xcodebuild -project NewMixer.xcodeproj/ clean
-  - xcodebuild -quiet -project NewMixer.xcodeproj/ -configuration Release | xcpretty -f `xcpretty-travis-formatter`
+  - xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -v -f `xcpretty-travis-formatter`
   - echo "SUCESS"
