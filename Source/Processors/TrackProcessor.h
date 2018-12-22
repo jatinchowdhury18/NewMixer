@@ -3,6 +3,7 @@
 
 #include "ProcessorBase.h"
 #include "GainProcessor.h"
+#include "PanProcessor.h"
 
 class TrackProcessor : public ProcessorBase
 {
@@ -20,6 +21,7 @@ private:
     ScopedPointer<AudioFormatReader> reader;
 
     ScopedPointer<GainProcessor> gainProcessor;
+    ScopedPointer<PanProcessor> panProcessor;
 
     int64 readerStartSample = 0;
 

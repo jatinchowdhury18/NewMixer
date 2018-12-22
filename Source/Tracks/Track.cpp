@@ -17,39 +17,50 @@ void Track::paint (Graphics& g)
     g.fillEllipse (0.f, 0.f, diameter, diameter);
 }
 
+void Track::changeSize (const MouseEvent& e)
+{
+    e.source.enableUnboundedMouseMovement (true);
+    const int initValue = getWidth();
+    int changeVal = 0;
+    const int curY = e.getDistanceFromDragStartY();
+    const int stepSize = 1;  
+
+    if (curY < lastDragLocation)
+        changeVal = stepSize; //up
+    else if (curY > lastDragLocation)
+        changeVal = -stepSize; //down
+
+    int newSize = jlimit<int> (minWidth, maxWidth, initValue + changeVal);
+
+    if (newSize == initValue)
+        return;
+
+    setSize (newSize, newSize);
+    isDragging = true;
+    lastDragLocation = curY;
+}
+
+void Track::changePosition (const MouseEvent& e)
+{
+    Point<int> newPos = e.getEventRelativeTo (getParentComponent()).position.toInt();
+    newPos.x -= getWidth() / 2;
+    newPos.y -= getWidth() / 2;
+
+    setTopLeftPosition (newPos);
+    resized();
+}
+
 void Track::mouseDrag (const MouseEvent& e)
 {
+    //Change volume
     if (e.mods.isCtrlDown())
     {
-        e.source.enableUnboundedMouseMovement (true);
-        const int initValue = getWidth();
-        int changeVal = 0;
-        const int curY = e.getDistanceFromDragStartY();
-        const int stepSize = 1;  
-
-        if (curY < lastDragLocation)
-            changeVal = stepSize; //up
-        else if (curY > lastDragLocation)
-            changeVal = -stepSize; //down
-
-        int newSize = jlimit<int> (minWidth, maxWidth, initValue + changeVal);
-
-        if (newSize == initValue)
-            return;
-
-        setSize (newSize, newSize);
-        isDragging = true;
-        lastDragLocation = curY;
-
+        changeSize (e);
         return;
     }
 
-    DragAndDropContainer* dragContainer = DragAndDropContainer::findParentDragContainerFor (this); 
-
-    if (! dragContainer->isDragAndDropActive())
-    {
-        dragContainer->startDragging (name, this);
-    }
+    // Normal drag
+    changePosition (e);
 }
 
 void Track::mouseUp (const MouseEvent& /*e*/)
