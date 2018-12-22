@@ -11,7 +11,7 @@ before_install:
   - cd $TRAVIS_BUILD_DIR/JUCE
   # - git checkout tags/5.4.1
   - cd extras/Projucer/Builds/MacOSX
-  # - xcodebuild -project Projucer.xcodeproj > /dev/null
+  - xcodebuild -project Projucer.xcodeproj > /dev/null
   
 script:
   - cd $TRAVIS_BUILD_DIR/
