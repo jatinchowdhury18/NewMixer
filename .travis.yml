@@ -15,23 +15,23 @@ script:
   - cd extras/Projucer/Builds/VisualStudio2017
   - msbuild -project Projucer_App.vcxproj > /dev/null
 
-os: osx
-
-before_install:
-  - gem install xcpretty
-  - gem install xcpretty-travis-formatter
-  - cd $TRAVIS_BUILD_DIR/JUCE
-  # - git checkout tags/5.4.1
-  - cd extras/Projucer/Builds/MacOSX
-  - xcodebuild -project Projucer.xcodeproj > /dev/null
-  
-script:
-  - cd $TRAVIS_BUILD_DIR/
-  - export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer
-  - $PROJUCER --set-global-search-path osx defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
-  - $PROJUCER --resave NewMixer.jucer
-  - cd $TRAVIS_BUILD_DIR/Builds/MacOSX/
-  - ls
-  - xcodebuild -project NewMixer.xcodeproj/ clean
-  - xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`
-  - echo "SUCCESS"
+# os: osx
+# 
+# before_install:
+#   - gem install xcpretty
+#   - gem install xcpretty-travis-formatter
+#   - cd $TRAVIS_BUILD_DIR/JUCE
+#   # - git checkout tags/5.4.1
+#   - cd extras/Projucer/Builds/MacOSX
+#   - xcodebuild -project Projucer.xcodeproj > /dev/null
+#   
+# script:
+#   - cd $TRAVIS_BUILD_DIR/
+#   - export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer
+#   - $PROJUCER --set-global-search-path osx defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
+#   - $PROJUCER --resave NewMixer.jucer
+#   - cd $TRAVIS_BUILD_DIR/Builds/MacOSX/
+#   - ls
+#   - xcodebuild -project NewMixer.xcodeproj/ clean
+#   - xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`
+#   - echo "SUCCESS"
