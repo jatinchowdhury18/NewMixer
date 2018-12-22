@@ -12,35 +12,31 @@ matrix:
         - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
 
 before_install:
-  if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    - gem install xcpretty
-    - gem install xcpretty-travis-formatter
-    - cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX
-    - xcodebuild -project Projucer.xcodeproj > /dev/null
-  else
-    - export PATH=$MSBUILD_PATH:$PATH
-    - cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017
-    - msbuild.exe -v:quiet Projucer.sln
-  fi
+  # mac instructions
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then gem install xcpretty; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then gem install xcpretty-travis-formatter; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
+  
+  # windows instructions
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
   
 script:
-  if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
-    - cd $TRAVIS_BUILD_DIR/
-    - export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer
-    - $PROJUCER --set-global-search-path osx defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
-    - $PROJUCER --resave NewMixer.jucer
-    - cd $TRAVIS_BUILD_DIR/Builds/MacOSX/
-    - ls
-    - xcodebuild -project NewMixer.xcodeproj/ clean
-    - xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`
-    - echo "SUCCESS"
-  else
-    - cd $TRAVIS_BUILD_DIR/
-    - export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017/x64/Debug/App/Projucer.exe
-    - $PROJUCER --set-global-search-path windows defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
-    - $PROJUCER --resave NewMixer.jucer
-    - cd $TRAVIS_BUILD_DIR/Builds/VisualStudio2017/
-    - dir
-    - msbuild.exe -v:normal NewMixer.sln -configuration Release /t:clean;rebuild
-    - echo "SUCCESS"
-  fi
+  - cd $TRAVIS_BUILD_DIR/
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PROJUCER=$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017/x64/Debug/App/Projucer.exe; fi
+  
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then $PROJUCER --set-global-search-path osx defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then $PROJUCER --set-global-search-path windows defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules; fi
+  - $PROJUCER --resave NewMixer.jucer
+  
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then cd $TRAVIS_BUILD_DIR/Builds/MacOSX/; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then cd $TRAVIS_BUILD_DIR/Builds/VisualStudio2017/; fi
+  
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ clean; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:normal NewMixer.sln -configuration Release /t:clean;rebuild; fi
+  - echo "SUCCESS"
+
