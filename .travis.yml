@@ -1,12 +1,21 @@
 notifications:
   email: false
+  
+language: cpp
+sudo: false
 
 os: windows
-language: cpp
+env:
+  - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
+script:
+  - export PATH=$MSBUILD_PATH:$PATH
+  - ./build.bat
+  - cd $TRAVIS_BUILD_DIR/JUCE
+  # - git checkout tags/5.4.1
+  - cd extras/Projucer/Builds/VisualStudio2017
+  - msbuild -project Projucer_App.vcxproj > /dev/null
 
 os: osx
-sudo: false
-language: cpp
 
 before_install:
   - gem install xcpretty
