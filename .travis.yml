@@ -10,13 +10,13 @@ matrix:
       env:
         - BUILD_FOLDER="MacOSX"
         - PROJUCER_EXPORT="$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer"
-        - OS="osx"
+        # - OS="osx"
     - os: windows
       env:
         - MSBUILD_PATH="c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin"
         - BUILD_FOLDER="VisualStudio2017"
         - PROJUCER_EXPORT="$TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/VisualStudio2017/x64/Debug/App/Projucer.exe"
-        -OS="windows"
+        # -OS="windows"
 
 before_install:
   # mac installs
