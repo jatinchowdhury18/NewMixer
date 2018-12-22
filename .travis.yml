@@ -7,7 +7,7 @@ language: cpp
 
 before_install:
   - gem install xcpretty
-  # - gem install xcpretty-travis-formatter
+  - gem install xcpretty-travis-formatter
   - cd $TRAVIS_BUILD_DIR/JUCE
   # - git checkout tags/5.4.1
   - cd extras/Projucer/Builds/MacOSX
