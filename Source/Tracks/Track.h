@@ -14,7 +14,7 @@ public:
         minWidth = 20,
     };
 
-    Track (File& file, String name, int x, int y);
+    Track (File& file, String name, int x, int y, Colour colour);
 
     TrackProcessor* getProcessor() const { return processor; }
 
@@ -32,6 +32,7 @@ private:
     void changePosition (const MouseEvent& e);
 
     String name;
+    Colour trackColour;
 
     bool isDragging = false;
     int lastDragLocation = 0;

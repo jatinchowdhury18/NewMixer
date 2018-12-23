@@ -1,6 +1,8 @@
 #include "Track.h"
 
-Track::Track (File& file, String name, int x, int y) : name (name)
+Track::Track (File& file, String name, int x, int y, Colour colour) : 
+    name (name),
+    trackColour (colour)
 {
     processor = new TrackProcessor (file);
 
@@ -13,7 +15,7 @@ void Track::paint (Graphics& g)
 {
     auto diameter = (float) getWidth();
 
-    g.setColour (Colours::darkred);
+    g.setColour (trackColour);
     g.fillEllipse (0.f, 0.f, diameter, diameter);
 
     if (isSelected)

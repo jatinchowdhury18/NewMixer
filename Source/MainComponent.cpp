@@ -5,10 +5,10 @@ MainComponent::MainComponent()
 {
     File rootDir = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
     File file = File (rootDir.getFullPathName() + "\\Stems\\drums.wav");
-    tracks.add (new Track (file, String ("Drums"), 400, 500));
+    tracks.add (new Track (file, String ("Drums"), 400, 500, trackColours.getColour (tracks.size())));
 
-    //File file2 = File (rootDir.getFullPathName() + "\\Stems\\test tone.wav");
-    //tracks.add (new Track (file2, String ("Buzz"), 500, 500));
+    File file2 = File (rootDir.getFullPathName() + "\\Stems\\test tone.wav");
+    tracks.add (new Track (file2, String ("Buzz"), 500, 500, trackColours.getColour (tracks.size())));
 
     for (auto* track : tracks)
         addAndMakeVisible (track);
