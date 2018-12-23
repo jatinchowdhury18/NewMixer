@@ -3,10 +3,11 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    File file = File ("C:/Users/jatin/Desktop/drums.wav");
+    File rootDir = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
+    File file = File (rootDir.getFullPathName() + "\\Stems\\drums.wav");
     tracks.add (new Track (file, String ("Drums"), 400, 500));
 
-    File file2 = File ("C:/Users/jatin/Desktop/test tone.wav");
+    File file2 = File (rootDir.getFullPathName() + "\\Stems\\test tone.wav");
     tracks.add (new Track (file2, String ("Buzz"), 500, 500));
 
     for (auto* track : tracks)
