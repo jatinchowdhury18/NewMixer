@@ -5,10 +5,10 @@ MainComponent::MainComponent()
 {
     File rootDir = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
     File file = File (rootDir.getFullPathName() + "\\Stems\\drums.wav");
-    tracks.add (new Track (file, String ("Drums"), 400, 500));
+    tracks.add (new Track (file, String ("Drums"), 400, 500, trackColours.getColour (tracks.size())));
 
     File file2 = File (rootDir.getFullPathName() + "\\Stems\\test tone.wav");
-    tracks.add (new Track (file2, String ("Buzz"), 500, 500));
+    tracks.add (new Track (file2, String ("Buzz"), 500, 500, trackColours.getColour (tracks.size())));
 
     for (auto* track : tracks)
         addAndMakeVisible (track);
@@ -17,7 +17,7 @@ MainComponent::MainComponent()
 
     setSize (width, height);
 
-    tooltipWindow = new TooltipWindow (this, 500);
+    tooltipWindow = new TooltipWindow (this, tooltipTime);
 }
 
 MainComponent::~MainComponent()
@@ -37,7 +37,7 @@ void MainComponent::paint (Graphics& g)
 void MainComponent::resized()
 {
     for (auto track : tracks)
-        track->setBounds (track->getX(), track->getY(), 50, 50);
+        track->setBounds (track->getX(), track->getY(), 80, 80);
 }
 
 void MainComponent::mouseDown (const MouseEvent& event)
