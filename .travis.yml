@@ -1,9 +1,9 @@
 notifications:
   email: false
 
-branches:
-  only:
-    -master
+#branches:
+#  only:
+#    -master
 
 language: cpp
 sudo: false
