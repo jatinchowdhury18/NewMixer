@@ -39,3 +39,15 @@ void MainComponent::resized()
     for (auto track : tracks)
         track->setBounds (track->getX(), track->getY(), 50, 50);
 }
+
+void MainComponent::mouseDown (const MouseEvent& event)
+{
+    clearSelectedTrack();
+}
+
+void MainComponent::clearSelectedTrack()
+{
+    for (auto track : tracks)
+        track->setSelected (false);
+    repaint();
+}

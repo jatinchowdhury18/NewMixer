@@ -21,7 +21,10 @@ public:
     void paint (Graphics& g) override;
     void resized() override { processor->trackMoved (getX(),  getY(), getWidth()); }
 
+    void setSelected (bool selected) { isSelected = selected; }
+
 private:
+    void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
@@ -32,6 +35,8 @@ private:
 
     bool isDragging = false;
     int lastDragLocation = 0;
+
+    bool isSelected = false;
 
     ScopedPointer<TrackProcessor> processor;
 

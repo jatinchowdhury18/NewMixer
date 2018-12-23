@@ -26,6 +26,9 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
+    void mouseDown (const MouseEvent& /*event*/) override;
+    void clearSelectedTrack();
+
 private:
     //==============================================================================
     ScopedPointer<MasterTrack> master;
