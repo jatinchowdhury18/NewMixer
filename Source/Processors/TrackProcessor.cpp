@@ -41,7 +41,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
 
 void TrackProcessor::trackMoved (int x, int y, int width)
 {
-    float gain = powf ((float) width / (float) Track::maxWidth, 3.0f);
+    float gain = powf ((float) width / (float) Track::maxWidth, 5.0f);
     gainProcessor->setGain (gain);
 
     float pan = (float) x / (float) MainComponent::width;

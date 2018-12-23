@@ -10,8 +10,8 @@ class Track : public Component,
 public:
     enum
     {
-        maxWidth = 50,
-        minWidth = 5,
+        maxWidth = 100,
+        minWidth = 20,
     };
 
     Track (File& file, String name, int x, int y);
