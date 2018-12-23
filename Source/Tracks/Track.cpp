@@ -11,10 +11,16 @@ Track::Track (File& file, String name, int x, int y) : name (name)
 
 void Track::paint (Graphics& g)
 {
-    g.setColour (Colours::darkred);
-
     auto diameter = (float) getWidth();
+
+    g.setColour (Colours::darkred);
     g.fillEllipse (0.f, 0.f, diameter, diameter);
+
+    if (isSelected)
+    {
+        g.setColour (Colours::goldenrod);
+        g.drawEllipse (0.0f, 0.0f, diameter, diameter, 2.5f);
+    }
 }
 
 void Track::changeSize (const MouseEvent& e)
@@ -50,17 +56,22 @@ void Track::changePosition (const MouseEvent& e)
     resized();
 }
 
+void Track::mouseDown (const MouseEvent& e)
+{
+    getParentComponent()->mouseDown (e);
+
+    isSelected = true;
+    repaint();
+}
+
 void Track::mouseDrag (const MouseEvent& e)
 {
-    //Change volume
-    if (e.mods.isCtrlDown())
-    {
+    if (e.mods.isCtrlDown())  //Change volume
         changeSize (e);
-        return;
-    }
+    else                      // Normal drag
+        changePosition (e);
 
-    // Normal drag
-    changePosition (e);
+    getParentComponent()->repaint();
 }
 
 void Track::mouseUp (const MouseEvent& /*e*/)
