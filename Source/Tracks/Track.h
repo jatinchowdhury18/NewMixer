@@ -21,7 +21,10 @@ public:
     void paint (Graphics& g) override;
     void resized() override { processor->trackMoved (getX(),  getY(), getWidth()); }
 
+    bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
+
+    bool keyPressed (const KeyPress& key);
 
 private:
     void mouseDown (const MouseEvent& e) override;
@@ -29,7 +32,9 @@ private:
     void mouseUp (const MouseEvent& e) override;
 
     void changeSize (const MouseEvent& e);
+    void changeSize (const KeyPress& key);
     void changePosition (const MouseEvent& e);
+    void changePosition (const KeyPress& key);
 
     String name;
     Colour trackColour;

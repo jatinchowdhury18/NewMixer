@@ -48,6 +48,25 @@ void Track::changeSize (const MouseEvent& e)
     lastDragLocation = curY;
 }
 
+void Track::changeSize (const KeyPress& key)
+{
+    const int initValue = getWidth();
+    int changeVal = 0;
+    const int stepSize = 1;  
+
+    if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
+        changeVal = stepSize; //up
+    else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
+        changeVal = -stepSize; //down
+
+    int newSize = jlimit<int> (minWidth, maxWidth, initValue + changeVal);
+
+    if (newSize == initValue)
+        return;
+
+    setSize (newSize, newSize);
+}
+
 void Track::changePosition (const MouseEvent& e)
 {
     Point<int> newPos = e.getEventRelativeTo (getParentComponent()).position.toInt();
@@ -55,6 +74,25 @@ void Track::changePosition (const MouseEvent& e)
     newPos.y -= getWidth() / 2;
 
     setTopLeftPosition (newPos);
+    resized();
+}
+
+void Track::changePosition (const KeyPress& key)
+{
+    Point<int> pos = getBoundsInParent().getTopLeft();
+
+    const int changeVal = 10;
+
+    if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
+        pos.y -= changeVal; //up
+    if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
+        pos.y += changeVal; //down
+    if (KeyPress::isKeyCurrentlyDown (KeyPress::leftKey))
+        pos.x -= changeVal; //left
+    if (KeyPress::isKeyCurrentlyDown (KeyPress::rightKey))
+        pos.x += changeVal; //right
+
+    setTopLeftPosition (pos);
     resized();
 }
 
@@ -83,4 +121,18 @@ void Track::mouseUp (const MouseEvent& /*e*/)
         isDragging = false;
         lastDragLocation = 0;
     }
+}
+
+bool Track::keyPressed (const KeyPress& key)
+{
+    if (! isSelected)
+        return false;
+
+    if (key.getModifiers().isCtrlDown())  //Change volume
+        changeSize (key);
+    else                      // Normal move
+        changePosition (key);
+
+    getParentComponent()->repaint();
+    return true;
 }
