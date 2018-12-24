@@ -16,6 +16,9 @@ public:
 
     void trackMoved (int x, int y, int width);
 
+    void setMute (bool mute) { isMute = mute; }
+    bool getIsMute() { return isMute; }
+
 private:
     AudioFormatManager formatManager;
     ScopedPointer<AudioFormatReader> reader;
@@ -24,6 +27,7 @@ private:
     ScopedPointer<PanProcessor> panProcessor;
 
     int64 readerStartSample = 0;
+    bool isMute = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackProcessor)
 };

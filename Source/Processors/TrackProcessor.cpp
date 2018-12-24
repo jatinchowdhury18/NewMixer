@@ -37,6 +37,9 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
 
     gainProcessor->processBlock (buffer, midiMessages);
     panProcessor->processBlock (buffer, midiMessages);
+
+    if (isMute)
+        buffer.clear();
 }
 
 void TrackProcessor::trackMoved (int x, int y, int width)

@@ -32,9 +32,9 @@ private:
     void mouseUp (const MouseEvent& e) override;
 
     void changeSize (const MouseEvent& e);
-    void changeSize (const KeyPress& key);
+    void changeSize();
     void changePosition (const MouseEvent& e);
-    void changePosition (const KeyPress& key);
+    void changePosition();
 
     String name;
     Colour trackColour;

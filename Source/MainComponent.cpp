@@ -42,7 +42,7 @@ void MainComponent::resized()
         track->setBounds (track->getX(), track->getY(), 80, 80);
 }
 
-void MainComponent::mouseDown (const MouseEvent& event)
+void MainComponent::mouseDown (const MouseEvent& /*event*/)
 {
     clearSelectedTrack();
 }

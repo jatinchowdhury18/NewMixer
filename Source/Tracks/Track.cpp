@@ -15,10 +15,14 @@ void Track::paint (Graphics& g)
 {
     auto diameter = (float) getWidth();
 
-    g.setColour (trackColour);
+    if (processor->getIsMute())
+        g.setColour (trackColour.withAlpha (0.5f)); // Make colour faded if track is muted
+    else
+        g.setColour (trackColour); //normal colour
+
     g.fillEllipse (0.f, 0.f, diameter, diameter);
 
-    if (isSelected)
+    if (isSelected) //highlight selected track
     {
         g.setColour (Colours::goldenrod);
         g.drawEllipse (0.0f, 0.0f, diameter, diameter, 2.5f);
@@ -48,7 +52,7 @@ void Track::changeSize (const MouseEvent& e)
     lastDragLocation = curY;
 }
 
-void Track::changeSize (const KeyPress& key)
+void Track::changeSize()
 {
     const int initValue = getWidth();
     int changeVal = 0;
@@ -77,7 +81,7 @@ void Track::changePosition (const MouseEvent& e)
     resized();
 }
 
-void Track::changePosition (const KeyPress& key)
+void Track::changePosition()
 {
     Point<int> pos = getBoundsInParent().getTopLeft();
 
@@ -128,10 +132,12 @@ bool Track::keyPressed (const KeyPress& key)
     if (! isSelected)
         return false;
 
-    if (key.getModifiers().isCtrlDown())  //Change volume
-        changeSize (key);
-    else                      // Normal move
-        changePosition (key);
+    if (key.getModifiers().isCtrlDown())                    //Change volume
+        changeSize();
+    else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
+        processor->setMute (! processor->getIsMute());
+    else                                                    // Normal move
+        changePosition();
 
     getParentComponent()->repaint();
     return true;
