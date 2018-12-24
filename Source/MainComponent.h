@@ -32,6 +32,8 @@ public:
     void mouseDown (const MouseEvent& /*event*/) override;
     void clearSelectedTrack();
 
+    bool keyPressed (const KeyPress& key) override;
+
 private:
     //==============================================================================
     ScopedPointer<MasterTrack> master;

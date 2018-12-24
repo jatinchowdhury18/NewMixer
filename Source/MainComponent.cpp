@@ -18,6 +18,8 @@ MainComponent::MainComponent()
     setSize (width, height);
 
     tooltipWindow = new TooltipWindow (this, tooltipTime);
+
+    setWantsKeyboardFocus (true);
 }
 
 MainComponent::~MainComponent()
@@ -40,7 +42,7 @@ void MainComponent::resized()
         track->setBounds (track->getX(), track->getY(), 80, 80);
 }
 
-void MainComponent::mouseDown (const MouseEvent& event)
+void MainComponent::mouseDown (const MouseEvent& /*event*/)
 {
     clearSelectedTrack();
 }
@@ -50,4 +52,15 @@ void MainComponent::clearSelectedTrack()
     for (auto track : tracks)
         track->setSelected (false);
     repaint();
+}
+
+bool MainComponent::keyPressed (const KeyPress& key)
+{
+    for (auto track : tracks)
+    {
+        if (track->getIsSelected())
+            return track->keyPressed (key);
+    }
+
+    return false;
 }
