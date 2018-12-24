@@ -19,7 +19,7 @@ public:
     TrackProcessor* getProcessor() const { return processor; }
 
     void paint (Graphics& g) override;
-    void resized() override { processor->trackMoved (getX(),  getY(), getWidth()); }
+    void resized() override;
 
     bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
@@ -35,6 +35,9 @@ private:
     void changeSize();
     void changePosition (const MouseEvent& e);
     void changePosition();
+
+    void setPositionConstrained (Point<int> pos);
+    void setSizeConstrained (int oldSize, int change);
 
     String name;
     Colour trackColour;

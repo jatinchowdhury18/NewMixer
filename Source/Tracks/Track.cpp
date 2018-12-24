@@ -29,6 +29,12 @@ void Track::paint (Graphics& g)
     }
 }
 
+void Track::resized()
+{ 
+    const int radius = getWidth() / 2;
+    processor->trackMoved (getX() + radius,  getY() + radius, getWidth());
+}
+
 void Track::changeSize (const MouseEvent& e)
 {
     e.source.enableUnboundedMouseMovement (true);
@@ -42,12 +48,8 @@ void Track::changeSize (const MouseEvent& e)
     else if (curY > lastDragLocation)
         changeVal = -stepSize; //down
 
-    int newSize = jlimit<int> (minWidth, maxWidth, initValue + changeVal);
+    setSizeConstrained (initValue, changeVal);
 
-    if (newSize == initValue)
-        return;
-
-    setSize (newSize, newSize);
     isDragging = true;
     lastDragLocation = curY;
 }
@@ -63,12 +65,18 @@ void Track::changeSize()
     else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
         changeVal = -stepSize; //down
 
-    int newSize = jlimit<int> (minWidth, maxWidth, initValue + changeVal);
+    setSizeConstrained (initValue, changeVal);
+}
 
-    if (newSize == initValue)
+void Track::setSizeConstrained (int oldSize, int change)
+{
+    int newSize = jlimit<int> (minWidth, maxWidth, oldSize + change);
+
+    if (newSize == oldSize)
         return;
 
     setSize (newSize, newSize);
+    setPositionConstrained (getPosition());
 }
 
 void Track::changePosition (const MouseEvent& e)
@@ -77,7 +85,7 @@ void Track::changePosition (const MouseEvent& e)
     newPos.x -= getWidth() / 2;
     newPos.y -= getWidth() / 2;
 
-    setTopLeftPosition (newPos);
+    setPositionConstrained (newPos);
     resized();
 }
 
@@ -96,8 +104,17 @@ void Track::changePosition()
     if (KeyPress::isKeyCurrentlyDown (KeyPress::rightKey))
         pos.x += changeVal; //right
 
-    setTopLeftPosition (pos);
+    setPositionConstrained (pos);
     resized();
+}
+
+void Track::setPositionConstrained (Point<int> pos)
+{
+    const int radius = getWidth() / 2;
+    pos.x = jlimit<int> (-radius, getParentWidth() - radius, pos.x);
+    pos.y = jlimit<int> (-radius, getParentHeight() - radius, pos.y);
+
+    setTopLeftPosition (pos);
 }
 
 void Track::mouseDown (const MouseEvent& e)

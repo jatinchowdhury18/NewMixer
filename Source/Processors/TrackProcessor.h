@@ -25,6 +25,7 @@ private:
 
     ScopedPointer<GainProcessor> gainProcessor;
     ScopedPointer<PanProcessor> panProcessor;
+    ScopedPointer<GainProcessor> distProcessor;
 
     int64 readerStartSample = 0;
     bool isMute = false;
