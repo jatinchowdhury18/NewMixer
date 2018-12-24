@@ -127,7 +127,7 @@ void Track::mouseUp (const MouseEvent& /*e*/)
     }
 }
 
-bool Track::keyPressed (const KeyPress& key)
+bool Track::doKeyPressed (const KeyPress& key)
 {
     if (! isSelected)
         return false;

@@ -59,7 +59,7 @@ bool MainComponent::keyPressed (const KeyPress& key)
     for (auto track : tracks)
     {
         if (track->getIsSelected())
-            return track->keyPressed (key);
+            return track->doKeyPressed (key);
     }
 
     return false;

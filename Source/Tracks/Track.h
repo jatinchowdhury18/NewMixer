@@ -24,7 +24,7 @@ public:
     bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
 
-    bool keyPressed (const KeyPress& key);
+    bool doKeyPressed (const KeyPress& key);
 
 private:
     void mouseDown (const MouseEvent& e) override;
