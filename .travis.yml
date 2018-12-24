@@ -4,6 +4,13 @@ notifications:
 language: cpp
 sudo: false
 
+# if pull request: always build
+# if push: only build for master branch
+if: type = push:
+  branches:
+    only:
+      - master
+
 matrix:
   include:
     - os: osx
