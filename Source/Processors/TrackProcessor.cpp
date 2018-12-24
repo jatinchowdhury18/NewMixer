@@ -12,18 +12,21 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
 
     gainProcessor = new GainProcessor;
     panProcessor = new PanProcessor;
+    distProcessor = new GainProcessor;
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     gainProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     panProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
+    distProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
 }
 
 void TrackProcessor::releaseResources()
 {
     gainProcessor->releaseResources();
     panProcessor->releaseResources();
+    distProcessor->releaseResources();
 }
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
@@ -37,6 +40,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
 
     gainProcessor->processBlock (buffer, midiMessages);
     panProcessor->processBlock (buffer, midiMessages);
+    distProcessor->processBlock (buffer, midiMessages);
 
     if (isMute)
         buffer.clear();
@@ -49,4 +53,7 @@ void TrackProcessor::trackMoved (int x, int y, int width)
 
     float pan = (float) x / (float) MainComponent::width;
     panProcessor->setPan (pan);
+
+    float distGain = (float) y / (float) MainComponent::height;
+    distProcessor->setGain (distGain);
 }
