@@ -6,7 +6,7 @@ Track::Track (File& file, String name, int x, int y, Colour colour) :
 {
     processor = new TrackProcessor (file);
 
-    setTopLeftPosition (x, y);
+    setBounds (x, y, defaultWidth, defaultWidth);
 
     setTooltip (name);
 }

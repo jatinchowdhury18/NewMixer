@@ -39,6 +39,8 @@ private:
     bool setSelectedTrackSolo();
     void setOtherTracksSolo (bool atrackIsSoloed);
 
+    void addTracks (String stemsToUse);
+
     //==============================================================================
     ScopedPointer<MasterTrack> master;
     OwnedArray<Track> tracks;

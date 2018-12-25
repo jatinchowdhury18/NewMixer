@@ -3,15 +3,7 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    File rootDir = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
-    File file = File (rootDir.getFullPathName() + "\\Stems\\drums.wav");
-    tracks.add (new Track (file, String ("Drums"), 400, 500, trackColours.getColour (tracks.size())));
-
-    File file2 = File (rootDir.getFullPathName() + "\\Stems\\test tone.wav");
-    tracks.add (new Track (file2, String ("Buzz"), 500, 500, trackColours.getColour (tracks.size())));
-
-    for (auto* track : tracks)
-        addAndMakeVisible (track);
+    addTracks ("Chorus"); //"Test", "Chorus", or "Bridge"
 
     master = new MasterTrack (tracks);
 
@@ -26,6 +18,24 @@ MainComponent::~MainComponent()
 {
 }
 
+void MainComponent::addTracks (String stemsToUse)
+{
+    const File rootDir = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
+    const File stemsFolder = File (rootDir.getFullPathName() + "\\Stems\\" + stemsToUse);
+
+    Array<File> stems = stemsFolder.findChildFiles (File::TypesOfFileToFind::findFiles, false);
+    const int xOffset = width / stems.size();
+    for (auto file : stems)
+    {
+        int n = tracks.size();
+        int xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * n;
+        tracks.add (new Track (file, file.getFileNameWithoutExtension(), xPos, 500, trackColours.getColour (n)));
+    }
+
+    for (auto* track : tracks)
+        addAndMakeVisible (track);
+}
+
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {
@@ -38,8 +48,6 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    for (auto track : tracks)
-        track->setBounds (track->getX(), track->getY(), 80, 80);
 }
 
 void MainComponent::mouseDown (const MouseEvent& /*event*/)
