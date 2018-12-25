@@ -12,6 +12,7 @@ public:
     {
         maxWidth = 100,
         minWidth = 20,
+        defaultWidth = 80,
     };
 
     Track (File& file, String name, int x, int y, Colour colour);
