@@ -35,6 +35,10 @@ public:
     bool keyPressed (const KeyPress& key) override;
 
 private:
+    void soloButtonPressed();
+    bool setSelectedTrackSolo();
+    void setOtherTracksSolo (bool atrackIsSoloed);
+
     //==============================================================================
     ScopedPointer<MasterTrack> master;
     OwnedArray<Track> tracks;
