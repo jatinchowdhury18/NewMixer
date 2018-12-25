@@ -42,7 +42,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     panProcessor->processBlock (buffer, midiMessages);
     distProcessor->processBlock (buffer, midiMessages);
 
-    if (isMute)
+    if (isMute || soloState == otherTrack)
         buffer.clear();
 }
 

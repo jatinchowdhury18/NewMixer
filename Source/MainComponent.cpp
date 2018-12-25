@@ -56,6 +56,13 @@ void MainComponent::clearSelectedTrack()
 
 bool MainComponent::keyPressed (const KeyPress& key)
 {
+    if (key == KeyPress::createFromDescription ("s")) //Solo
+    {
+        soloButtonPressed();
+        repaint();
+        return true;
+    }
+
     for (auto track : tracks)
     {
         if (track->getIsSelected())
@@ -63,4 +70,42 @@ bool MainComponent::keyPressed (const KeyPress& key)
     }
 
     return false;
+}
+
+void MainComponent::soloButtonPressed()
+{
+    bool aTrackIsSoloed = setSelectedTrackSolo();
+    setOtherTracksSolo (aTrackIsSoloed);
+}
+
+bool MainComponent::setSelectedTrackSolo()
+{
+    for (auto track : tracks)
+    {
+        if (track->getIsSelected())
+        {
+            if (track->isSoloed())
+            {
+                track->setSoloed (TrackProcessor::SoloState::noTracks);
+                return false;
+            }
+            else
+            {
+                track->setSoloed (TrackProcessor::SoloState::thisTrack);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void MainComponent::setOtherTracksSolo (bool aTrackIsSoloed)
+{
+    for (auto track : tracks)
+    {
+        if (! track->getIsSelected())
+            track->setSoloed (aTrackIsSoloed ? TrackProcessor::SoloState::otherTrack
+                                             : TrackProcessor::SoloState::noTracks);
+    }
 }

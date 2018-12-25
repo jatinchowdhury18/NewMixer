@@ -15,7 +15,7 @@ void Track::paint (Graphics& g)
 {
     auto diameter = (float) getWidth();
 
-    if (processor->getIsMute())
+    if (processor->getIsMute() || processor->getSoloed() == TrackProcessor::SoloState::otherTrack)
         g.setColour (trackColour.withAlpha (0.5f)); // Make colour faded if track is muted
     else
         g.setColour (trackColour); //normal colour
@@ -26,6 +26,13 @@ void Track::paint (Graphics& g)
     {
         g.setColour (Colours::goldenrod);
         g.drawEllipse (0.0f, 0.0f, diameter, diameter, 2.5f);
+    }
+
+    if (processor->getSoloed() == TrackProcessor::SoloState::thisTrack)
+    {
+        g.setColour (Colours::goldenrod);
+        g.setFont (diameter);
+        g.drawFittedText (String ("S"), 0, 0, (int) diameter, (int) diameter, Justification::centred, 1);
     }
 }
 

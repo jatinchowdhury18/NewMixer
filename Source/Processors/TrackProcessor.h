@@ -8,6 +8,13 @@
 class TrackProcessor : public ProcessorBase
 {
 public:
+    enum SoloState
+    {
+        thisTrack,
+        otherTrack,
+        noTracks,
+    };
+
     TrackProcessor (File& file);
 
     void prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock) override;
@@ -19,6 +26,9 @@ public:
     void setMute (bool mute) { isMute = mute; }
     bool getIsMute() { return isMute; }
 
+    SoloState getSoloed() { return soloState; }
+    void setSoloed (SoloState state) { soloState = state; }
+
 private:
     AudioFormatManager formatManager;
     ScopedPointer<AudioFormatReader> reader;
@@ -29,6 +39,7 @@ private:
 
     int64 readerStartSample = 0;
     bool isMute = false;
+    SoloState soloState = noTracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackProcessor)
 };
