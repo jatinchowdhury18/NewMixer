@@ -33,12 +33,9 @@ public:
     void clearSelectedTrack();
 
     bool keyPressed (const KeyPress& key) override;
+    void togglePlay();
 
 private:
-    void soloButtonPressed();
-    bool setSelectedTrackSolo();
-    void setOtherTracksSolo (bool atrackIsSoloed);
-
     void addTracks (String stemsToUse);
 
     //==============================================================================
