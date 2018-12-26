@@ -1,4 +1,5 @@
 #include "MainComponent.h"
+#include "Tracks/SoloHelper.h"
 
 //==============================================================================
 MainComponent::MainComponent()
@@ -66,7 +67,7 @@ bool MainComponent::keyPressed (const KeyPress& key)
 {
     if (key == KeyPress::createFromDescription ("s")) //Solo
     {
-        soloButtonPressed();
+        SoloHelper::soloButtonPressed (tracks);
         repaint();
         return true;
     }
@@ -78,42 +79,4 @@ bool MainComponent::keyPressed (const KeyPress& key)
     }
 
     return false;
-}
-
-void MainComponent::soloButtonPressed()
-{
-    bool aTrackIsSoloed = setSelectedTrackSolo();
-    setOtherTracksSolo (aTrackIsSoloed);
-}
-
-bool MainComponent::setSelectedTrackSolo()
-{
-    for (auto track : tracks)
-    {
-        if (track->getIsSelected())
-        {
-            if (track->isSoloed())
-            {
-                track->setSoloed (TrackProcessor::SoloState::noTracks);
-                return false;
-            }
-            else
-            {
-                track->setSoloed (TrackProcessor::SoloState::thisTrack);
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-void MainComponent::setOtherTracksSolo (bool aTrackIsSoloed)
-{
-    for (auto track : tracks)
-    {
-        if (! track->getIsSelected())
-            track->setSoloed (aTrackIsSoloed ? TrackProcessor::SoloState::otherTrack
-                                             : TrackProcessor::SoloState::noTracks);
-    }
 }

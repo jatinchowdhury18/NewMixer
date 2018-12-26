@@ -38,7 +38,7 @@ private:
     ScopedPointer<GainProcessor> distProcessor;
 
     int64 readerStartSample = 0;
-    bool isMute = false;
+    bool isMute = true;
     SoloState soloState = noTracks;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackProcessor)
