@@ -15,6 +15,12 @@ public:
         defaultWidth = 80,
     };
 
+    enum TrackCmds
+    {
+        solo = 1,
+        mute,
+    };
+
     Track (File& file, String name, int x, int y, Colour colour);
 
     TrackProcessor* getProcessor() const { return processor; }
@@ -30,12 +36,16 @@ public:
     bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
     void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
 
+    bool toggleMute();
+
     void rewind() { processor->rewind(); }
 
 private:
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
+
+    static void rightClickCallback (int result, Track* track);
 
     void changeSize (const MouseEvent& e);
     void changeSize();

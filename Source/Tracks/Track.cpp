@@ -130,6 +130,30 @@ void Track::mouseDown (const MouseEvent& e)
 
     isSelected = true;
     repaint();
+
+    if (e.mods.isPopupMenu())
+    {
+        PopupMenu m;
+
+        m.addItem (TrackCmds::mute, String ("Mute"), true, processor->getIsMute());
+        m.addItem (TrackCmds::solo, String ("Solo"), true, isSoloed());
+
+        m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
+    }
+}
+
+void Track::rightClickCallback (int result, Track* track)
+{
+    switch (result)
+    {
+    case TrackCmds::mute:
+        track->toggleMute();
+        return;
+
+    case TrackCmds::solo:
+        track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
+        return;
+    }
 }
 
 void Track::mouseDrag (const MouseEvent& e)
@@ -159,10 +183,17 @@ bool Track::doKeyPressed (const KeyPress& key)
     if (key.getModifiers().isCtrlDown())                    //Change volume
         changeSize();
     else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
-        processor->setMute (! processor->getIsMute());
+        return toggleMute();
     else                                                    // Normal move
         changePosition();
 
+    getParentComponent()->repaint();
+    return true;
+}
+
+bool Track::toggleMute()
+{
+    processor->setMute (! processor->getIsMute());
     getParentComponent()->repaint();
     return true;
 }
