@@ -13,6 +13,8 @@ MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
     connectTracks();
 
     player.setProcessor (this);
+
+    togglePlay();
 }
 
 MasterTrack::~MasterTrack()
@@ -30,4 +32,25 @@ void MasterTrack::connectTracks()
                              { audioOutputNode->nodeID, channel } });
         }
     }
+}
+
+void MasterTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer)
+{
+    if (! isPlaying)
+    {
+        buffer.clear();
+        return;
+    }
+
+    AudioProcessorGraph::processBlock (buffer, midiBuffer);
+}
+
+void MasterTrack::togglePlay()
+{
+    if (! isPlaying)
+        prepareToPlay (getSampleRate(), getBlockSize());
+    else
+        releaseResources();
+
+    isPlaying = ! isPlaying;
 }

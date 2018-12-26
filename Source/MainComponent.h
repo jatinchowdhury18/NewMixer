@@ -33,6 +33,7 @@ public:
     void clearSelectedTrack();
 
     bool keyPressed (const KeyPress& key) override;
+    void togglePlay();
 
 private:
     void addTracks (String stemsToUse);

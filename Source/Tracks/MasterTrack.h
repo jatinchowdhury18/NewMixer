@@ -13,6 +13,11 @@ public:
     MasterTrack (OwnedArray<Track>& tracks);
     ~MasterTrack();
 
+    void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
+
+    void togglePlay();
+    bool getIsPlaying() { return isPlaying; }
+
 private:
     void connectTracks();
 
@@ -20,7 +25,9 @@ private:
     AudioProcessorPlayer player;
 
     Node::Ptr audioOutputNode;
-    Array<Node::Ptr> trackNodes;
+    ReferenceCountedArray<Node> trackNodes;
+
+    bool isPlaying = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrack)
 };

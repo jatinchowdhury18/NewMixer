@@ -30,6 +30,8 @@ public:
     bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
     void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
 
+    void rewind() { processor->rewind(); }
+
 private:
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;

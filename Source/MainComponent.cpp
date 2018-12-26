@@ -9,10 +9,9 @@ MainComponent::MainComponent()
     master = new MasterTrack (tracks);
 
     setSize (width, height);
+    setWantsKeyboardFocus (true);
 
     tooltipWindow = new TooltipWindow (this, tooltipTime);
-
-    setWantsKeyboardFocus (true);
 }
 
 MainComponent::~MainComponent()
@@ -72,6 +71,9 @@ bool MainComponent::keyPressed (const KeyPress& key)
         return true;
     }
 
+    if (key == KeyPress::spaceKey) //play/pause
+        togglePlay();
+
     for (auto track : tracks)
     {
         if (track->getIsSelected())
@@ -79,4 +81,11 @@ bool MainComponent::keyPressed (const KeyPress& key)
     }
 
     return false;
+}
+
+void MainComponent::togglePlay()
+{
+    master->togglePlay();
+    for (auto track : tracks)
+        track->rewind();
 }

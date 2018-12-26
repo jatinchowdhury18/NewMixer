@@ -29,6 +29,8 @@ public:
     SoloState getSoloed() { return soloState; }
     void setSoloed (SoloState state) { soloState = state; }
 
+    void rewind() { readerStartSample = 0; }
+
 private:
     AudioFormatManager formatManager;
     ScopedPointer<AudioFormatReader> reader;
