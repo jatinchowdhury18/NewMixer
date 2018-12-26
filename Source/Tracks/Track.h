@@ -1,8 +1,9 @@
 #ifndef TRACK_H_INCLUDED
 #define TRACK_H_INCLUDED
 
-#include "JuceHeader.h"
+//#include "JuceHeader.h"
 #include "../Processors/TrackProcessor.h"
+#include "../GUI Extras/Colours.h"
 
 class Track : public Component,
               public SettableTooltipClient
@@ -17,7 +18,7 @@ public:
 
     enum TrackCmds
     {
-        solo = 1,
+        solo = 0x1001,
         mute,
     };
 
@@ -51,12 +52,14 @@ private:
     void changeSize();
     void changePosition (const MouseEvent& e);
     void changePosition();
+    void changeColour (int index);
 
     void setPositionConstrained (Point<int> pos);
     void setSizeConstrained (int oldSize, int change);
 
     String name;
     Colour trackColour;
+    TrackColours colours;
 
     bool isDragging = false;
     int lastDragLocation = 0;

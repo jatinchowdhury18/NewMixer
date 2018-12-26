@@ -135,8 +135,13 @@ void Track::mouseDown (const MouseEvent& e)
     {
         PopupMenu m;
 
+        PopupMenu colorMenu;
+        for (int ind = 1; ind <= colours.getNumColours(); ind++)  
+            colorMenu.addItem (ind, colours.getColourName (ind - 1), true, trackColour == colours.getColour (ind - 1));
+
         m.addItem (TrackCmds::mute, String ("Mute"), true, processor->getIsMute());
         m.addItem (TrackCmds::solo, String ("Solo"), true, isSoloed());
+        m.addSubMenu (String ("Change Colour"), colorMenu);
 
         m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
     }
@@ -153,6 +158,9 @@ void Track::rightClickCallback (int result, Track* track)
     case TrackCmds::solo:
         track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
         return;
+
+    default: //Change Colour
+        track->changeColour (result - 1);
     }
 }
 
@@ -196,4 +204,10 @@ bool Track::toggleMute()
     processor->setMute (! processor->getIsMute());
     getParentComponent()->repaint();
     return true;
+}
+
+void Track::changeColour (int index)
+{ 
+    trackColour = colours.getColour (index);
+    repaint();
 }
