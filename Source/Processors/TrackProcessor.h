@@ -4,6 +4,7 @@
 #include "ProcessorBase.h"
 #include "GainProcessor.h"
 #include "PanProcessor.h"
+#include "DelayProcessor.h"
 
 class TrackProcessor : public ProcessorBase
 {
@@ -36,6 +37,7 @@ private:
     std::unique_ptr<AudioFormatReader> reader;
 
     std::unique_ptr<GainProcessor> gainProcessor;
+    std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<GainProcessor> distProcessor;
 
