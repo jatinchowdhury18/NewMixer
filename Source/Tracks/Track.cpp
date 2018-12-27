@@ -4,7 +4,7 @@ Track::Track (File& file, String name, int x, int y, Colour colour) :
     name (name),
     trackColour (colour)
 {
-    processor = new TrackProcessor (file);
+    processor.reset (new TrackProcessor (file));
 
     setBounds (x, y, defaultWidth, defaultWidth);
 
@@ -130,6 +130,38 @@ void Track::mouseDown (const MouseEvent& e)
 
     isSelected = true;
     repaint();
+
+    if (e.mods.isPopupMenu())
+    {
+        PopupMenu m;
+
+        PopupMenu colorMenu;
+        for (int ind = 1; ind <= colours.getNumColours(); ind++)  
+            colorMenu.addItem (ind, colours.getColourName (ind - 1), true, trackColour == colours.getColour (ind - 1));
+
+        m.addItem (TrackCmds::mute, String ("Mute"), true, processor->getIsMute());
+        m.addItem (TrackCmds::solo, String ("Solo"), true, isSoloed());
+        m.addSubMenu (String ("Change Colour"), colorMenu);
+
+        m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
+    }
+}
+
+void Track::rightClickCallback (int result, Track* track)
+{
+    switch (result)
+    {
+    case TrackCmds::mute:
+        track->toggleMute();
+        return;
+
+    case TrackCmds::solo:
+        track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
+        return;
+
+    default: //Change Colour
+        track->changeColour (result - 1);
+    }
 }
 
 void Track::mouseDrag (const MouseEvent& e)
@@ -159,10 +191,23 @@ bool Track::doKeyPressed (const KeyPress& key)
     if (key.getModifiers().isCtrlDown())                    //Change volume
         changeSize();
     else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
-        processor->setMute (! processor->getIsMute());
+        return toggleMute();
     else                                                    // Normal move
         changePosition();
 
     getParentComponent()->repaint();
     return true;
+}
+
+bool Track::toggleMute()
+{
+    processor->setMute (! processor->getIsMute());
+    getParentComponent()->repaint();
+    return true;
+}
+
+void Track::changeColour (int index)
+{ 
+    trackColour = colours.getColour (index);
+    repaint();
 }

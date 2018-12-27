@@ -6,12 +6,12 @@ MainComponent::MainComponent()
 {
     addTracks ("Chorus"); //"Test", "Chorus", or "Bridge"
 
-    master = new MasterTrack (tracks);
+    master.reset (new MasterTrack (tracks));
 
     setSize (width, height);
     setWantsKeyboardFocus (true);
 
-    tooltipWindow = new TooltipWindow (this, tooltipTime);
+    tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
 }
 
 MainComponent::~MainComponent()

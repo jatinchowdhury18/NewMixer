@@ -10,9 +10,9 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
 
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 
-    gainProcessor = new GainProcessor;
-    panProcessor = new PanProcessor;
-    distProcessor = new GainProcessor;
+    gainProcessor.reset (new GainProcessor);
+    panProcessor.reset (new PanProcessor);
+    distProcessor.reset (new GainProcessor);
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)

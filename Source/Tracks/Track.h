@@ -1,8 +1,9 @@
 #ifndef TRACK_H_INCLUDED
 #define TRACK_H_INCLUDED
 
-#include "JuceHeader.h"
+//#include "JuceHeader.h"
 #include "../Processors/TrackProcessor.h"
+#include "../GUI Extras/Colours.h"
 
 class Track : public Component,
               public SettableTooltipClient
@@ -15,9 +16,15 @@ public:
         defaultWidth = 80,
     };
 
+    enum TrackCmds
+    {
+        solo = 0x1001,
+        mute,
+    };
+
     Track (File& file, String name, int x, int y, Colour colour);
 
-    TrackProcessor* getProcessor() const { return processor; }
+    TrackProcessor* getProcessor() const { return processor.get(); }
 
     void paint (Graphics& g) override;
     void resized() override;
@@ -30,6 +37,8 @@ public:
     bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
     void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
 
+    bool toggleMute();
+
     void rewind() { processor->rewind(); }
 
 private:
@@ -37,23 +46,27 @@ private:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
+    static void rightClickCallback (int result, Track* track);
+
     void changeSize (const MouseEvent& e);
     void changeSize();
     void changePosition (const MouseEvent& e);
     void changePosition();
+    void changeColour (int index);
 
     void setPositionConstrained (Point<int> pos);
     void setSizeConstrained (int oldSize, int change);
 
     String name;
     Colour trackColour;
+    TrackColours colours;
 
     bool isDragging = false;
     int lastDragLocation = 0;
 
     bool isSelected = false;
 
-    ScopedPointer<TrackProcessor> processor;
+    std::unique_ptr<TrackProcessor> processor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

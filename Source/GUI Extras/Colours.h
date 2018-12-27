@@ -8,16 +8,16 @@ class TrackColours
 public:
     TrackColours()
     {
-        trackColours.add (Colours::darkred);
-        trackColours.add (Colours::darkgreen);
-        trackColours.add (Colours::khaki);
-        trackColours.add (Colours::deeppink);
-        trackColours.add (Colours::cadetblue);
-        trackColours.add (Colours::lawngreen);
-        trackColours.add (Colours::silver);
-        trackColours.add (Colours::coral);
-        trackColours.add (Colours::rebeccapurple);
-        trackColours.add (Colours::saddlebrown);
+        trackColours.add (Colours::darkred);       colourNames.add (String ("Red"));
+        trackColours.add (Colours::darkgreen);     colourNames.add (String ("Green1"));
+        trackColours.add (Colours::khaki);         colourNames.add (String ("Yellow"));
+        trackColours.add (Colours::deeppink);      colourNames.add (String ("Pink"));
+        trackColours.add (Colours::cadetblue);     colourNames.add (String ("Blue1"));
+        trackColours.add (Colours::lawngreen);     colourNames.add (String ("Green2"));
+        trackColours.add (Colours::silver);        colourNames.add (String ("Silver"));
+        trackColours.add (Colours::coral);         colourNames.add (String ("Blue2"));
+        trackColours.add (Colours::rebeccapurple); colourNames.add (String ("Purple"));
+        trackColours.add (Colours::saddlebrown);   colourNames.add (String ("Brown"));
     }
 
     Colour getColour (int index)
@@ -26,9 +26,13 @@ public:
         return trackColours[corrIndex];
     }
 
+    int getNumColours() { return trackColours.size(); }
+
+    String getColourName (int index) { return colourNames[index]; }
+
 private:
     Array<Colour> trackColours;
-
+    StringArray colourNames;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackColours)
 };
