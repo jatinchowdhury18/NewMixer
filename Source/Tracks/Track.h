@@ -24,7 +24,7 @@ public:
 
     Track (File& file, String name, int x, int y, Colour colour);
 
-    TrackProcessor* getProcessor() const { return processor; }
+    TrackProcessor* getProcessor() const { return processor.get(); }
 
     void paint (Graphics& g) override;
     void resized() override;
@@ -66,7 +66,7 @@ private:
 
     bool isSelected = false;
 
-    ScopedPointer<TrackProcessor> processor;
+    std::unique_ptr<TrackProcessor> processor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };

@@ -39,11 +39,11 @@ private:
     void addTracks (String stemsToUse);
 
     //==============================================================================
-    ScopedPointer<MasterTrack> master;
+    std::unique_ptr<MasterTrack> master;
     OwnedArray<Track> tracks;
 
     TrackColours trackColours;
-    ScopedPointer<TooltipWindow> tooltipWindow;
+    std::unique_ptr<TooltipWindow> tooltipWindow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

@@ -33,11 +33,11 @@ public:
 
 private:
     AudioFormatManager formatManager;
-    ScopedPointer<AudioFormatReader> reader;
+    std::unique_ptr<AudioFormatReader> reader;
 
-    ScopedPointer<GainProcessor> gainProcessor;
-    ScopedPointer<PanProcessor> panProcessor;
-    ScopedPointer<GainProcessor> distProcessor;
+    std::unique_ptr<GainProcessor> gainProcessor;
+    std::unique_ptr<PanProcessor> panProcessor;
+    std::unique_ptr<GainProcessor> distProcessor;
 
     int64 readerStartSample = 0;
     bool isMute = true;
