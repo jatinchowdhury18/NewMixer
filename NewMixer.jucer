@@ -6,6 +6,10 @@
       <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
     </GROUP>
     <GROUP id="{B45D25AD-CEFF-02F9-6A66-DF7E89CDDA8E}" name="Processors">
+      <FILE id="SuB7XM" name="DelayProcessor.cpp" compile="1" resource="0"
+            file="Source/Processors/DelayProcessor.cpp"/>
+      <FILE id="lgpu5S" name="DelayProcessor.h" compile="0" resource="0"
+            file="Source/Processors/DelayProcessor.h"/>
       <FILE id="MF7oUy" name="GainProcessor.h" compile="0" resource="0" file="Source/Processors/GainProcessor.h"/>
       <FILE id="dTSvlI" name="PanProcessor.cpp" compile="1" resource="0"
             file="Source/Processors/PanProcessor.cpp"/>

@@ -11,6 +11,7 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 
     gainProcessor.reset (new GainProcessor);
+    delayProcessor.reset (new DelayProcessor);
     panProcessor.reset (new PanProcessor);
     distProcessor.reset (new GainProcessor);
 }
@@ -18,13 +19,17 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     gainProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
+    delayProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     panProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     distProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
+
+    //delayProcessor->setLengthMs (0, 1000.0); //Delay test code
 }
 
 void TrackProcessor::releaseResources()
 {
     gainProcessor->releaseResources();
+    delayProcessor->releaseResources();
     panProcessor->releaseResources();
     distProcessor->releaseResources();
 }
@@ -39,6 +44,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
         readerStartSample = 0;
 
     gainProcessor->processBlock (buffer, midiMessages);
+    delayProcessor->processBlock (buffer, midiMessages);
     panProcessor->processBlock (buffer, midiMessages);
     distProcessor->processBlock (buffer, midiMessages);
 
