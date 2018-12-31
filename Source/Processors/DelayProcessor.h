@@ -17,12 +17,18 @@ public:
     double getTailLengthSeconds() const override;
 
 private:
-    void resetPtrs();
-    void setReadPtr (int channel);
-    void setWritePtr (int channel);
+    struct DelayChannel
+    {
+        int length = 0;
+        int readPtr = 0;
+        int writePtr = 0;
 
-    int length[2] = {0, 0};
-    int readPtr[2] = {0, 0}, writePtr[2] = {0, 0};
+        void resetPtrs() { readPtr = 0; writePtr = 0; }
+        void setReadPtr();
+        void setWritePtr();
+    };
+
+    DelayChannel dChannels[2];
 
     AudioBuffer<float> delayBuffer;
 

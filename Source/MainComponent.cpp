@@ -4,7 +4,7 @@
 //==============================================================================
 MainComponent::MainComponent()
 {
-    addTracks ("Chorus"); //"Test", "Chorus", or "Bridge"
+    addTracks ("Bridge"); //"Test", "Chorus", or "Bridge"
 
     master.reset (new MasterTrack (tracks));
 
