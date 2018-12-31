@@ -10,7 +10,7 @@ public:
 
     void prepareToPlay (double sampleRate, int maxExpectedBlockSize) override;
     void releaseResources() override;
-    void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer);
+    void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
     void setLengthMs (int channel, double lengthMs);
 
@@ -37,4 +37,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DelayProcessor)
 };
 
-#endif DELAYPROCESSOR_H_INCLUDED
+#endif //DELAYPROCESSOR_H_INCLUDED
