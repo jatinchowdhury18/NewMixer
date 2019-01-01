@@ -14,6 +14,7 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
     delayProcessor.reset (new DelayProcessor);
     panProcessor.reset (new PanProcessor);
     distProcessor.reset (new GainProcessor);
+    reverbProcessor.reset (new ReverbProcessor);
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
@@ -22,8 +23,11 @@ void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSample
     delayProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     panProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     distProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
+    reverbProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
 
-    //delayProcessor->setLengthMs (0, 1000.0); //Delay test code
+    //Test Code
+    //delayProcessor->setLengthMs (0, 1000.0);
+    //reverbProcessor->setDryWet (1.0f);
 }
 
 void TrackProcessor::releaseResources()
@@ -32,6 +36,7 @@ void TrackProcessor::releaseResources()
     delayProcessor->releaseResources();
     panProcessor->releaseResources();
     distProcessor->releaseResources();
+    reverbProcessor->releaseResources();
 }
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
@@ -47,6 +52,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     delayProcessor->processBlock (buffer, midiMessages);
     panProcessor->processBlock (buffer, midiMessages);
     distProcessor->processBlock (buffer, midiMessages);
+    reverbProcessor->processBlock (buffer, midiMessages);
 
     if (isMute || soloState == otherTrack)
         buffer.clear();

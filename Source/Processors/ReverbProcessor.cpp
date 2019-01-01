@@ -1,0 +1,37 @@
+#include "ReverbProcessor.h"
+
+ReverbProcessor::ReverbProcessor() : ProcessorBase (String ("Reverb Processor"))
+{
+    params.roomSize = 0.75f;
+    reverbDsp.setParameters (params);
+}
+
+void ReverbProcessor::prepareToPlay (double sampleRate, int maxExpectedBlockSize)
+{
+    dsp::ProcessSpec spec;
+    spec.numChannels = 2;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = maxExpectedBlockSize;
+
+    reverbDsp.prepare (spec);
+}
+
+void ReverbProcessor::releaseResources()
+{
+    reverbDsp.reset();
+}
+
+void ReverbProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& /*midiBuffer*/)
+{
+    auto block = dsp::AudioBlock<float> (buffer);
+    auto context = dsp::ProcessContextReplacing<float> (block);
+    reverbDsp.process (context);
+}
+
+void ReverbProcessor::setDryWet (float wetAmt)
+{
+    params = reverbDsp.getParameters();
+    params.wetLevel = wetAmt;
+    params.dryLevel = 1.0f - wetAmt;
+    reverbDsp.setParameters (params);
+}

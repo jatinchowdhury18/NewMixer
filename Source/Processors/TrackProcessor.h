@@ -5,6 +5,7 @@
 #include "GainProcessor.h"
 #include "PanProcessor.h"
 #include "DelayProcessor.h"
+#include "ReverbProcessor.h"
 
 class TrackProcessor : public ProcessorBase
 {
@@ -40,6 +41,7 @@ private:
     std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<GainProcessor> distProcessor;
+    std::unique_ptr<ReverbProcessor> reverbProcessor;
 
     int64 readerStartSample = 0;
     bool isMute = true;
