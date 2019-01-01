@@ -15,6 +15,10 @@
             file="Source/Processors/PanProcessor.cpp"/>
       <FILE id="cEo9Bs" name="PanProcessor.h" compile="0" resource="0" file="Source/Processors/PanProcessor.h"/>
       <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
+      <FILE id="ecxR4T" name="ReverbProcessor.cpp" compile="1" resource="0"
+            file="Source/Processors/ReverbProcessor.cpp"/>
+      <FILE id="XP8yBO" name="ReverbProcessor.h" compile="0" resource="0"
+            file="Source/Processors/ReverbProcessor.h"/>
       <FILE id="b5w13C" name="TrackProcessor.cpp" compile="1" resource="0"
             file="Source/Processors/TrackProcessor.cpp"/>
       <FILE id="idP2bn" name="TrackProcessor.h" compile="0" resource="0"
@@ -55,6 +59,7 @@
         <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2017 targetFolder="Builds/VisualStudio2017">
@@ -77,6 +82,7 @@
         <MODULEPATH id="juce_opengl" path="JUCE/modules"/>
         <MODULEPATH id="juce_video" path="JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="JUCE/modules"/>
       </MODULEPATHS>
     </VS2017>
   </EXPORTFORMATS>
@@ -89,6 +95,7 @@
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
