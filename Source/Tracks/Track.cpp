@@ -7,6 +7,7 @@ Track::Track (File& file, String name, int x, int y, Colour colour) :
     processor.reset (new TrackProcessor (file));
 
     setBounds (x, y, defaultWidth, defaultWidth);
+    setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
 }
