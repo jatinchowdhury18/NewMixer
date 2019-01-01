@@ -151,6 +151,9 @@ void Track::rightClickCallback (int result, Track* track)
 {
     switch (result)
     {
+    case 0: //Nothing selected
+        return;
+
     case TrackCmds::mute:
         track->toggleMute();
         return;
