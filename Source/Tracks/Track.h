@@ -1,7 +1,6 @@
 #ifndef TRACK_H_INCLUDED
 #define TRACK_H_INCLUDED
 
-//#include "JuceHeader.h"
 #include "../Processors/TrackProcessor.h"
 #include "../GUI Extras/Colours.h"
 
@@ -24,7 +23,7 @@ public:
 
     Track (File& file, String name, int x, int y, Colour colour);
 
-    TrackProcessor* getProcessor() const { return processor.get(); }
+    TrackProcessor* getProcessor() const { return processor; }
 
     void paint (Graphics& g) override;
     void resized() override;
@@ -66,7 +65,7 @@ private:
 
     bool isSelected = false;
 
-    std::unique_ptr<TrackProcessor> processor;
+    TrackProcessor* processor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };
