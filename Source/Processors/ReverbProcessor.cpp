@@ -3,6 +3,8 @@
 ReverbProcessor::ReverbProcessor() : ProcessorBase (String ("Reverb Processor"))
 {
     params.roomSize = 0.75f;
+    params.wetLevel = 0.0f;
+    params.dryLevel = 1.0f;
     reverbDsp.setParameters (params);
 }
 
