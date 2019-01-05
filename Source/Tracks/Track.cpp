@@ -4,7 +4,7 @@ Track::Track (File& file, String name, int x, int y, Colour colour) :
     name (name),
     trackColour (colour)
 {
-    processor.reset (new TrackProcessor (file));
+    processor = new TrackProcessor (file);
 
     setBounds (x, y, defaultWidth, defaultWidth);
     setBroughtToFrontOnMouseClick (true);
