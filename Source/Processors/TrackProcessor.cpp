@@ -13,24 +13,23 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
     gainProcessor.reset (new GainProcessor);
     delayProcessor.reset (new DelayProcessor);
     panProcessor.reset (new PanProcessor);
-    distProcessor.reset (new GainProcessor);
+    distProcessor.reset (new DistanceProcessor);
     reverbProcessor.reset (new ReverbProcessor);
-    filterProcessor.reset (new FilterProcessor);
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
 {
+    setRateAndBufferSizeDetails (sampleRate, maximumExpectedSamplesPerBlock);
+
     gainProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     delayProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     panProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     distProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
     reverbProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-    filterProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
 
     //Test Code
     //delayProcessor->setLengthMs (0, 1000.0);
     //reverbProcessor->setDryWet (1.0f);
-    //filterProcessor->setFreq (1000.0f);
 }
 
 void TrackProcessor::releaseResources()
@@ -40,7 +39,6 @@ void TrackProcessor::releaseResources()
     panProcessor->releaseResources();
     distProcessor->releaseResources();
     reverbProcessor->releaseResources();
-    filterProcessor->releaseResources();
 }
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
@@ -57,7 +55,6 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     panProcessor->processBlock (buffer, midiMessages);
     distProcessor->processBlock (buffer, midiMessages);
     reverbProcessor->processBlock (buffer, midiMessages);
-    filterProcessor->processBlock (buffer, midiMessages);
 
     if (isMute || soloState == otherTrack)
         buffer.clear();
@@ -73,4 +70,7 @@ void TrackProcessor::trackMoved (int x, int y, int width)
 
     float distGain = (float) y / (float) MainComponent::height;
     distProcessor->setGain (distGain);
+
+    float distFreq = (float) (FilterProcessor::farFreq) + distGain * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
+    distProcessor->setFreq (distFreq);
 }

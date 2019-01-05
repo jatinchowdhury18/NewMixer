@@ -6,7 +6,14 @@
 class FilterProcessor : public ProcessorBase
 {
 public:
-    FilterProcessor() : ProcessorBase (String ("Filter Processor")) {}
+    enum
+    {
+        order = 2,
+        maxFreq = 22000,
+        farFreq = 12000,
+    };
+
+    FilterProcessor() : ProcessorBase (String ("Filter Processor")) { initFilter(); }
 
     void prepareToPlay (double sampleRate, int maxExpectedBlockSize) override;
     void releaseResources() override;
@@ -15,11 +22,6 @@ public:
     void setFreq (float newFreq);
 
 private:
-    enum
-    {
-        order = 2,
-    };
-
     void initFilter();
     void clearIOs();
     void resetArrays();
@@ -29,7 +31,7 @@ private:
 
     float filter (int channel, float x);
 
-    float cutoffFreq = 20000.0f;
+    float cutoffFreq = (float) maxFreq;
     const float Q = 0.707f;
     const float gain = 1.0f;
 

@@ -10,6 +10,10 @@
             file="Source/Processors/DelayProcessor.cpp"/>
       <FILE id="lgpu5S" name="DelayProcessor.h" compile="0" resource="0"
             file="Source/Processors/DelayProcessor.h"/>
+      <FILE id="PRAU4m" name="DistanceProcessor.cpp" compile="1" resource="0"
+            file="Source/Processors/DistanceProcessor.cpp"/>
+      <FILE id="NV52MN" name="DistanceProcessor.h" compile="0" resource="0"
+            file="Source/Processors/DistanceProcessor.h"/>
       <FILE id="KKoudv" name="FilterProcessor.cpp" compile="1" resource="0"
             file="Source/Processors/FilterProcessor.cpp"/>
       <FILE id="cJ0m9j" name="FilterProcessor.h" compile="0" resource="0"
