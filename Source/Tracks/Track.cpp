@@ -40,7 +40,7 @@ void Track::paint (Graphics& g)
 void Track::resized()
 { 
     const int radius = getWidth() / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, getWidth());
+    processor->trackMoved (getX() + radius,  getY() + radius, getWidth(), false);
 }
 
 void Track::changeSize (const MouseEvent& e)
@@ -185,6 +185,8 @@ void Track::mouseUp (const MouseEvent& /*e*/)
         isDragging = false;
         lastDragLocation = 0;
     }
+    const int radius = getWidth() / 2;
+    processor->trackMoved (getX() + radius,  getY() + radius, getWidth(), true);
 }
 
 bool Track::doKeyPressed (const KeyPress& key)

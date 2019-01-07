@@ -17,20 +17,24 @@ public:
     double getTailLengthSeconds() const override;
 
 private:
+    enum
+    {
+        maxDelaySeconds = 10,
+    };
+
     struct DelayChannel
     {
-        int length = 0;
-        int readPtr = 0;
+        LinearSmoothedValue<float> length = 0.0f;
         int writePtr = 0;
 
-        void resetPtrs() { readPtr = 0; writePtr = 0; }
-        void setReadPtr();
-        void setWritePtr();
+        void resetPtrs() { writePtr = 0; }
+        void setWritePtr (int maxLength);
     };
 
     DelayChannel dChannels[2];
 
     AudioBuffer<float> delayBuffer;
+    int bufferSize = 0;
 
     float delay (int channel, float x);
 
