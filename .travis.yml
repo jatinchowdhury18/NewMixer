@@ -1,6 +1,6 @@
 notifications:
   email: false
-  
+
 language: cpp
 sudo: false
 
@@ -27,21 +27,20 @@ before_install:
   # windows setup msbuild path
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
   
-  #Build Projucer
+  # Build Projucer
   - cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
-  
+
 script:
   - cd $TRAVIS_BUILD_DIR/
   - export PROJUCER=$PROJUCER_EXPORT
   - $PROJUCER --set-global-search-path $TRAVIS_OS_NAME defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
   - $PROJUCER --resave NewMixer.jucer
   - cd $TRAVIS_BUILD_DIR/Builds/$BUILD_FOLDER/
-  
+
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ clean; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`; fi
-  # - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe NewMixer.sln /t:project:clean; fi
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:normal NewMixer.sln; fi
   - echo "SUCCESS"
 
@@ -67,5 +66,4 @@ after_success: # upload mac bins
 
 env:
   global:
-    secure: rufS7Oae56diLomkcsVYEvg3GKLh+YuiNy7YPKfcLDPIfqrUmWyo56vOjHkL+fGM+pPvA8UoOjJf7128aaN5N8nsFdAQr2Gq4TbyyE9V/IxlH7ib9dcBdqJRcCwuRgOhWhwGm4AlRX21+bJWGZYi2n0QKn6Ri2I3dWoFb/UIfQXRDo8MtFxnd7S1HD6iPRHGDvGWRxi2AvUKI6W8ed+L/nNS8EsH73vJJ819P0HpUAJDzW8fc7KbQoZOryTdLCiASyxSw0AYGYeVxvcnJe0T4zOHdGhj9d1xBVMphR/y2tuiCWBFEB56VvPYC/51Jt/bddfsoTbkC7ZRmlc7aWcKmCAf+JN9G9outRuoPZRk+P+koVnTaflmJJaaS0UEiXFTzik6q942RiSSrLLf+tN6k2rwDFDSYJ2vdrdsVzwSI6CZ2leXsMQqERwM+L/eOtYnidGosNyyxD6THObmowwtgMi1d3optu0K6DOUbxizvWGiun8u2r8P0W/0JxW8JkRHoOJmeM1j9B24QdV7IgI7lesUkijy2Ei4Vvtff/OW1roPr6zevL48ciTx8qG1HA/EjzkRfAjLhDXczvdjRLERbbn+IhQ4WqiiamZ0TvyYBKJbYOehQwd4bk0eYm7UZld/v4LFlWeT1DmBpZsEsGza4+WROJQfSnG3d7aiqM0zBVs=
-
+    secure: HDANAOVpJ18sQ+vKte1Xh+QlxoTEDMKuucW2YmYwsW8Clm0YrUV0B8pQ+jQsO207YM8eRb3vJYymZDkM1o+ByWWIkK3wGxccyPTszcUZZCwnlCrjBaGwzMib30O+RWOGfNa2qk05rcsdFnZ9+5AOLNEz4ESbK06a3/qb/li+1VPMI8dCv89IngZJhnQi8AiRUWtPqi8qi/lHHHLDqvB+sFygOafsBVI5LbMKfbr9aHMirlyQmLKdPWorwlY+ctL+CNKurx1mJiZ9B5bd7RzrXcpXymaV0dDRxzl4aioPTjT24Oyvwzu9iA6LmRfMeHp2b2o5UVgvlB5gN6O3XY2MJRlL6Shg+OtTKaA1lPmUrM8wW5pjDDujN/1ihm0us+kkBz6SjeFS46Sn0KPboZoeam+uqTFz00e5d8Z2vl3zt4HDJQbdZ3hqxljV3al+vutpc26Q5VfRgr177qmQYVejSrwnP+ZHX05TcNsZa0X0g6CvHWpGRnVDvmHo/1rjMrf02QpRj47/MqSS61SrBixUrtDnOIB9ASnj91VqfcGxW/wT/8fbiYZ5wuoLwdK7vNwn/qMwnM4zCn+/xTgzDq8ZuYQgVZ7XuIRUcpL5N3Vos0E5BtS3CC+GdYG2M1NyuN27ff+feOWLK1WpLvsuMOZSE5cMJYeNc2dbN3SAeiPEx4w=
