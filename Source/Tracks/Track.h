@@ -22,6 +22,7 @@ public:
     };
 
     Track (File& file, String name, int x, int y, Colour colour);
+    Track (MemoryInputStream* input, String name, int x, int y, Colour colour);
 
     TrackProcessor* getProcessor() const { return processor; }
 

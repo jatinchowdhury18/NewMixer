@@ -12,6 +12,18 @@ Track::Track (File& file, String name, int x, int y, Colour colour) :
     setTooltip (name);
 }
 
+Track::Track (MemoryInputStream* input, String name, int x, int y, Colour colour) : 
+    name (name),
+    trackColour (colour)
+{
+    processor = new TrackProcessor (input);
+
+    setBounds (x, y, defaultWidth, defaultWidth);
+    setBroughtToFrontOnMouseClick (true);
+
+    setTooltip (name);
+}
+
 void Track::paint (Graphics& g)
 {
     auto diameter = (float) getWidth();

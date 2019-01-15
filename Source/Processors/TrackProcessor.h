@@ -19,6 +19,9 @@ public:
     };
 
     TrackProcessor (File& file);
+    TrackProcessor (MemoryInputStream* input);
+
+    void initProcessors();
 
     void prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock) override;
     void releaseResources() override;

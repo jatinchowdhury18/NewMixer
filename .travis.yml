@@ -1,6 +1,6 @@
 notifications:
   email: false
-  
+
 language: cpp
 sudo: false
 
@@ -27,21 +27,43 @@ before_install:
   # windows setup msbuild path
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
   
-  #Build Projucer
+  # Build Projucer
   - cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
-  
+
 script:
   - cd $TRAVIS_BUILD_DIR/
   - export PROJUCER=$PROJUCER_EXPORT
   - $PROJUCER --set-global-search-path $TRAVIS_OS_NAME defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
   - $PROJUCER --resave NewMixer.jucer
   - cd $TRAVIS_BUILD_DIR/Builds/$BUILD_FOLDER/
-  
+
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ clean; fi
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`; fi
-  # - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe NewMixer.sln /t:project:clean; fi
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:normal NewMixer.sln; fi
   - echo "SUCCESS"
 
+after_success: # upload mac bins
+  - |
+    if [[ $TRAVIS_OS_NAME == 'osx' && type != push ]]; then
+      echo "Copying Files..."
+      cd $TRAVIS_BUILD_DIR/
+      cp -R $TRAVIS_BUILD_DIR/Builds/MacOSX/build/Release/NewMixer.app $TRAVIS_BUILD_DIR/Bin/Mac/NewMixer.app
+
+      echo "Setting Up Git..."
+      git config --global user.email "travis@travis-ci.org"
+      git config --global user.name "Travis CI"
+
+      echo "Committing Files..."
+      git checkout -b builds
+      git add Bin/Mac/
+      git commit -m "Travis build- $TRAVIS_BUILD_NUMBER"
+
+      echo "Pushing to branch..."
+      git push https://${GH_TOKEN}@github.com/jatinchowdhury18/NewMixer.git
+    fi
+
+env:
+  global:
+  - secure: EWeaPVOC8rWVkV1Rb6kf90BMr+QGtsC9YN+c+XJ0rIftndY5CSKnBZxU9iwZEQXaRxjdlMcDl95F8IeKlY7yIpN793+SLcx4h6XpijUhqqwWgybhy4jdO23fjefAThExDWzuAg7xfB1LyOC/BO9HRS8qFbCcvVdwCzETtItSW05nxHWICQl6c25Otdduh33EPORYBRUxB3MdPMvcpaYwAslGvSJ2AP7fQsnx3sMwxJLj1J5tiYkdvfm2xy1kv7/C8CF1Zp4Zg9ds+9qAG64v7I8VciuZ1tjmd01TUkal3sWu/78Jyk5avp2fzFR803QeLlcK2ivislZkc+vmMg7yXfjX5zTcgHfrrXlbKame/4xGuxbd6lYqUICeijZdv53d61f1lvvIbNKwzrH74vji5QMJkhjSzWyJt6IL6AriKCETCguKgXNOChbmqqSaTvA/OSwHu9JHH6byk229uQWjIAmj0egCr5WC+fk6LmSrbSG+iPkorSYlilxuGrRZWptVjTkqfbixuloNuwWLw69iHTM//T99E16I5ASN/T2KpQPJyrcPGz+R2ooL5OAb2LAZON58wIKLwaw0Wf6WCLYMmXxNm2vFbS1LsuHEbIMKDIlsMhiZYeCaYfvr942mJond1C2k2WYHwhS14R1sgnJFZGqPJLGzzl7rpxurf0MuOI4=
