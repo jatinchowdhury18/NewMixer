@@ -21,6 +21,22 @@ TrackProcessor::TrackProcessor (File& file) : ProcessorBase (String ("Track Proc
 
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 
+    initProcessors();
+}
+
+TrackProcessor::TrackProcessor (MemoryInputStream* input) : ProcessorBase (String ("Track Processor"))
+{
+    formatManager.registerBasicFormats();
+
+    reader.reset (formatManager.createReaderFor (input));
+
+    setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
+
+    initProcessors();
+}
+
+void TrackProcessor::initProcessors()
+{
     gainProcessor.reset (new GainProcessor);
     delayProcessor.reset (new DelayProcessor);
     panProcessor.reset (new PanProcessor);
@@ -62,7 +78,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
         readerStartSample = 0;
 
     gainProcessor->processBlock (buffer, midiMessages);
-    delayProcessor->processBlock (buffer, midiMessages);
+    //delayProcessor->processBlock (buffer, midiMessages);
     panProcessor->processBlock (buffer, midiMessages);
     distProcessor->processBlock (buffer, midiMessages);
     //reverbProcessor->processBlock (buffer, midiMessages);

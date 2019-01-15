@@ -2,44 +2,73 @@
 
 <JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.1">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
-    <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
-      <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
-    </GROUP>
-    <GROUP id="{B45D25AD-CEFF-02F9-6A66-DF7E89CDDA8E}" name="Processors">
-      <FILE id="SuB7XM" name="DelayProcessor.cpp" compile="1" resource="0"
-            file="Source/Processors/DelayProcessor.cpp"/>
-      <FILE id="lgpu5S" name="DelayProcessor.h" compile="0" resource="0"
-            file="Source/Processors/DelayProcessor.h"/>
-      <FILE id="PRAU4m" name="DistanceProcessor.cpp" compile="1" resource="0"
-            file="Source/Processors/DistanceProcessor.cpp"/>
-      <FILE id="NV52MN" name="DistanceProcessor.h" compile="0" resource="0"
-            file="Source/Processors/DistanceProcessor.h"/>
-      <FILE id="KKoudv" name="FilterProcessor.cpp" compile="1" resource="0"
-            file="Source/Processors/FilterProcessor.cpp"/>
-      <FILE id="cJ0m9j" name="FilterProcessor.h" compile="0" resource="0"
-            file="Source/Processors/FilterProcessor.h"/>
-      <FILE id="MF7oUy" name="GainProcessor.h" compile="0" resource="0" file="Source/Processors/GainProcessor.h"/>
-      <FILE id="dTSvlI" name="PanProcessor.cpp" compile="1" resource="0"
-            file="Source/Processors/PanProcessor.cpp"/>
-      <FILE id="cEo9Bs" name="PanProcessor.h" compile="0" resource="0" file="Source/Processors/PanProcessor.h"/>
-      <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
-      <FILE id="ecxR4T" name="ReverbProcessor.cpp" compile="1" resource="0"
-            file="Source/Processors/ReverbProcessor.cpp"/>
-      <FILE id="XP8yBO" name="ReverbProcessor.h" compile="0" resource="0"
-            file="Source/Processors/ReverbProcessor.h"/>
-      <FILE id="b5w13C" name="TrackProcessor.cpp" compile="1" resource="0"
-            file="Source/Processors/TrackProcessor.cpp"/>
-      <FILE id="idP2bn" name="TrackProcessor.h" compile="0" resource="0"
-            file="Source/Processors/TrackProcessor.h"/>
-    </GROUP>
-    <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
-      <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
-      <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
-      <FILE id="cL39Yp" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/SoloHelper.h"/>
-      <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
-      <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
+    <GROUP id="{4B66F25F-5A5F-AE8E-A3A4-8B7EAC0F8506}" name="Stems">
+      <GROUP id="{F180A70B-FA56-1A51-53CC-34043B3BA250}" name="Chorus">
+        <FILE id="Y5KRLu" name="Chorus_Bass.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Bass.wav"/>
+        <FILE id="GBjDgj" name="Chorus_Drums.wav" compile="0" resource="1"
+              file="Stems/Chorus/Chorus_Drums.wav"/>
+        <FILE id="lXEIqZ" name="Chorus_Gtr1.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Gtr1.wav"/>
+        <FILE id="plZ5Uj" name="Chorus_Gtr2.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Gtr2.wav"/>
+        <FILE id="ywZfHM" name="Chorus_Vox1.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox1.wav"/>
+        <FILE id="n62KiC" name="Chorus_Vox2.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox2.wav"/>
+        <FILE id="tB8zI0" name="Chorus_Vox3.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox3.wav"/>
+        <FILE id="dH2rdt" name="ChorusVox4.wav" compile="0" resource="1" file="Stems/Chorus/ChorusVox4.wav"/>
+      </GROUP>
+      <GROUP id="{85FF26E2-A82E-522D-B4D4-3A080FBB9A6C}" name="Bridge">
+        <FILE id="vOaERH" name="Bass.wav" compile="0" resource="1" file="Stems/Bridge/Bass.wav"/>
+        <FILE id="Qrwjqz" name="Drums.wav" compile="0" resource="1" file="Stems/Bridge/Drums.wav"/>
+        <FILE id="sVkSxR" name="Gtr1.wav" compile="0" resource="1" file="Stems/Bridge/Gtr1.wav"/>
+        <FILE id="k7I3zC" name="Gtr2.wav" compile="0" resource="1" file="Stems/Bridge/Gtr2.wav"/>
+        <FILE id="HvUDoe" name="Organ.wav" compile="0" resource="1" file="Stems/Bridge/Organ.wav"/>
+        <FILE id="b4cYhU" name="Vox1.wav" compile="0" resource="1" file="Stems/Bridge/Vox1.wav"/>
+        <FILE id="zYFkCz" name="Vox2.wav" compile="0" resource="1" file="Stems/Bridge/Vox2.wav"/>
+        <FILE id="Z1gniF" name="Vox3.wav" compile="0" resource="1" file="Stems/Bridge/Vox3.wav"/>
+        <FILE id="EDLO9B" name="Vox4.wav" compile="0" resource="1" file="Stems/Bridge/Vox4.wav"/>
+      </GROUP>
+      <GROUP id="{055D59DE-8498-9218-041B-64D89B9926ED}" name="Test">
+        <FILE id="P16DWp" name="test_drums.wav" compile="0" resource="1" file="Stems/Test/test_drums.wav"/>
+        <FILE id="cbPxiO" name="test_tone.wav" compile="0" resource="1" file="Stems/Test/test_tone.wav"/>
+        <FILE id="PAQpk0" name="Vox1_dry.wav" compile="0" resource="1" file="Stems/Test/Vox1_dry.wav"/>
+      </GROUP>
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
+      <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
+        <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
+      </GROUP>
+      <GROUP id="{B45D25AD-CEFF-02F9-6A66-DF7E89CDDA8E}" name="Processors">
+        <FILE id="SuB7XM" name="DelayProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/DelayProcessor.cpp"/>
+        <FILE id="lgpu5S" name="DelayProcessor.h" compile="0" resource="0"
+              file="Source/Processors/DelayProcessor.h"/>
+        <FILE id="PRAU4m" name="DistanceProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/DistanceProcessor.cpp"/>
+        <FILE id="NV52MN" name="DistanceProcessor.h" compile="0" resource="0"
+              file="Source/Processors/DistanceProcessor.h"/>
+        <FILE id="KKoudv" name="FilterProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/FilterProcessor.cpp"/>
+        <FILE id="cJ0m9j" name="FilterProcessor.h" compile="0" resource="0"
+              file="Source/Processors/FilterProcessor.h"/>
+        <FILE id="MF7oUy" name="GainProcessor.h" compile="0" resource="0" file="Source/Processors/GainProcessor.h"/>
+        <FILE id="dTSvlI" name="PanProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/PanProcessor.cpp"/>
+        <FILE id="cEo9Bs" name="PanProcessor.h" compile="0" resource="0" file="Source/Processors/PanProcessor.h"/>
+        <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
+        <FILE id="ecxR4T" name="ReverbProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/ReverbProcessor.cpp"/>
+        <FILE id="XP8yBO" name="ReverbProcessor.h" compile="0" resource="0"
+              file="Source/Processors/ReverbProcessor.h"/>
+        <FILE id="b5w13C" name="TrackProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/TrackProcessor.cpp"/>
+        <FILE id="idP2bn" name="TrackProcessor.h" compile="0" resource="0"
+              file="Source/Processors/TrackProcessor.h"/>
+      </GROUP>
+      <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
+        <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
+        <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
+        <FILE id="cL39Yp" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/SoloHelper.h"/>
+        <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
+        <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
+      </GROUP>
       <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
