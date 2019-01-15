@@ -1,4 +1,6 @@
-# NewMixer [![Build Status](https://travis-ci.com/jatinchowdhury18/NewMixer.svg?branch=master)](https://travis-ci.com/jatinchowdhury18/NewMixer)
+# NewMixer 
+[![Build Status](https://travis-ci.com/jatinchowdhury18/NewMixer.svg?branch=master)](https://travis-ci.com/jatinchowdhury18/NewMixer)
+[![Download Latest](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/jatinchowdhury18/NewMixer/releases/latest)
 
 An audio mixing tool that allows the user to visualize audio sources by their location in space rather than as channels on a mixing board.
 
@@ -11,15 +13,21 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
     # Clone the repository
     git clone --recursive https://github.com/jatinchowdhury18/NewMixer.git
 
+    # Enter repository
+    cd NewMixer
+
     # Initialize JUCE submodule
     git submodule update --init --recursive
     ```
   - Navigate to "JUCE/extras/Projucer/Builds/"
-  - Choose which build of the Projucer you would like to use
-  - Build the Projucer using XCode (Mac) or Visual Studio (Windows)
-  - From the Projucer, open NewMixer.jucer
-  - Select "Save and open in IDE"
-  - Build NewMixer
+  - Build the Projucer using XCode (Mac), Visual Studio (Windows), or Makefile (Linux)
+- From the Projucer, open NewMixer.jucer
+- From the "File" menu, open "Global Paths..."
+  - Set "Path To JUCE" to "...\NewMixer\JUCE"
+  - Set "JUCE Modules" to "...\NewMixer\JUCE\modules"
+  - Close "Global Paths" window
+- Select "Save and open in IDE"
+- Build NewMixer
 
 ## Instructions for using
   - Use the space bar to play/pause (All tracks are muted initially)
