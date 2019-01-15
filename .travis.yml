@@ -45,3 +45,27 @@ script:
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:normal NewMixer.sln; fi
   - echo "SUCCESS"
 
+after_success: # upload mac bins
+  - |
+    if [[ $TRAVIS_OS_NAME == 'osx' && type != push ]]; then
+      echo "Copying Files..."
+      cd $TRAVIS_BUILD_DIR/
+      cp -R $TRAVIS_BUILD_DIR/Builds/MacOSX/build/Release/NewMixer.app $TRAVIS_BUILD_DIR/Bin/Mac/NewMixer.app
+
+      echo "Setting Up Git..."
+      git config --global user.email "travis@travis-ci.org"
+      git config --global user.name "Travis CI"
+
+      echo "Committing Files..."
+      git checkout -b builds
+      git add Bin/Mac/
+      git commit -m "Travis build- $TRAVIS_BUILD_NUMBER"
+
+      echo "Pushing to branch..."
+      git push https://${GH_TOKEN}@github.com/jatinchowdhury18/NewMixer.git
+    fi
+
+env:
+  global:
+    secure: rufS7Oae56diLomkcsVYEvg3GKLh+YuiNy7YPKfcLDPIfqrUmWyo56vOjHkL+fGM+pPvA8UoOjJf7128aaN5N8nsFdAQr2Gq4TbyyE9V/IxlH7ib9dcBdqJRcCwuRgOhWhwGm4AlRX21+bJWGZYi2n0QKn6Ri2I3dWoFb/UIfQXRDo8MtFxnd7S1HD6iPRHGDvGWRxi2AvUKI6W8ed+L/nNS8EsH73vJJ819P0HpUAJDzW8fc7KbQoZOryTdLCiASyxSw0AYGYeVxvcnJe0T4zOHdGhj9d1xBVMphR/y2tuiCWBFEB56VvPYC/51Jt/bddfsoTbkC7ZRmlc7aWcKmCAf+JN9G9outRuoPZRk+P+koVnTaflmJJaaS0UEiXFTzik6q942RiSSrLLf+tN6k2rwDFDSYJ2vdrdsVzwSI6CZ2leXsMQqERwM+L/eOtYnidGosNyyxD6THObmowwtgMi1d3optu0K6DOUbxizvWGiun8u2r8P0W/0JxW8JkRHoOJmeM1j9B24QdV7IgI7lesUkijy2Ei4Vvtff/OW1roPr6zevL48ciTx8qG1HA/EjzkRfAjLhDXczvdjRLERbbn+IhQ4WqiiamZ0TvyYBKJbYOehQwd4bk0eYm7UZld/v4LFlWeT1DmBpZsEsGza4+WROJQfSnG3d7aiqM0zBVs=
+
