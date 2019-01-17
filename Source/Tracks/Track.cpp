@@ -182,7 +182,7 @@ void Track::rightClickCallback (int result, Track* track)
 
 void Track::mouseDrag (const MouseEvent& e)
 {
-    if (e.mods.isCtrlDown())  //Change volume
+    if (e.mods.isAltDown())  //Change volume
         changeSize (e);
     else                      // Normal drag
         changePosition (e);
@@ -206,7 +206,7 @@ bool Track::doKeyPressed (const KeyPress& key)
     if (! isSelected)
         return false;
 
-    if (key.getModifiers().isCtrlDown())                    //Change volume
+    if (key.getModifiers().isAltDown())                    //Change volume
         changeSize();
     else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
         return toggleMute();

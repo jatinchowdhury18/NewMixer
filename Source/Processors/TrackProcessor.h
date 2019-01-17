@@ -41,11 +41,11 @@ private:
     AudioFormatManager formatManager;
     std::unique_ptr<AudioFormatReader> reader;
 
+    Array<AudioProcessor*> processors;
     std::unique_ptr<GainProcessor> gainProcessor;
     std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
-    std::unique_ptr<ReverbProcessor> reverbProcessor;
 
     int64 readerStartSample = 0;
     bool isMute = true;

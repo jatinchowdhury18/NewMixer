@@ -3,6 +3,7 @@
 
 #include "GainProcessor.h"
 #include "FilterProcessor.h"
+#include "ReverbProcessor.h"
 
 class DistanceProcessor : public ProcessorBase
 {
@@ -15,10 +16,13 @@ public:
 
     void setFreq (float newFreq) { filterProcessor->setFreq (newFreq); }
     void setGain (float newGain) { gainProcessor->setGain (newGain); }
+    void setVerb (float wetAmt) { reverbProcessor->setDryWet (wetAmt); }
 
 private:
+    Array<AudioProcessor*> processors;
     std::unique_ptr<FilterProcessor> filterProcessor;
     std::unique_ptr<GainProcessor> gainProcessor;
+    std::unique_ptr<ReverbProcessor> reverbProcessor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DistanceProcessor)
 };

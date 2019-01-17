@@ -3,25 +3,31 @@
 DistanceProcessor::DistanceProcessor() : ProcessorBase (String ("Filter Processor"))
 {
     filterProcessor.reset (new FilterProcessor);
+    processors.add (filterProcessor.get());
+
     gainProcessor.reset (new GainProcessor);
+    processors.add (gainProcessor.get());
+
+    reverbProcessor.reset (new ReverbProcessor);
+    //processors.add (reverbProcessor.get());
 }
 
 void DistanceProcessor::prepareToPlay (double sampleRate, int maxExpectedBlockSize)
 {
     setRateAndBufferSizeDetails (sampleRate, maxExpectedBlockSize);
 
-    filterProcessor->prepareToPlay (sampleRate, maxExpectedBlockSize);
-    gainProcessor->prepareToPlay (sampleRate,maxExpectedBlockSize);
+    for (auto* proc : processors)
+        proc->prepareToPlay (sampleRate, maxExpectedBlockSize);
 }
 
 void DistanceProcessor::releaseResources()
 {
-    filterProcessor->releaseResources();
-    gainProcessor->releaseResources();
+    for (auto* proc : processors)
+        proc->releaseResources();
 }
 
 void DistanceProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer)
 {
-    filterProcessor->processBlock (buffer, midiBuffer);
-    gainProcessor->processBlock (buffer, midiBuffer);
+    for (auto* proc : processors)
+        proc->processBlock (buffer, midiBuffer);
 }

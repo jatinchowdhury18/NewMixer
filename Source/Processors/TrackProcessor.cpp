@@ -38,21 +38,24 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input) : ProcessorBase (Strin
 void TrackProcessor::initProcessors()
 {
     gainProcessor.reset (new GainProcessor);
+    processors.add (gainProcessor.get());
+
     delayProcessor.reset (new DelayProcessor);
+    //processors.add (delayProcessor.get());
+
     panProcessor.reset (new PanProcessor);
+    processors.add (panProcessor.get());
+
     distProcessor.reset (new DistanceProcessor);
-    reverbProcessor.reset (new ReverbProcessor);
+    processors.add (distProcessor.get());
 }
 
 void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     setRateAndBufferSizeDetails (sampleRate, maximumExpectedSamplesPerBlock);
 
-    gainProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-    delayProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-    panProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-    distProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-    reverbProcessor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
+    for (auto* processor : processors)
+        processor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
 
     //Test Code
     //delayProcessor->setLengthMs (0, 1000.0);
@@ -61,11 +64,8 @@ void TrackProcessor::prepareToPlay (double sampleRate, int maximumExpectedSample
 
 void TrackProcessor::releaseResources()
 {
-    gainProcessor->releaseResources();
-    delayProcessor->releaseResources();
-    panProcessor->releaseResources();
-    distProcessor->releaseResources();
-    reverbProcessor->releaseResources();
+    for (auto* processor : processors)
+        processor->releaseResources();
 }
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
@@ -77,11 +77,8 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     if (readerStartSample > reader->lengthInSamples)
         readerStartSample = 0;
 
-    gainProcessor->processBlock (buffer, midiMessages);
-    //delayProcessor->processBlock (buffer, midiMessages);
-    panProcessor->processBlock (buffer, midiMessages);
-    distProcessor->processBlock (buffer, midiMessages);
-    //reverbProcessor->processBlock (buffer, midiMessages);
+    for (auto* processor : processors)
+        processor->processBlock (buffer, midiMessages);
 
     if (isMute || soloState == otherTrack)
         buffer.clear();
@@ -107,9 +104,11 @@ void TrackProcessor::trackMoved (int x, int y, int width, bool mouseUp)
     float pan = (float) x / (float) MainComponent::width;
     panProcessor->setPan (pan);
 
-    float distGain = (float) y / (float) MainComponent::height;
-    distProcessor->setGain (distGain);
+    float distFactor = (float) y / (float) MainComponent::height;
+    distProcessor->setGain (distFactor);
 
-    float distFreq = (float) (FilterProcessor::farFreq) + distGain * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
+    float distFreq = (float) (FilterProcessor::farFreq) + distFactor * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
     distProcessor->setFreq (distFreq);
+
+    distProcessor->setVerb (1.0f - distFactor);
 }
