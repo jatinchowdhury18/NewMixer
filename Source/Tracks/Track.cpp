@@ -1,7 +1,13 @@
 #include "Track.h"
 
-Track::Track (File& file, String name, int x, int y, Colour colour) : 
+namespace
+{
+    constexpr float dark = 0.4f;
+}
+
+Track::Track (File& file, String name, String shortName, int x, int y, Colour colour) : 
     name (name),
+    shortName (shortName),
     trackColour (colour)
 {
     processor = new TrackProcessor (file);
@@ -12,8 +18,9 @@ Track::Track (File& file, String name, int x, int y, Colour colour) :
     setTooltip (name);
 }
 
-Track::Track (MemoryInputStream* input, String name, int x, int y, Colour colour) : 
+Track::Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour) : 
     name (name),
+    shortName (shortName),
     trackColour (colour)
 {
     processor = new TrackProcessor (input);
@@ -24,29 +31,51 @@ Track::Track (MemoryInputStream* input, String name, int x, int y, Colour colour
     setTooltip (name);
 }
 
+void Track::paintCircle (Graphics& g, float diameter, bool darken)
+{
+    g.setColour (darken ? trackColour.withAlpha (dark) : trackColour);
+
+    g.fillEllipse (0.f, 0.f, diameter, diameter);
+}
+
+void Track::paintName (Graphics& g, float diameter, bool darken)
+{
+    g.setColour (darken ? trackColour.contrasting().withAlpha (dark) : trackColour.contrasting());
+    g.setFont (diameter * 0.36f);
+
+    g.drawFittedText (shortName, 0, 0, (int) diameter, (int) diameter, Justification::centred, 1);
+}
+
+void Track::paintSelected (Graphics& g, float diameter)
+{
+    g.setColour (Colours::goldenrod);
+    g.drawEllipse (0.0f, 0.0f, diameter, diameter, diameter / 30.0f);
+}
+
+void Track::paintMute (Graphics& g, float diameter, bool darken)
+{
+    g.setColour (darken ? Colours::goldenrod.withAlpha (dark) : Colours::goldenrod);
+
+    auto offset = (diameter / 2.0f) * (MathConstants<float>::sqrt2 - 1.0f) / MathConstants<float>::sqrt2;
+
+    g.drawLine (offset, offset, diameter - offset, diameter - offset, diameter / 20.0f);
+    g.drawLine (offset, diameter - offset, diameter - offset, offset, diameter / 20.0f);
+}
+
 void Track::paint (Graphics& g)
 {
     auto diameter = (float) getWidth();
+    //If a track is soloed, darken all non-soloed tracks
+    const bool darken = processor->getSoloed() == TrackProcessor::SoloState::otherTrack;
 
-    if (processor->getIsMute() || processor->getSoloed() == TrackProcessor::SoloState::otherTrack)
-        g.setColour (trackColour.withAlpha (0.5f)); // Make colour faded if track is muted
-    else
-        g.setColour (trackColour); //normal colour
-
-    g.fillEllipse (0.f, 0.f, diameter, diameter);
+    paintCircle (g, diameter, darken);
+    paintName (g, diameter, darken);
 
     if (isSelected) //highlight selected track
-    {
-        g.setColour (Colours::goldenrod);
-        g.drawEllipse (0.0f, 0.0f, diameter, diameter, 2.5f);
-    }
+        paintSelected (g, diameter);
 
-    if (processor->getSoloed() == TrackProcessor::SoloState::thisTrack)
-    {
-        g.setColour (Colours::goldenrod);
-        g.setFont (diameter);
-        g.drawFittedText (String ("S"), 0, 0, (int) diameter, (int) diameter, Justification::centred, 1);
-    }
+    if (processor->getIsMute())
+        paintMute (g, diameter, darken);
 }
 
 void Track::resized()

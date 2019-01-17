@@ -21,8 +21,8 @@ public:
         mute,
     };
 
-    Track (File& file, String name, int x, int y, Colour colour);
-    Track (MemoryInputStream* input, String name, int x, int y, Colour colour);
+    Track (File& file, String name, String shortName, int x, int y, Colour colour);
+    Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
 
     TrackProcessor* getProcessor() const { return processor; }
 
@@ -42,6 +42,11 @@ public:
     void rewind() { processor->rewind(); }
 
 private:
+    void paintCircle (Graphics& g, float diameter, bool darken);
+    void paintName (Graphics& g, float diameter, bool darken);
+    void paintSelected (Graphics& g, float diameter);
+    void paintMute (Graphics& g, float diameter, bool darken);
+
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
@@ -58,6 +63,7 @@ private:
     void setSizeConstrained (int oldSize, int change);
 
     String name;
+    String shortName;
     Colour trackColour;
     TrackColours colours;
 

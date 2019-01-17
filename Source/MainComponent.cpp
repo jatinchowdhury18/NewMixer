@@ -38,39 +38,39 @@ void MainComponent::addTracks (String stemsToUse)
 
     int xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* bass = new MemoryInputStream (BinaryData::Bass_wav, BinaryData::Bass_wavSize, false);
-    tracks.add (new Track (bass, String ("Bass"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (bass, String ("Bass"), String ("Bass"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* drums = new MemoryInputStream (BinaryData::Drums_wav, BinaryData::Drums_wavSize, false);
-    tracks.add (new Track (drums, String ("Drums"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (drums, String ("Drums"), String ("Drum"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* gtr1 = new MemoryInputStream (BinaryData::Gtr1_wav, BinaryData::Gtr1_wavSize, false);
-    tracks.add (new Track (gtr1, String ("Gtr1"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (gtr1, String ("Gtr1"), String ("Gtr1"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* gtr2 = new MemoryInputStream (BinaryData::Gtr2_wav, BinaryData::Gtr2_wavSize, false);
-    tracks.add (new Track (gtr2, String ("Gtr2"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (gtr2, String ("Gtr2"), String ("Gtr2"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* organ = new MemoryInputStream (BinaryData::Organ_wav, BinaryData::Organ_wavSize, false);
-    tracks.add (new Track (organ, String ("Organ"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (organ, String ("Organ"), String ("Org"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* vox1 = new MemoryInputStream (BinaryData::Vox1_wav, BinaryData::Vox1_wavSize, false);
-    tracks.add (new Track (vox1, String ("Vox1"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (vox1, String ("Vox1"), String ("Vox1"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* vox2 = new MemoryInputStream (BinaryData::Vox2_wav, BinaryData::Vox2_wavSize, false);
-    tracks.add (new Track (vox2, String ("Vox2"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (vox2, String ("Vox2"), String ("Vox2"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* vox3 = new MemoryInputStream (BinaryData::Vox3_wav, BinaryData::Vox3_wavSize, false);
-    tracks.add (new Track (vox3, String ("Vox3"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (vox3, String ("Vox3"), String ("Vox3"), xPos, 500, trackColours.getColour (tracks.size())));
 
     xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * tracks.size();
     MemoryInputStream* vox4 = new MemoryInputStream (BinaryData::Vox4_wav, BinaryData::Vox4_wavSize, false);
-    tracks.add (new Track (vox4, String ("Vox4"), xPos, 500, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (vox4, String ("Vox4"), String ("Vox4"), xPos, 500, trackColours.getColour (tracks.size())));
 
     for (auto* track : tracks)
         addAndMakeVisible (track);
