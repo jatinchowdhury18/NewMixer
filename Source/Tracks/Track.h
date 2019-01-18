@@ -4,17 +4,25 @@
 #include "../Processors/TrackProcessor.h"
 #include "../GUI Extras/Colours.h"
 
-class Track : public Component,
-              public SettableTooltipClient
+namespace TrackConstants
 {
-public:
+    constexpr float darkAlpha = 0.4f;
+
+    constexpr float maxDiameter = 100.0f;
+    constexpr float minDiameter = 20.0f;
+    constexpr float defaultDiameter = 80.0f;
+
     enum
     {
-        maxWidth = 100,
-        minWidth = 20,
-        defaultWidth = 80,
+        width = 150,
     };
+}
 
+class Track : public Component,
+              public SettableTooltipClient,
+              private Timer
+{
+public:
     enum TrackCmds
     {
         solo = 0x1001,
@@ -42,11 +50,14 @@ public:
     void rewind() { processor->rewind(); }
 
 private:
-    void paintCircle (Graphics& g, float diameter, bool darken);
-    void paintName (Graphics& g, float diameter, bool darken);
-    void paintSelected (Graphics& g, float diameter);
-    void paintMute (Graphics& g, float diameter, bool darken);
+    void timerCallback() override { repaint(); }
+    void paintCircle (Graphics& g, float pos, bool darken);
+    void paintName (Graphics& g, float pos, bool darken);
+    void paintMeter (Graphics& g, bool darken);
+    void paintSelected (Graphics& g, float pos);
+    void paintMute (Graphics& g, float pos, bool darken);
 
+    bool hitTest (int x, int y) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
@@ -60,13 +71,14 @@ private:
     void changeColour (int index);
 
     void setPositionConstrained (Point<int> pos);
-    void setSizeConstrained (int oldSize, int change);
+    void setSizeConstrained (float oldSize, float change);
 
     String name;
     String shortName;
     Colour trackColour;
     TrackColours colours;
 
+    float diameter = TrackConstants::defaultDiameter;
     bool isDragging = false;
     int lastDragLocation = 0;
 
