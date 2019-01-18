@@ -1,9 +1,6 @@
 #include "Track.h"
 
-namespace
-{
-    constexpr float dark = 0.4f;
-}
+using namespace TrackConstants;
 
 Track::Track (File& file, String name, String shortName, int x, int y, Colour colour) : 
     name (name),
@@ -12,10 +9,12 @@ Track::Track (File& file, String name, String shortName, int x, int y, Colour co
 {
     processor = new TrackProcessor (file);
 
-    setBounds (x, y, defaultWidth, defaultWidth);
+    setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
+
+    startTimer (50);
 }
 
 Track::Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour) : 
@@ -25,79 +24,103 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
 {
     processor = new TrackProcessor (input);
 
-    setBounds (x, y, defaultWidth, defaultWidth);
+    setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
+    startTimer (50);
 }
 
-void Track::paintCircle (Graphics& g, float diameter, bool darken)
+void Track::paintCircle (Graphics& g, float pos, bool darken)
 {
-    g.setColour (darken ? trackColour.withAlpha (dark) : trackColour);
+    g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
 
-    g.fillEllipse (0.f, 0.f, diameter, diameter);
+    g.fillEllipse (pos, pos, diameter, diameter);
 }
 
-void Track::paintName (Graphics& g, float diameter, bool darken)
+void Track::paintName (Graphics& g, float pos, bool darken)
 {
-    g.setColour (darken ? trackColour.contrasting().withAlpha (dark) : trackColour.contrasting());
+    g.setColour (darken ? trackColour.contrasting().withAlpha (darkAlpha) : trackColour.contrasting());
     g.setFont (diameter * 0.36f);
 
-    g.drawFittedText (shortName, 0, 0, (int) diameter, (int) diameter, Justification::centred, 1);
+    g.drawFittedText (shortName, (int) pos, (int) pos, (int) diameter, (int) diameter, Justification::centred, 1);
 }
 
-void Track::paintSelected (Graphics& g, float diameter)
+void Track::paintMeter (Graphics& g, bool  darken)
+{
+    g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
+
+    float rmsFactor = 1.0f + processor->getRMSLevel() / 4.0f;
+    const float pos = (width - rmsFactor * diameter) / 2.0f;
+    g.drawEllipse (pos, pos, rmsFactor * diameter, rmsFactor * diameter, diameter / 30.0f);
+}
+
+void Track::paintSelected (Graphics& g, float pos)
 {
     g.setColour (Colours::goldenrod);
-    g.drawEllipse (0.0f, 0.0f, diameter, diameter, diameter / 30.0f);
+
+    g.drawEllipse (pos, pos, diameter, diameter, diameter / 20.0f);
 }
 
-void Track::paintMute (Graphics& g, float diameter, bool darken)
+void Track::paintMute (Graphics& g, float pos, bool darken)
 {
-    g.setColour (darken ? Colours::goldenrod.withAlpha (dark) : Colours::goldenrod);
+    g.setColour (darken ? Colours::goldenrod.withAlpha (darkAlpha) : Colours::goldenrod);
 
     auto offset = (diameter / 2.0f) * (MathConstants<float>::sqrt2 - 1.0f) / MathConstants<float>::sqrt2;
 
-    g.drawLine (offset, offset, diameter - offset, diameter - offset, diameter / 20.0f);
-    g.drawLine (offset, diameter - offset, diameter - offset, offset, diameter / 20.0f);
+    g.drawLine (pos + offset, pos + offset, pos + diameter - offset, pos + diameter - offset, diameter / 20.0f);
 }
 
 void Track::paint (Graphics& g)
 {
-    auto diameter = (float) getWidth();
     //If a track is soloed, darken all non-soloed tracks
     const bool darken = processor->getSoloed() == TrackProcessor::SoloState::otherTrack;
+    const float pos = (width - diameter) / 2.0f;
 
-    paintCircle (g, diameter, darken);
-    paintName (g, diameter, darken);
+    paintCircle (g, pos, darken);
+    paintMeter (g, darken);
+    paintName (g, pos, darken);
 
     if (isSelected) //highlight selected track
-        paintSelected (g, diameter);
+        paintSelected (g, pos);
 
     if (processor->getIsMute())
-        paintMute (g, diameter, darken);
+        paintMute (g, pos, darken);
 }
 
 void Track::resized()
 { 
-    const int radius = getWidth() / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, getWidth(), false);
+    const int radius = width / 2;
+    processor->trackMoved (getX() + radius,  getY() + radius, width, false);
+}
+
+bool Track::hitTest (int x, int y)
+{
+    bool hit = Component::hitTest (x, y);
+    if (! hit)
+        return hit;
+
+    //Only return true if mouse is inside circle
+    const int xCenter = x - getWidth() / 2;
+    const int yCenter = y - getWidth() / 2;
+    const int radius = (int) diameter / 2;
+
+    if (xCenter * xCenter + yCenter * yCenter <= radius * radius)
+        return true;
+    else
+        return false;
 }
 
 void Track::changeSize (const MouseEvent& e)
 {
     e.source.enableUnboundedMouseMovement (true);
-    const int initValue = getWidth();
-    int changeVal = 0;
-    const int curY = e.getDistanceFromDragStartY();
-    const int stepSize = 1;  
+    const float initValue = diameter;
+    const int curY = e.getDistanceFromDragStartY(); 
 
     if (curY < lastDragLocation)
-        changeVal = stepSize; //up
+        setSizeConstrained (initValue, 1.0f); //up
     else if (curY > lastDragLocation)
-        changeVal = -stepSize; //down
-
-    setSizeConstrained (initValue, changeVal);
+        setSizeConstrained (initValue, -1.0f); //down
 
     isDragging = true;
     lastDragLocation = curY;
@@ -105,34 +128,30 @@ void Track::changeSize (const MouseEvent& e)
 
 void Track::changeSize()
 {
-    const int initValue = getWidth();
-    int changeVal = 0;
-    const int stepSize = 1;  
+    const float initValue = diameter; 
 
     if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
-        changeVal = stepSize; //up
+        setSizeConstrained (initValue, 1.0f); //up
     else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
-        changeVal = -stepSize; //down
-
-    setSizeConstrained (initValue, changeVal);
+        setSizeConstrained (initValue, -1.0f); //down
 }
 
-void Track::setSizeConstrained (int oldSize, int change)
+void Track::setSizeConstrained (float oldSize, float change)
 {
-    int newSize = jlimit<int> (minWidth, maxWidth, oldSize + change);
+    float newSize = jlimit<float> (minDiameter, maxDiameter, (oldSize + change));
 
     if (newSize == oldSize)
         return;
 
-    setSize (newSize, newSize);
+    diameter = newSize;
     setPositionConstrained (getPosition());
 }
 
 void Track::changePosition (const MouseEvent& e)
 {
     Point<int> newPos = e.getEventRelativeTo (getParentComponent()).position.toInt();
-    newPos.x -= getWidth() / 2;
-    newPos.y -= getWidth() / 2;
+    newPos.x -= width / 2;
+    newPos.y -= width / 2;
 
     setPositionConstrained (newPos);
     resized();
@@ -159,9 +178,9 @@ void Track::changePosition()
 
 void Track::setPositionConstrained (Point<int> pos)
 {
-    const int radius = getWidth() / 2;
-    pos.x = jlimit<int> (-radius, getParentWidth() - radius, pos.x);
-    pos.y = jlimit<int> (-radius, getParentHeight() - radius, pos.y);
+    const int halfWidth = width / 2;
+    pos.x = jlimit<int> (-halfWidth, getParentWidth() - halfWidth, pos.x);
+    pos.y = jlimit<int> (-halfWidth, getParentHeight() - halfWidth, pos.y);
 
     setTopLeftPosition (pos);
 }
@@ -226,8 +245,8 @@ void Track::mouseUp (const MouseEvent& /*e*/)
         isDragging = false;
         lastDragLocation = 0;
     }
-    const int radius = getWidth() / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, getWidth(), true);
+    const int radius = width / 2;
+    processor->trackMoved (getX() + radius,  getY() + radius, width, true);
 }
 
 bool Track::doKeyPressed (const KeyPress& key)

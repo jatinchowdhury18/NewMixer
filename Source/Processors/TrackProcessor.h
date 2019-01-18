@@ -37,6 +37,8 @@ public:
 
     void rewind() { readerStartSample = 0; }
 
+    float getRMSLevel() { return lastRMS; }
+
 private:
     AudioFormatManager formatManager;
     std::unique_ptr<AudioFormatReader> reader;
@@ -50,6 +52,7 @@ private:
     int64 readerStartSample = 0;
     bool isMute = true;
     SoloState soloState = noTracks;
+    float lastRMS = 0.0f;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackProcessor)
 };

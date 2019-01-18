@@ -82,11 +82,17 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
 
     if (isMute || soloState == otherTrack)
         buffer.clear();
+
+    float rmsSum = 0;
+    for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+        rmsSum += buffer.getRMSLevel (ch, 0, buffer.getNumSamples());
+    
+    lastRMS = rmsSum / buffer.getNumChannels();
 }
 
 void TrackProcessor::trackMoved (int x, int y, int width, bool mouseUp)
 {
-    float gain = powf ((float) width / (float) Track::maxWidth, 5.0f);
+    float gain = powf ((float) width / TrackConstants::maxDiameter, 5.0f);
     gainProcessor->setGain (gain);
 
     if (mouseUp) //adjust delay
