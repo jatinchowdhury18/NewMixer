@@ -50,9 +50,13 @@ void Track::paintMeter (Graphics& g, bool  darken)
 {
     g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
 
-    float rmsFactor = 1.0f + processor->getRMSLevel() / 4.0f;
-    const float pos = (width - rmsFactor * diameter) / 2.0f;
-    g.drawEllipse (pos, pos, rmsFactor * diameter, rmsFactor * diameter, diameter / 30.0f);
+    float rmsFactor = 1.0f + processor->getRMSLevel() / 3.5f;
+
+    for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)
+    {
+        const float pos = (width - factor * diameter) / 2.0f;
+        g.drawEllipse (pos, pos, factor * diameter, factor * diameter, diameter / 40.0f);
+    }
 }
 
 void Track::paintSelected (Graphics& g, float pos)
