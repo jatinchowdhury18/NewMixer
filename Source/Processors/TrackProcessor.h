@@ -39,7 +39,18 @@ public:
 
     float getRMSLevel() { return lastRMS; }
 
+    class Listener
+    {
+    public:
+        virtual void newLoop() {}
+    };
+
+    void addListener (Listener* listener) { listeners.add (listener); }
+    void removeListener (Listener* listener) { listeners.remove (listener); }
+
 private:
+    ListenerList<Listener> listeners;
+
     AudioFormatManager formatManager;
     std::unique_ptr<AudioFormatReader> reader;
 

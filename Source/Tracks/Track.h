@@ -3,6 +3,7 @@
 
 #include "../Processors/TrackProcessor.h"
 #include "../GUI Extras/Colours.h"
+#include "AutomationHelper.h"
 
 namespace TrackConstants
 {
@@ -20,17 +21,20 @@ namespace TrackConstants
 
 class Track : public Component,
               public SettableTooltipClient,
-              private Timer
+              private Timer,
+              private TrackProcessor::Listener
 {
 public:
     enum TrackCmds
     {
         solo = 0x1001,
         mute,
+        recordAutomation,
     };
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
     Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
+    ~Track();
 
     TrackProcessor* getProcessor() const { return processor; }
 
@@ -48,12 +52,15 @@ public:
     bool toggleMute();
     void togglePlay();
 
+    void timerCallback() override;
+    void trackMoved();
+    void newLoop() override;
+
 private:
-    void timerCallback() override { repaint(); }
     void paintCircle (Graphics& g, float pos, bool darken);
     void paintName (Graphics& g, float pos, bool darken);
     void paintMeter (Graphics& g, bool darken);
-    void paintSelected (Graphics& g, float pos);
+    void paintRing (Graphics& g, float pos, Colour colour);
     void paintMute (Graphics& g, float pos, bool darken);
 
     bool hitTest (int x, int y) override;
@@ -85,6 +92,8 @@ private:
     bool isPlaying = false;
 
     TrackProcessor* processor;
+
+    AutoHelper autoHelper;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };
