@@ -12,6 +12,7 @@ void ActionHelper::rightClickMenu (Track* track)
     m.addItem (TrackCmds::mute, String ("Mute"), true, track->getProcessor()->getIsMute());
     m.addItem (TrackCmds::solo, String ("Solo"), true, track->isSoloed());
     m.addSubMenu (String ("Change Colour"), colorMenu);
+    m.addItem (TrackCmds::rename, String ("Rename"));
     m.addItem (TrackCmds::recordAutomation, String ("Automate"),
                ! (track->getAutoHelper().armed() || track->getAutoHelper().isRecording()));
 
@@ -45,6 +46,10 @@ void ActionHelper::rightClickCallback (int result, Track* track)
     case TrackCmds::recordInput:
         track->getProcessor()->arm();
         track->repaint();
+        return;
+
+    case TrackCmds::rename:
+        track->trackRename();
         return;
 
     default: //Change Colour

@@ -4,6 +4,7 @@
 #include "../Processors/TrackProcessor.h"
 #include "../GUI Extras/Colours.h"
 #include "AutomationHelper.h"
+#include "../GUI Extras/TrackRenameWindow.h"
 
 namespace TrackConstants
 {
@@ -22,13 +23,15 @@ namespace TrackConstants
 class Track : public Component,
               public SettableTooltipClient,
               private Timer,
-              private TrackProcessor::Listener
+              private TrackProcessor::Listener,
+              private TrackRenameComponent::Listener
 {
 public:
     enum TrackCmds
     {
         solo = 0x1001,
         mute,
+        rename,
         recordAutomation,
         recordInput,
     };
@@ -56,6 +59,9 @@ public:
     void timerCallback() override;
     void trackMoved();
     void newLoop() override;
+
+    void trackRename();
+    void trackNameChanged (String newName, String newShortName) override;
 
     TrackColours& getColours() { return colours; }
     Colour getColour() { return trackColour; }
@@ -93,6 +99,8 @@ private:
     TrackProcessor* processor;
 
     AutoHelper autoHelper;
+
+    std::unique_ptr<TrackRenameWindow> renameWindow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
 };
