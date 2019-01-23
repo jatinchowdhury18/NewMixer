@@ -8,12 +8,12 @@ Track::Track (File& file, String name, String shortName, int x, int y, Colour co
     trackColour (colour)
 {
     processor = new TrackProcessor (file);
+    processor->addListener (this);
 
     setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-
     startTimer (50);
 }
 
@@ -23,12 +23,47 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     trackColour (colour)
 {
     processor = new TrackProcessor (input);
+    processor->addListener (this);
 
     setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
     startTimer (50);
+}
+
+Track::~Track()
+{
+    processor->removeListener (this);
+}
+
+void Track::timerCallback()
+{
+    repaint(); 
+
+    if (autoHelper.isRecording())
+        autoHelper.addAutoPoint (getX(), getY(), diameter);
+    else if (isPlaying && autoHelper.isRecorded())
+    {
+        int x = getX();
+        int y = getY();
+
+        autoHelper.getPoint (x, y, diameter);
+        setTopLeftPosition (x, y);
+
+        trackMoved();
+    }
+}
+
+void Track::newLoop()
+{
+    autoHelper.setRecordingStatus();
+}
+
+void Track::trackMoved()
+{
+    const int radius = width / 2;
+    processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, false);
 }
 
 void Track::paintCircle (Graphics& g, float pos, bool darken)
@@ -40,7 +75,8 @@ void Track::paintCircle (Graphics& g, float pos, bool darken)
 
 void Track::paintName (Graphics& g, float pos, bool darken)
 {
-    g.setColour (darken ? trackColour.contrasting().withAlpha (darkAlpha) : trackColour.contrasting());
+    Colour nameColour = trackColour.contrasting();
+    g.setColour (darken ? nameColour.withAlpha (darkAlpha) : nameColour);
     g.setFont (diameter * 0.36f);
 
     g.drawFittedText (shortName, (int) pos, (int) pos, (int) diameter, (int) diameter, Justification::centred, 1);
@@ -59,9 +95,9 @@ void Track::paintMeter (Graphics& g, bool  darken)
     }
 }
 
-void Track::paintSelected (Graphics& g, float pos)
+void Track::paintRing (Graphics& g, float pos, Colour colour)
 {
-    g.setColour (Colours::goldenrod);
+    g.setColour (colour);
 
     g.drawEllipse (pos, pos, diameter, diameter, diameter / 20.0f);
 }
@@ -88,8 +124,12 @@ void Track::paint (Graphics& g)
 
     paintName (g, pos, darken);
 
-    if (isSelected) //highlight selected track
-        paintSelected (g, pos);
+    if (autoHelper.armed())
+        paintRing (g, pos, Colours::deeppink);
+    else if (autoHelper.isRecording())
+        paintRing (g, pos, Colours::red);
+    else if (isSelected) //highlight selected track
+        paintRing (g, pos, Colours::goldenrod);
 
     if (processor->getIsMute())
         paintMute (g, pos, darken);
@@ -97,8 +137,7 @@ void Track::paint (Graphics& g)
 
 void Track::resized()
 { 
-    const int radius = width / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, false);
+    trackMoved();
 }
 
 bool Track::hitTest (int x, int y)
@@ -214,6 +253,7 @@ void Track::mouseDown (const MouseEvent& e)
         m.addItem (TrackCmds::mute, String ("Mute"), true, processor->getIsMute());
         m.addItem (TrackCmds::solo, String ("Solo"), true, isSoloed());
         m.addSubMenu (String ("Change Colour"), colorMenu);
+        m.addItem (TrackCmds::recordAutomation, String ("Automate"), ! (autoHelper.armed() || autoHelper.isRecording()));
 
         m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
     }
@@ -232,6 +272,11 @@ void Track::rightClickCallback (int result, Track* track)
 
     case TrackCmds::solo:
         track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
+        return;
+
+    case TrackCmds::recordAutomation:
+        track->autoHelper.arm();
+        track->repaint();
         return;
 
     default: //Change Colour
@@ -256,8 +301,8 @@ void Track::mouseUp (const MouseEvent& /*e*/)
         isDragging = false;
         lastDragLocation = 0;
     }
-    const int radius = width / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, true);
+    
+    trackMoved();
 }
 
 bool Track::doKeyPressed (const KeyPress& key)
@@ -288,6 +333,11 @@ void Track::togglePlay()
     isPlaying = ! isPlaying;
 
     processor->rewind();
+
+    if (isPlaying)
+        autoHelper.setRecordingStatus();
+    else
+        autoHelper.throwAway();
 }
 
 void Track::changeColour (int index)

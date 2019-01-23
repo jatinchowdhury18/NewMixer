@@ -65,6 +65,10 @@
               file="Source/Processors/TrackProcessor.h"/>
       </GROUP>
       <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
+        <FILE id="DHn4ua" name="AutomationHelper.cpp" compile="1" resource="0"
+              file="Source/Tracks/AutomationHelper.cpp"/>
+        <FILE id="uo0bqw" name="AutomationHelper.h" compile="0" resource="0"
+              file="Source/Tracks/AutomationHelper.h"/>
         <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
         <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
         <FILE id="cL39Yp" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/SoloHelper.h"/>

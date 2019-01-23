@@ -75,7 +75,10 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     readerStartSample += buffer.getNumSamples();
     
     if (readerStartSample > reader->lengthInSamples)
+    {
+        listeners.call (&TrackProcessor::Listener::newLoop);
         readerStartSample = 0;
+    }
 
     for (auto* processor : processors)
         processor->processBlock (buffer, midiMessages);
