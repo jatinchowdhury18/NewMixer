@@ -4,6 +4,7 @@
 #include "Tracks/Track.h"
 #include "Tracks/MasterTrack.h"
 #include "GUI Extras/Colours.h"
+#include "GUI Extras/Settings.h"
 
 //==============================================================================
 /*
@@ -17,8 +18,15 @@ public:
     {
         width = 900,
         height = 600,
+        buttonWidth = 80,
+        buttonHeight = 25,
 
         tooltipTime = 300,
+    };
+
+    enum Cmds
+    {
+        newRecordTrack = 0x2346,
     };
 
     //==============================================================================
@@ -36,7 +44,11 @@ public:
     void togglePlay();
 
 private:
+    void initSettings();
     void addTracks (String stemsToUse);
+
+    static void rightClickCallback (int result, MainComponent* mc);
+    void addRecordingTrack();
 
     //==============================================================================
     std::unique_ptr<MasterTrack> master;
@@ -44,6 +56,9 @@ private:
 
     TrackColours trackColours;
     std::unique_ptr<TooltipWindow> tooltipWindow;
+
+    TextButton settingsButton;
+    std::unique_ptr<SettingsWindow> settingsWindow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

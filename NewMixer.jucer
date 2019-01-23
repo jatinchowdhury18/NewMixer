@@ -36,6 +36,8 @@
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
       <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
         <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
+        <FILE id="um2iCS" name="Settings.cpp" compile="1" resource="0" file="Source/GUI Extras/Settings.cpp"/>
+        <FILE id="lcWjtV" name="Settings.h" compile="0" resource="0" file="Source/GUI Extras/Settings.h"/>
       </GROUP>
       <GROUP id="{B45D25AD-CEFF-02F9-6A66-DF7E89CDDA8E}" name="Processors">
         <FILE id="SuB7XM" name="DelayProcessor.cpp" compile="1" resource="0"

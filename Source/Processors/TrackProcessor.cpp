@@ -35,6 +35,19 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input) : ProcessorBase (Strin
     initProcessors();
 }
 
+TrackProcessor::TrackProcessor (int64 len) : ProcessorBase (String ("Track Processor"))
+{
+    formatManager.registerBasicFormats();
+
+    setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
+
+    inputTrack = true;
+    inputBuffer.setSize (2, (int) len);
+    inputBuffer.clear();
+
+    initProcessors();
+}
+
 void TrackProcessor::initProcessors()
 {
     gainProcessor.reset (new GainProcessor);
@@ -70,15 +83,38 @@ void TrackProcessor::releaseResources()
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    reader->read (&buffer, 0, buffer.getNumSamples(), readerStartSample, true, true);
+    if (! inputTrack)
+    {
+        if (readerStartSample > reader->lengthInSamples)
+        {
+            listeners.call (&TrackProcessor::Listener::newLoop);
+            readerStartSample = 0;
+        }
+
+        reader->read (&buffer, 0, buffer.getNumSamples(), readerStartSample, true, true);
+    }
+    else
+    {
+        if (readerStartSample + buffer.getNumSamples() > inputBuffer.getNumSamples())
+        {
+            listeners.call (&TrackProcessor::Listener::newLoop);
+            readerStartSample = 0;
+        }
+
+        if (recording)
+        {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                inputBuffer.copyFrom (ch, (int) readerStartSample, buffer, ch, 0, buffer.getNumSamples());
+        }
+        else
+        {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                buffer.copyFrom (ch, 0, inputBuffer, ch, (int) readerStartSample, buffer.getNumSamples());
+        }
+
+    }
 
     readerStartSample += buffer.getNumSamples();
-    
-    if (readerStartSample > reader->lengthInSamples)
-    {
-        listeners.call (&TrackProcessor::Listener::newLoop);
-        readerStartSample = 0;
-    }
 
     for (auto* processor : processors)
         processor->processBlock (buffer, midiMessages);
@@ -120,4 +156,21 @@ void TrackProcessor::trackMoved (int x, int y, int width, bool mouseUp)
     distProcessor->setFreq (distFreq);
 
     distProcessor->setVerb (1.0f - distFactor);
+}
+
+void TrackProcessor::setRecordingStatus()
+{
+    if (armed)
+    {
+        inputBuffer.clear();
+
+        armed = false;
+        recording = true;
+        return;
+    }
+    if (recording)
+    {
+        recording = false;
+        return;
+    }
 }
