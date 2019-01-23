@@ -46,8 +46,7 @@ public:
     void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
 
     bool toggleMute();
-
-    void rewind() { processor->rewind(); }
+    void togglePlay();
 
 private:
     void timerCallback() override { repaint(); }
@@ -83,6 +82,7 @@ private:
     int lastDragLocation = 0;
 
     bool isSelected = false;
+    bool isPlaying = false;
 
     TrackProcessor* processor;
 
