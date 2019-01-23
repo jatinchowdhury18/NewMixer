@@ -13,6 +13,8 @@ public:
     MasterTrack (OwnedArray<Track>& tracks);
     ~MasterTrack();
 
+    AudioDeviceManager& getDeviceManager() { return deviceManager; }
+
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
     void togglePlay();

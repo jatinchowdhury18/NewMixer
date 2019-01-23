@@ -2,7 +2,7 @@
 
 MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
 {
-    deviceManager.initialiseWithDefaultDevices (0, 2);
+    deviceManager.initialiseWithDefaultDevices (2, 2);
     deviceManager.addAudioCallback (&player);
 
     audioOutputNode = addNode (new AudioGraphIOProcessor (AudioGraphIOProcessor::audioOutputNode));

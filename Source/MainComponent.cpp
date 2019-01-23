@@ -12,10 +12,21 @@ MainComponent::MainComponent()
     setWantsKeyboardFocus (true);
 
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
+    initSettings();
 }
 
 MainComponent::~MainComponent()
 {
+}
+
+void MainComponent::initSettings()
+{
+    settingsButton.setButtonText ("Settings");
+    settingsButton.setColour (TextButton::buttonColourId, Colours::transparentBlack);
+    settingsButton.setColour (TextButton::textColourOffId, Colours::darkred);
+    settingsButton.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
+    settingsButton.onClick = [this] () { settingsWindow.reset (new SettingsWindow (String ("Settings"), master->getDeviceManager())); };
+    addAndMakeVisible (settingsButton);
 }
 
 void MainComponent::addTracks (String stemsToUse)
@@ -90,6 +101,7 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
+    settingsButton.setBounds (width - buttonWidth, 0, buttonWidth, buttonHeight);
 }
 
 void MainComponent::mouseDown (const MouseEvent& /*event*/)
