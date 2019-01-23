@@ -35,7 +35,9 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input) : ProcessorBase (Strin
     initProcessors();
 }
 
-TrackProcessor::TrackProcessor (int64 len) : ProcessorBase (String ("Track Processor"))
+TrackProcessor::TrackProcessor (int64 len, int64 startSample) : 
+    ProcessorBase (String ("Track Processor")),
+    readerStartSample (startSample)
 {
     formatManager.registerBasicFormats();
 

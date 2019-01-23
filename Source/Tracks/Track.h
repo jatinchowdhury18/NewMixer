@@ -35,7 +35,7 @@ public:
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
     Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
-    Track (int64 sampleLength, String name, String shortName, int x, int y, Colour colour);
+    Track (int64 sampleLength, int64 startSample, String name, String shortName, int x, int y, Colour colour);
     ~Track();
 
     TrackProcessor* getProcessor() const { return processor; }
@@ -46,7 +46,6 @@ public:
 
     bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
-    bool doKeyPressed (const KeyPress& key);
 
     bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
     void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
@@ -58,27 +57,26 @@ public:
     void trackMoved();
     void newLoop() override;
 
-private:
-    void paintCircle (Graphics& g, float pos, bool darken);
-    void paintName (Graphics& g, float pos, bool darken);
-    void paintMeter (Graphics& g, bool darken);
-    void paintRing (Graphics& g, float pos, Colour colour);
-    void paintMute (Graphics& g, float pos, bool darken);
+    TrackColours& getColours() { return colours; }
+    Colour getColour() { return trackColour; }
+    void setTrackColour (Colour newColour) { trackColour = newColour; }
 
+    AutoHelper& getAutoHelper() { return autoHelper; }
+
+    void setDiameter (float newD) { diameter = newD; }
+    float getDiameter() { return diameter; }
+
+    int& getLastDrag() { return lastDragLocation; }
+    void setDragging (bool drag) { isDragging = drag; }
+
+    String getShortName() { return shortName; }
+
+    bool getIsPlaying() { return isPlaying; }
+
+private:
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-
-    static void rightClickCallback (int result, Track* track);
-
-    void changeSize (const MouseEvent& e);
-    void changeSize();
-    void changePosition (const MouseEvent& e);
-    void changePosition();
-    void changeColour (int index);
-
-    void setPositionConstrained (Point<int> pos);
-    void setSizeConstrained (float oldSize, float change);
 
     String name;
     String shortName;

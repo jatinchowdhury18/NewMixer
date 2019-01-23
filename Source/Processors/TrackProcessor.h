@@ -20,7 +20,7 @@ public:
 
     TrackProcessor (File& file);
     TrackProcessor (MemoryInputStream* input);
-    TrackProcessor (int64 len);
+    TrackProcessor (int64 len, int64 startSample);
 
     void initProcessors();
 
@@ -40,6 +40,7 @@ public:
     float getRMSLevel() { return lastRMS; }
 
     int64 getLengthSamples() { return reader->lengthInSamples; }
+    int64 getStartSample() { return readerStartSample; }
     bool isInputTrack() { return inputTrack; }
     bool isArmed() { return armed; }
     bool isRecording() { return recording; }
@@ -49,6 +50,7 @@ public:
     class Listener
     {
     public:
+        virtual ~Listener() {}
         virtual void newLoop() {}
     };
 
