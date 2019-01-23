@@ -35,7 +35,7 @@ public:
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
     Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
-    Track (int64 sampleLength, String name, String shortName, int x, int y, Colour colour);
+    Track (int64 sampleLength, int64 startSample, String name, String shortName, int x, int y, Colour colour);
     ~Track();
 
     TrackProcessor* getProcessor() const { return processor; }

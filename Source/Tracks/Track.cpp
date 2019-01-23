@@ -32,12 +32,12 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     startTimer (50);
 }
 
-Track::Track (int64 sampleLength, String name, String shortName, int x, int y, Colour colour) :
+Track::Track (int64 sampleLength, int64 startSample, String name, String shortName, int x, int y, Colour colour) :
     name (name),
     shortName (shortName),
     trackColour (colour)
 {
-    processor = new TrackProcessor (sampleLength);
+    processor = new TrackProcessor (sampleLength, startSample);
     processor->addListener (this);
 
     setBounds (x, y, width, width);
@@ -107,7 +107,7 @@ void Track::paintMeter (Graphics& g, bool  darken)
 
     float rmsFactor = 1.0f + processor->getRMSLevel() * 5.0f;
 
-    if (rmsFactor > 10.0f)
+    if (rmsFactor > 20.0f)
         rmsFactor = 0.0f;
 
     for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)

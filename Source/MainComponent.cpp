@@ -101,8 +101,9 @@ void MainComponent::addTracks (String stemsToUse)
 void MainComponent::addRecordingTrack()
 {
     auto len = tracks[0]->getProcessor()->getLengthSamples();
+    auto startSample = tracks[0]->getProcessor()->getStartSample();
 
-    tracks.add (new Track (len, String ("Record 1"), String ("Rec1"), width / 2, 400, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (len, startSample, String ("Record 1"), String ("Rec1"), width / 2, 400, trackColours.getColour (tracks.size())));
     addAndMakeVisible (tracks.getLast());
 
     master->addTrack (tracks.getLast());
