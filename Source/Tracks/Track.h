@@ -30,20 +30,22 @@ public:
         solo = 0x1001,
         mute,
         recordAutomation,
+        recordInput,
     };
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
     Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
+    Track (int64 sampleLength, String name, String shortName, int x, int y, Colour colour);
     ~Track();
 
     TrackProcessor* getProcessor() const { return processor; }
 
     void paint (Graphics& g) override;
     void resized() override;
+    bool hitTest (int x, int y) override;
 
     bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
-
     bool doKeyPressed (const KeyPress& key);
 
     bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
@@ -63,7 +65,6 @@ private:
     void paintRing (Graphics& g, float pos, Colour colour);
     void paintMute (Graphics& g, float pos, bool darken);
 
-    bool hitTest (int x, int y) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;

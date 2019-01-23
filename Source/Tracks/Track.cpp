@@ -32,6 +32,21 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     startTimer (50);
 }
 
+Track::Track (int64 sampleLength, String name, String shortName, int x, int y, Colour colour) :
+    name (name),
+    shortName (shortName),
+    trackColour (colour)
+{
+    processor = new TrackProcessor (sampleLength);
+    processor->addListener (this);
+
+    setBounds (x, y, width, width);
+    setBroughtToFrontOnMouseClick (true);
+
+    setTooltip (name);
+    startTimer (50);
+}
+
 Track::~Track()
 {
     processor->removeListener (this);
@@ -58,6 +73,10 @@ void Track::timerCallback()
 void Track::newLoop()
 {
     autoHelper.setRecordingStatus();
+    processor->setRecordingStatus();
+
+    MessageManagerLock mml;
+    repaint();
 }
 
 void Track::trackMoved()
@@ -87,6 +106,9 @@ void Track::paintMeter (Graphics& g, bool  darken)
     g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
 
     float rmsFactor = 1.0f + processor->getRMSLevel() * 5.0f;
+
+    if (rmsFactor > 10.0f)
+        rmsFactor = 0.0f;
 
     for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)
     {
@@ -124,9 +146,9 @@ void Track::paint (Graphics& g)
 
     paintName (g, pos, darken);
 
-    if (autoHelper.armed())
+    if (autoHelper.armed() || processor->isArmed())
         paintRing (g, pos, Colours::deeppink);
-    else if (autoHelper.isRecording())
+    else if (autoHelper.isRecording() || processor->isRecording())
         paintRing (g, pos, Colours::red);
     else if (isSelected) //highlight selected track
         paintRing (g, pos, Colours::goldenrod);
@@ -254,6 +276,8 @@ void Track::mouseDown (const MouseEvent& e)
         m.addItem (TrackCmds::solo, String ("Solo"), true, isSoloed());
         m.addSubMenu (String ("Change Colour"), colorMenu);
         m.addItem (TrackCmds::recordAutomation, String ("Automate"), ! (autoHelper.armed() || autoHelper.isRecording()));
+        if (processor->isInputTrack())
+            m.addItem (TrackCmds::recordInput, String ("Record"), ! (processor->isArmed() || processor->isRecording()));
 
         m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
     }
@@ -276,6 +300,11 @@ void Track::rightClickCallback (int result, Track* track)
 
     case TrackCmds::recordAutomation:
         track->autoHelper.arm();
+        track->repaint();
+        return;
+
+    case TrackCmds::recordInput:
+        track->processor->arm();
         track->repaint();
         return;
 
@@ -317,14 +346,13 @@ bool Track::doKeyPressed (const KeyPress& key)
     else                                                    // Normal move
         changePosition();
 
-    getParentComponent()->repaint();
     return true;
 }
 
 bool Track::toggleMute()
 {
     processor->setMute (! processor->getIsMute());
-    getParentComponent()->repaint();
+    repaint();
     return true;
 }
 

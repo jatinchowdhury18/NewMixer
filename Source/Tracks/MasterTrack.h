@@ -20,6 +20,8 @@ public:
     void togglePlay();
     bool getIsPlaying() { return isPlaying; }
 
+    void addTrack (Track* track);
+
 private:
     void connectTracks();
 
@@ -27,6 +29,7 @@ private:
     AudioProcessorPlayer player;
 
     Node::Ptr audioOutputNode;
+    Node::Ptr audioInputNode;
     ReferenceCountedArray<Node> trackNodes;
 
     bool isPlaying = true;

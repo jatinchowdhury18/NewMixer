@@ -24,6 +24,11 @@ public:
         tooltipTime = 300,
     };
 
+    enum Cmds
+    {
+        newRecordTrack = 0x2346,
+    };
+
     //==============================================================================
     MainComponent();
     ~MainComponent();
@@ -40,8 +45,10 @@ public:
 
 private:
     void initSettings();
-
     void addTracks (String stemsToUse);
+
+    static void rightClickCallback (int result, MainComponent* mc);
+    void addRecordingTrack();
 
     //==============================================================================
     std::unique_ptr<MasterTrack> master;

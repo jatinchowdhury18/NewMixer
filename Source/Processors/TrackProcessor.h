@@ -20,6 +20,7 @@ public:
 
     TrackProcessor (File& file);
     TrackProcessor (MemoryInputStream* input);
+    TrackProcessor (int64 len);
 
     void initProcessors();
 
@@ -36,8 +37,14 @@ public:
     void setSoloed (SoloState state) { soloState = state; }
 
     void rewind() { readerStartSample = 0; }
-
     float getRMSLevel() { return lastRMS; }
+
+    int64 getLengthSamples() { return reader->lengthInSamples; }
+    bool isInputTrack() { return inputTrack; }
+    bool isArmed() { return armed; }
+    bool isRecording() { return recording; }
+    void arm() { armed = true; }
+    void setRecordingStatus();
 
     class Listener
     {
@@ -64,6 +71,11 @@ private:
     bool isMute = true;
     SoloState soloState = noTracks;
     float lastRMS = 0.0f;
+
+    bool inputTrack = false;
+    bool recording = false;
+    bool armed = false;
+    AudioBuffer<float> inputBuffer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackProcessor)
 };

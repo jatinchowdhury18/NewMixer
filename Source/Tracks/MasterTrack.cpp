@@ -8,6 +8,9 @@ MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
     audioOutputNode = addNode (new AudioGraphIOProcessor (AudioGraphIOProcessor::audioOutputNode));
     audioOutputNode->getProcessor()->setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
 
+    audioInputNode = addNode (new AudioGraphIOProcessor (AudioGraphIOProcessor::audioInputNode));
+    audioInputNode->getProcessor()->setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
+
     for (auto track : tracks)
         trackNodes.add (addNode (track->getProcessor()));
     connectTracks();
@@ -53,4 +56,22 @@ void MasterTrack::togglePlay()
         releaseResources();
 
     isPlaying = ! isPlaying;
+}
+
+void MasterTrack::addTrack (Track* track)
+{
+    trackNodes.add (addNode (track->getProcessor()));
+    auto trackNode = trackNodes.getLast();
+
+    for (int channel = 0; channel < 2; ++channel)
+    {
+        if (track->getProcessor()->isInputTrack())
+        {
+            addConnection ({ { audioInputNode->nodeID, channel },
+                             { trackNode->nodeID,      channel } });
+        }
+
+        addConnection ({ { trackNode->nodeID,       channel },
+                         { audioOutputNode->nodeID, channel } });
+    }
 }
