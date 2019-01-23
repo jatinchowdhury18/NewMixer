@@ -129,5 +129,5 @@ void MainComponent::togglePlay()
 {
     master->togglePlay();
     for (auto track : tracks)
-        track->rewind();
+        track->togglePlay();
 }

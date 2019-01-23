@@ -50,9 +50,13 @@ void Track::paintMeter (Graphics& g, bool  darken)
 {
     g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
 
-    float rmsFactor = 1.0f + processor->getRMSLevel() / 4.0f;
-    const float pos = (width - rmsFactor * diameter) / 2.0f;
-    g.drawEllipse (pos, pos, rmsFactor * diameter, rmsFactor * diameter, diameter / 30.0f);
+    float rmsFactor = 1.0f + processor->getRMSLevel() * 5.0f;
+
+    for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)
+    {
+        const float pos = (width - factor * diameter) / 2.0f;
+        g.drawEllipse (pos, pos, factor * diameter, factor * diameter, diameter / 40.0f);
+    }
 }
 
 void Track::paintSelected (Graphics& g, float pos)
@@ -78,7 +82,10 @@ void Track::paint (Graphics& g)
     const float pos = (width - diameter) / 2.0f;
 
     paintCircle (g, pos, darken);
-    paintMeter (g, darken);
+
+    if (isPlaying)
+        paintMeter (g, darken);
+
     paintName (g, pos, darken);
 
     if (isSelected) //highlight selected track
@@ -91,7 +98,7 @@ void Track::paint (Graphics& g)
 void Track::resized()
 { 
     const int radius = width / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, width, false);
+    processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, false);
 }
 
 bool Track::hitTest (int x, int y)
@@ -124,6 +131,8 @@ void Track::changeSize (const MouseEvent& e)
 
     isDragging = true;
     lastDragLocation = curY;
+
+    resized();
 }
 
 void Track::changeSize()
@@ -134,6 +143,8 @@ void Track::changeSize()
         setSizeConstrained (initValue, 1.0f); //up
     else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
         setSizeConstrained (initValue, -1.0f); //down
+
+    resized();
 }
 
 void Track::setSizeConstrained (float oldSize, float change)
@@ -246,7 +257,7 @@ void Track::mouseUp (const MouseEvent& /*e*/)
         lastDragLocation = 0;
     }
     const int radius = width / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, width, true);
+    processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, true);
 }
 
 bool Track::doKeyPressed (const KeyPress& key)
@@ -270,6 +281,13 @@ bool Track::toggleMute()
     processor->setMute (! processor->getIsMute());
     getParentComponent()->repaint();
     return true;
+}
+
+void Track::togglePlay()
+{
+    isPlaying = ! isPlaying;
+
+    processor->rewind();
 }
 
 void Track::changeColour (int index)
