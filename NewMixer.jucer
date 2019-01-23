@@ -67,6 +67,9 @@
               file="Source/Processors/TrackProcessor.h"/>
       </GROUP>
       <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
+        <FILE id="vix8qs" name="ActionHelper.cpp" compile="1" resource="0"
+              file="Source/Tracks/ActionHelper.cpp"/>
+        <FILE id="Z9jR4N" name="ActionHelper.h" compile="0" resource="0" file="Source/Tracks/ActionHelper.h"/>
         <FILE id="DHn4ua" name="AutomationHelper.cpp" compile="1" resource="0"
               file="Source/Tracks/AutomationHelper.cpp"/>
         <FILE id="uo0bqw" name="AutomationHelper.h" compile="0" resource="0"

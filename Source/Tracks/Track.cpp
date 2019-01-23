@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "ActionHelper.h"
 
 using namespace TrackConstants;
 
@@ -179,84 +180,6 @@ bool Track::hitTest (int x, int y)
         return false;
 }
 
-void Track::changeSize (const MouseEvent& e)
-{
-    e.source.enableUnboundedMouseMovement (true);
-    const float initValue = diameter;
-    const int curY = e.getDistanceFromDragStartY(); 
-
-    if (curY < lastDragLocation)
-        setSizeConstrained (initValue, 1.0f); //up
-    else if (curY > lastDragLocation)
-        setSizeConstrained (initValue, -1.0f); //down
-
-    isDragging = true;
-    lastDragLocation = curY;
-
-    resized();
-}
-
-void Track::changeSize()
-{
-    const float initValue = diameter; 
-
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
-        setSizeConstrained (initValue, 1.0f); //up
-    else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
-        setSizeConstrained (initValue, -1.0f); //down
-
-    resized();
-}
-
-void Track::setSizeConstrained (float oldSize, float change)
-{
-    float newSize = jlimit<float> (minDiameter, maxDiameter, (oldSize + change));
-
-    if (newSize == oldSize)
-        return;
-
-    diameter = newSize;
-    setPositionConstrained (getPosition());
-}
-
-void Track::changePosition (const MouseEvent& e)
-{
-    Point<int> newPos = e.getEventRelativeTo (getParentComponent()).position.toInt();
-    newPos.x -= width / 2;
-    newPos.y -= width / 2;
-
-    setPositionConstrained (newPos);
-    resized();
-}
-
-void Track::changePosition()
-{
-    Point<int> pos = getBoundsInParent().getTopLeft();
-
-    const int changeVal = 10;
-
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
-        pos.y -= changeVal; //up
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
-        pos.y += changeVal; //down
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::leftKey))
-        pos.x -= changeVal; //left
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::rightKey))
-        pos.x += changeVal; //right
-
-    setPositionConstrained (pos);
-    resized();
-}
-
-void Track::setPositionConstrained (Point<int> pos)
-{
-    const int halfWidth = width / 2;
-    pos.x = jlimit<int> (-halfWidth, getParentWidth() - halfWidth, pos.x);
-    pos.y = jlimit<int> (-halfWidth, getParentHeight() - halfWidth, pos.y);
-
-    setTopLeftPosition (pos);
-}
-
 void Track::mouseDown (const MouseEvent& e)
 {
     getParentComponent()->mouseDown (e);
@@ -265,60 +188,15 @@ void Track::mouseDown (const MouseEvent& e)
     repaint();
 
     if (e.mods.isPopupMenu())
-    {
-        PopupMenu m;
-
-        PopupMenu colorMenu;
-        for (int ind = 1; ind <= colours.getNumColours(); ind++)  
-            colorMenu.addItem (ind, colours.getColourName (ind - 1), true, trackColour == colours.getColour (ind - 1));
-
-        m.addItem (TrackCmds::mute, String ("Mute"), true, processor->getIsMute());
-        m.addItem (TrackCmds::solo, String ("Solo"), true, isSoloed());
-        m.addSubMenu (String ("Change Colour"), colorMenu);
-        m.addItem (TrackCmds::recordAutomation, String ("Automate"), ! (autoHelper.armed() || autoHelper.isRecording()));
-        if (processor->isInputTrack())
-            m.addItem (TrackCmds::recordInput, String ("Record"), ! (processor->isArmed() || processor->isRecording()));
-
-        m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
-    }
-}
-
-void Track::rightClickCallback (int result, Track* track)
-{
-    switch (result)
-    {
-    case 0: //Nothing selected
-        return;
-
-    case TrackCmds::mute:
-        track->toggleMute();
-        return;
-
-    case TrackCmds::solo:
-        track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
-        return;
-
-    case TrackCmds::recordAutomation:
-        track->autoHelper.arm();
-        track->repaint();
-        return;
-
-    case TrackCmds::recordInput:
-        track->processor->arm();
-        track->repaint();
-        return;
-
-    default: //Change Colour
-        track->changeColour (result - 1);
-    }
+        ActionHelper::rightClickMenu (this);
 }
 
 void Track::mouseDrag (const MouseEvent& e)
 {
     if (e.mods.isAltDown())  //Change volume
-        changeSize (e);
+        ActionHelper::changeSize (this, e);
     else                      // Normal drag
-        changePosition (e);
+        ActionHelper::changePosition (this, e);
 
     getParentComponent()->repaint();
 }
@@ -340,11 +218,11 @@ bool Track::doKeyPressed (const KeyPress& key)
         return false;
 
     if (key.getModifiers().isAltDown())                    //Change volume
-        changeSize();
+        ActionHelper::changeSize (this);
     else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
         return toggleMute();
     else                                                    // Normal move
-        changePosition();
+        ActionHelper::changePosition (this);
 
     return true;
 }
@@ -366,10 +244,4 @@ void Track::togglePlay()
         autoHelper.setRecordingStatus();
     else
         autoHelper.throwAway();
-}
-
-void Track::changeColour (int index)
-{ 
-    trackColour = colours.getColour (index);
-    repaint();
 }

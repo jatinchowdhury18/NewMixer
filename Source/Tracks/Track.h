@@ -58,6 +58,19 @@ public:
     void trackMoved();
     void newLoop() override;
 
+    //Setters and getters for actions
+    TrackColours& getColours() { return colours; }
+    Colour getColour() { return trackColour; }
+    void setTrackColour (Colour newColour) { trackColour = newColour; }
+
+    AutoHelper& getAutoHelper() { return autoHelper; }
+
+    void setDiameter (float newD) { diameter = newD; }
+    float getDiameter() { return diameter; }
+
+    int& getLastDrag() { return lastDragLocation; }
+    void setDragging (bool drag) { isDragging = drag; }
+
 private:
     void paintCircle (Graphics& g, float pos, bool darken);
     void paintName (Graphics& g, float pos, bool darken);
@@ -68,17 +81,6 @@ private:
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
-
-    static void rightClickCallback (int result, Track* track);
-
-    void changeSize (const MouseEvent& e);
-    void changeSize();
-    void changePosition (const MouseEvent& e);
-    void changePosition();
-    void changeColour (int index);
-
-    void setPositionConstrained (Point<int> pos);
-    void setSizeConstrained (float oldSize, float change);
 
     String name;
     String shortName;
