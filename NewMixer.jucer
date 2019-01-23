@@ -76,6 +76,7 @@
               file="Source/Tracks/AutomationHelper.h"/>
         <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
         <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
+        <FILE id="Izy78n" name="PaintHelper.h" compile="0" resource="0" file="Source/Tracks/PaintHelper.h"/>
         <FILE id="cL39Yp" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/SoloHelper.h"/>
         <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
         <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>

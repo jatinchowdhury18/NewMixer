@@ -1,5 +1,6 @@
 #include "Track.h"
 #include "ActionHelper.h"
+#include "PaintHelper.h"
 
 using namespace TrackConstants;
 
@@ -86,82 +87,8 @@ void Track::trackMoved()
     processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, false);
 }
 
-void Track::paintCircle (Graphics& g, float pos, bool darken)
-{
-    g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
-
-    g.fillEllipse (pos, pos, diameter, diameter);
-}
-
-void Track::paintName (Graphics& g, float pos, bool darken)
-{
-    Colour nameColour = trackColour.contrasting();
-    g.setColour (darken ? nameColour.withAlpha (darkAlpha) : nameColour);
-    g.setFont (diameter * 0.36f);
-
-    g.drawFittedText (shortName, (int) pos, (int) pos, (int) diameter, (int) diameter, Justification::centred, 1);
-}
-
-void Track::paintMeter (Graphics& g, bool  darken)
-{
-    g.setColour (darken ? trackColour.withAlpha (darkAlpha) : trackColour);
-
-    float rmsFactor = 1.0f + processor->getRMSLevel() * 5.0f;
-
-    if (rmsFactor > 20.0f)
-        rmsFactor = 0.0f;
-
-    for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)
-    {
-        const float pos = (width - factor * diameter) / 2.0f;
-        g.drawEllipse (pos, pos, factor * diameter, factor * diameter, diameter / 40.0f);
-    }
-}
-
-void Track::paintRing (Graphics& g, float pos, Colour colour)
-{
-    g.setColour (colour);
-
-    g.drawEllipse (pos, pos, diameter, diameter, diameter / 20.0f);
-}
-
-void Track::paintMute (Graphics& g, float pos, bool darken)
-{
-    g.setColour (darken ? Colours::goldenrod.withAlpha (darkAlpha) : Colours::goldenrod);
-
-    auto offset = (diameter / 2.0f) * (MathConstants<float>::sqrt2 - 1.0f) / MathConstants<float>::sqrt2;
-
-    g.drawLine (pos + offset, pos + offset, pos + diameter - offset, pos + diameter - offset, diameter / 20.0f);
-}
-
-void Track::paint (Graphics& g)
-{
-    //If a track is soloed, darken all non-soloed tracks
-    const bool darken = processor->getSoloed() == TrackProcessor::SoloState::otherTrack;
-    const float pos = (width - diameter) / 2.0f;
-
-    paintCircle (g, pos, darken);
-
-    if (isPlaying)
-        paintMeter (g, darken);
-
-    paintName (g, pos, darken);
-
-    if (autoHelper.armed() || processor->isArmed())
-        paintRing (g, pos, Colours::deeppink);
-    else if (autoHelper.isRecording() || processor->isRecording())
-        paintRing (g, pos, Colours::red);
-    else if (isSelected) //highlight selected track
-        paintRing (g, pos, Colours::goldenrod);
-
-    if (processor->getIsMute())
-        paintMute (g, pos, darken);
-}
-
-void Track::resized()
-{ 
-    trackMoved();
-}
+void Track::paint (Graphics& g) { PaintHelper::paint (this, g); }
+void Track::resized() { trackMoved(); }
 
 bool Track::hitTest (int x, int y)
 {
@@ -210,21 +137,6 @@ void Track::mouseUp (const MouseEvent& /*e*/)
     }
     
     trackMoved();
-}
-
-bool Track::doKeyPressed (const KeyPress& key)
-{
-    if (! isSelected)
-        return false;
-
-    if (key.getModifiers().isAltDown())                    //Change volume
-        ActionHelper::changeSize (this);
-    else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
-        return toggleMute();
-    else                                                    // Normal move
-        ActionHelper::changePosition (this);
-
-    return true;
 }
 
 bool Track::toggleMute()

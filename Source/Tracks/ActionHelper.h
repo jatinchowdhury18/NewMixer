@@ -10,6 +10,7 @@ public:
 
     static void rightClickMenu (Track* track);
     static void rightClickCallback (int result, Track* track);
+    static bool doKeyPressed (Track* track, const KeyPress& key);
 
     static void changeSize (Track* track, const MouseEvent& e);
     static void changeSize (Track* track);

@@ -52,6 +52,21 @@ void ActionHelper::rightClickCallback (int result, Track* track)
     }
 }
 
+bool ActionHelper::doKeyPressed (Track* track, const KeyPress& key)
+{
+    if (! track->getIsSelected())
+        return false;
+
+    if (key.getModifiers().isAltDown())                    //Change volume
+        ActionHelper::changeSize (track);
+    else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
+        return track->toggleMute();
+    else                                                    // Normal move
+        ActionHelper::changePosition (track);
+
+    return true;
+}
+
 void ActionHelper::changeSize (Track* track, const MouseEvent& e)
 {
     e.source.enableUnboundedMouseMovement (true);

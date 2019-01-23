@@ -1,5 +1,6 @@
 #include "MainComponent.h"
 #include "Tracks/SoloHelper.h"
+#include "Tracks/ActionHelper.h"
 
 //==============================================================================
 MainComponent::MainComponent()
@@ -180,7 +181,7 @@ bool MainComponent::keyPressed (const KeyPress& key)
     for (auto track : tracks)
     {
         if (track->getIsSelected())
-            return track->doKeyPressed (key);
+            return ActionHelper::doKeyPressed (track, key);
     }
 
     return false;

@@ -46,7 +46,6 @@ public:
 
     bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
-    bool doKeyPressed (const KeyPress& key);
 
     bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
     void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
@@ -58,7 +57,6 @@ public:
     void trackMoved();
     void newLoop() override;
 
-    //Setters and getters for actions
     TrackColours& getColours() { return colours; }
     Colour getColour() { return trackColour; }
     void setTrackColour (Colour newColour) { trackColour = newColour; }
@@ -71,13 +69,11 @@ public:
     int& getLastDrag() { return lastDragLocation; }
     void setDragging (bool drag) { isDragging = drag; }
 
-private:
-    void paintCircle (Graphics& g, float pos, bool darken);
-    void paintName (Graphics& g, float pos, bool darken);
-    void paintMeter (Graphics& g, bool darken);
-    void paintRing (Graphics& g, float pos, Colour colour);
-    void paintMute (Graphics& g, float pos, bool darken);
+    String getShortName() { return shortName; }
 
+    bool getIsPlaying() { return isPlaying; }
+
+private:
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
