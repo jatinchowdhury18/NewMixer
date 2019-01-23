@@ -50,10 +50,7 @@ public:
     {
         g.setColour (darken ? track->getColour().withAlpha (TrackConstants::darkAlpha) : track->getColour());
 
-        float rmsFactor = 1.0f + track->getProcessor()->getRMSLevel() * 5.0f;
-
-        if (rmsFactor > 20.0f)
-            rmsFactor = 0.0f;
+        float rmsFactor = 1.0f + std::expf (std::logf (track->getProcessor()->getRMSLevel()) / 2.5f);
 
         for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)
         {

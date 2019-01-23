@@ -37,7 +37,7 @@ public:
     void setSoloed (SoloState state) { soloState = state; }
 
     void rewind() { readerStartSample = 0; }
-    float getRMSLevel() { return lastRMS; }
+    float getRMSLevel() { return jmin<float> (lastRMS, 1.0f); }
 
     int64 getLengthSamples() { return reader->lengthInSamples; }
     int64 getStartSample() { return readerStartSample; }
