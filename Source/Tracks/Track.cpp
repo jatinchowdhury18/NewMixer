@@ -81,6 +81,23 @@ void Track::newLoop()
     repaint();
 }
 
+void Track::trackRename()
+{
+    renameWindow.reset (new TrackRenameWindow (name));
+    renameWindow->getComp()->addListener (this);
+}
+
+void Track::trackNameChanged (String newName, String newShortName)
+{
+    if (newName.isNotEmpty())
+        name = newName;
+    if (newShortName.isNotEmpty())
+        shortName = newShortName;
+
+    repaint();
+    renameWindow->getComp()->removeListener (this);
+}
+
 void Track::trackMoved()
 {
     const int radius = width / 2;
