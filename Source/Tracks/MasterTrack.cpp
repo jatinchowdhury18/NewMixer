@@ -1,4 +1,5 @@
 #include "MasterTrack.h"
+#include "../Processors/InputTrackProcessor.h"
 
 MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
 {
@@ -65,7 +66,7 @@ void MasterTrack::addTrack (Track* track)
 
     for (int channel = 0; channel < 2; ++channel)
     {
-        if (track->getProcessor()->isInputTrack())
+        if (dynamic_cast<InputTrackProcessor*> (track->getProcessor()) != nullptr)
         {
             addConnection ({ { audioInputNode->nodeID, channel },
                              { trackNode->nodeID,      channel } });

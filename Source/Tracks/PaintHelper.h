@@ -9,7 +9,7 @@ public:
     static void paint (Track* track, Graphics& g)
     {
         //If a track is soloed, darken all non-soloed tracks
-        const bool darken = track->getProcessor()->getSoloed() == TrackProcessor::SoloState::otherTrack;
+        const bool darken = track->getProcessor()->getSoloed() == TrackBase::SoloState::otherTrack;
         const float pos = (TrackConstants::width - track->getDiameter()) / 2.0f;
 
         paintCircle (track, g, pos, darken);
@@ -18,10 +18,16 @@ public:
             paintMeter (track, g, darken);
 
         paintName (track, g, pos, darken);
-
-        if (track->getAutoHelper().armed() || track->getProcessor()->isArmed())
+        
+        auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
+        bool armed = inputProcessor == nullptr ? track->getAutoHelper().armed()
+                     : track->getAutoHelper().armed() || inputProcessor->isArmed();
+        bool recording = inputProcessor == nullptr ? track->getAutoHelper().isRecording()
+                         : track->getAutoHelper().isRecording() || inputProcessor->isRecording();
+        
+        if (armed)
             paintRing (track, g, pos, Colours::deeppink);
-        else if (track->getAutoHelper().isRecording() || track->getProcessor()->isRecording())
+        else if (recording)
             paintRing (track, g, pos, Colours::red);
         else if (track->getIsSelected()) //highlight selected track
             paintRing (track, g, pos, Colours::goldenrod);

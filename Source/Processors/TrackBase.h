@@ -1,0 +1,73 @@
+#ifndef TRACKBASE_H_INCLUDED
+#define TRACKBASE_H_INCLUDED
+
+#include "ProcessorBase.h"
+#include "GainProcessor.h"
+#include "PanProcessor.h"
+#include "DelayProcessor.h"
+#include "DistanceProcessor.h"
+#include "ReverbProcessor.h"
+
+class TrackBase : public ProcessorBase
+{
+public:
+    enum SoloState
+    {
+        thisTrack,
+        otherTrack,
+        noTracks,
+    };
+    
+    TrackBase (String name);
+    
+    void initProcessors();
+    
+    void prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock) override;
+    void releaseResources() override;
+    virtual void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
+    
+    void trackMoved (int x, int y, int width, bool mouseUp);
+    
+    void setMute (bool mute) { isMute = mute; }
+    bool getIsMute() { return isMute; }
+    
+    SoloState getSoloed() { return soloState; }
+    void setSoloed (SoloState state) { soloState = state; }
+    
+    void rewind() { readerStartSample = 0; }
+    float getRMSLevel() { return jmin<float> (lastRMS, 1.0f); }
+    
+    virtual int64 getLengthSamples() = 0;
+    int64 getStartSample() { return readerStartSample; }
+    
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void newLoop() {}
+    };
+    
+    void addListener (Listener* listener) { listeners.add (listener); }
+    void removeListener (Listener* listener) { listeners.remove (listener); }
+
+protected:
+    ListenerList<Listener> listeners;
+    
+    int64 readerStartSample = 0;
+    
+private:
+    Array<AudioProcessor*> processors;
+    std::unique_ptr<GainProcessor> gainProcessor;
+    std::unique_ptr<DelayProcessor> delayProcessor;
+    std::unique_ptr<PanProcessor> panProcessor;
+    std::unique_ptr<DistanceProcessor> distProcessor;
+    
+    
+    bool isMute = true;
+    SoloState soloState = noTracks;
+    float lastRMS = 0.0f;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackBase)
+};
+
+#endif // TRACKBASE_H_INCLUDED

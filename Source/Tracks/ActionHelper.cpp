@@ -1,4 +1,5 @@
 #include "ActionHelper.h"
+#include "../Processors/InputTrackProcessor.h"
 
 void ActionHelper::rightClickMenu (Track* track)
 {
@@ -15,10 +16,11 @@ void ActionHelper::rightClickMenu (Track* track)
     m.addItem (TrackCmds::rename, String ("Rename"));
     m.addItem (TrackCmds::recordAutomation, String ("Automate"),
                ! (track->getAutoHelper().armed() || track->getAutoHelper().isRecording()));
-
-    if (track->getProcessor()->isInputTrack())
+    
+    auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
+    if (inputProcessor != nullptr)
         m.addItem (TrackCmds::recordInput, String ("Record"),
-                   ! (track->getProcessor()->isArmed() || track->getProcessor()->isRecording()));
+                   ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
 
     m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (ActionHelper::rightClickCallback, track));
 }
@@ -44,7 +46,7 @@ void ActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::recordInput:
-        track->getProcessor()->arm();
+        dynamic_cast<InputTrackProcessor*> (track->getProcessor())->arm();
         track->repaint();
         return;
 
