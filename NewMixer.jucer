@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.1"
               version="0.1.0" companyName="Chowdhury DSP" companyWebsite="chowdsp.com"
-              companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer">
+              companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer"
+              headerPath="../../JUCE/ASIOSDK2.3.2/common/">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
     <GROUP id="{4B66F25F-5A5F-AE8E-A3A4-8B7EAC0F8506}" name="Stems">
       <GROUP id="{F180A70B-FA56-1A51-53CC-34043B3BA250}" name="Chorus">
@@ -165,5 +166,5 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_ASIO="1"/>
 </JUCERPROJECT>

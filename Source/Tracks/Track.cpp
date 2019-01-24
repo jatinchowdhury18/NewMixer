@@ -36,10 +36,11 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     startTimer (50);
 }
 
-Track::Track (int64 sampleLength, int64 startSample, String name, String shortName, int x, int y, Colour colour) :
+Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour) :
     name (name),
     shortName (shortName),
-    trackColour (colour)
+    trackColour (colour),
+    isPlaying (isPlaying)
 {
     processor = new InputTrackProcessor (sampleLength, startSample);
     processor->addListener (this);
