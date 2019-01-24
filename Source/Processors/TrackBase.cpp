@@ -15,8 +15,6 @@ namespace
 
 TrackBase::TrackBase (String name) : ProcessorBase (name)
 {
-    setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
-    
     initProcessors();
 }
 

@@ -66,11 +66,8 @@ void MasterTrack::addTrack (Track* track)
 
     for (int channel = 0; channel < 2; ++channel)
     {
-        if (dynamic_cast<InputTrackProcessor*> (track->getProcessor()) != nullptr)
-        {
-            addConnection ({ { audioInputNode->nodeID, channel },
-                             { trackNode->nodeID,      channel } });
-        }
+        addConnection ({ { audioInputNode->nodeID, channel },
+                         { trackNode->nodeID,      channel } });
 
         addConnection ({ { trackNode->nodeID,       channel },
                          { audioOutputNode->nodeID, channel } });

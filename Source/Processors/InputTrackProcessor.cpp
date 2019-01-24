@@ -8,6 +8,8 @@ InputTrackProcessor::InputTrackProcessor (int64 len, int64 startSample) :
     inputTrack = true;
     inputBuffer.setSize (2, (int) len);
     inputBuffer.clear();
+
+    setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
 }
 
 void InputTrackProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &midiMessages)
