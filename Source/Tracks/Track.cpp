@@ -40,7 +40,7 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     name (name),
     shortName (shortName),
     trackColour (colour),
-    isPlaying (isPlaying)
+    isPlaying (playing)
 {
     processor = new InputTrackProcessor (sampleLength, startSample);
     processor->addListener (this);
