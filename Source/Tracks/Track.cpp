@@ -1,8 +1,8 @@
 #include "Track.h"
-#include "../Processors/TrackProcessor.h"
-#include "../Processors/InputTrackProcessor.h"
-#include "ActionHelper.h"
-#include "PaintHelper.h"
+#include "TrackProcessor.h"
+#include "InputTrackProcessor.h"
+#include "TrackHelpers/ActionHelper.h"
+#include "TrackHelpers/PaintHelper.h"
 
 using namespace TrackConstants;
 

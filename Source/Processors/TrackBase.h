@@ -2,11 +2,11 @@
 #define TRACKBASE_H_INCLUDED
 
 #include "ProcessorBase.h"
-#include "GainProcessor.h"
-#include "PanProcessor.h"
-#include "DelayProcessor.h"
-#include "DistanceProcessor.h"
-#include "ReverbProcessor.h"
+#include "Effects/GainProcessor.h"
+#include "Effects/PanProcessor.h"
+#include "Effects/DelayProcessor.h"
+#include "Effects/DistanceProcessor.h"
+#include "Effects/ReverbProcessor.h"
 
 class TrackBase : public ProcessorBase
 {

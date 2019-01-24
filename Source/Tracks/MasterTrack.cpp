@@ -1,5 +1,5 @@
 #include "MasterTrack.h"
-#include "../Processors/InputTrackProcessor.h"
+#include "InputTrackProcessor.h"
 
 MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
 {
