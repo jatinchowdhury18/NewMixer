@@ -2,7 +2,8 @@
 
 <JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.1"
               version="0.1.0" companyName="Chowdhury DSP" companyWebsite="chowdsp.com"
-              companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer">
+              companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer"
+              headerPath="../../JUCE/ASIOSDK2.3.2/common/">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
     <GROUP id="{4B66F25F-5A5F-AE8E-A3A4-8B7EAC0F8506}" name="Stems">
       <GROUP id="{F180A70B-FA56-1A51-53CC-34043B3BA250}" name="Chorus">
@@ -57,6 +58,10 @@
         <FILE id="cJ0m9j" name="FilterProcessor.h" compile="0" resource="0"
               file="Source/Processors/FilterProcessor.h"/>
         <FILE id="MF7oUy" name="GainProcessor.h" compile="0" resource="0" file="Source/Processors/GainProcessor.h"/>
+        <FILE id="XD4Qae" name="InputTrackProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/InputTrackProcessor.cpp"/>
+        <FILE id="a6kKBU" name="InputTrackProcessor.h" compile="0" resource="0"
+              file="Source/Processors/InputTrackProcessor.h"/>
         <FILE id="dTSvlI" name="PanProcessor.cpp" compile="1" resource="0"
               file="Source/Processors/PanProcessor.cpp"/>
         <FILE id="cEo9Bs" name="PanProcessor.h" compile="0" resource="0" file="Source/Processors/PanProcessor.h"/>
@@ -65,6 +70,8 @@
               file="Source/Processors/ReverbProcessor.cpp"/>
         <FILE id="XP8yBO" name="ReverbProcessor.h" compile="0" resource="0"
               file="Source/Processors/ReverbProcessor.h"/>
+        <FILE id="Fbtunr" name="TrackBase.cpp" compile="1" resource="0" file="Source/Processors/TrackBase.cpp"/>
+        <FILE id="Rw8iSM" name="TrackBase.h" compile="0" resource="0" file="Source/Processors/TrackBase.h"/>
         <FILE id="b5w13C" name="TrackProcessor.cpp" compile="1" resource="0"
               file="Source/Processors/TrackProcessor.cpp"/>
         <FILE id="idP2bn" name="TrackProcessor.h" compile="0" resource="0"
@@ -159,5 +166,5 @@
   <LIVE_SETTINGS>
     <WINDOWS/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_ASIO="1"/>
 </JUCERPROJECT>

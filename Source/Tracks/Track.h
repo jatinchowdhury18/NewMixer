@@ -1,7 +1,7 @@
 #ifndef TRACK_H_INCLUDED
 #define TRACK_H_INCLUDED
 
-#include "../Processors/TrackProcessor.h"
+#include "../Processors/TrackBase.h"
 #include "../GUI Extras/Colours.h"
 #include "AutomationHelper.h"
 #include "../GUI Extras/TrackRenameWindow.h"
@@ -23,7 +23,7 @@ namespace TrackConstants
 class Track : public Component,
               public SettableTooltipClient,
               private Timer,
-              private TrackProcessor::Listener,
+              private TrackBase::Listener,
               private TrackRenameComponent::Listener
 {
 public:
@@ -38,10 +38,10 @@ public:
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
     Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
-    Track (int64 sampleLength, int64 startSample, String name, String shortName, int x, int y, Colour colour);
+    Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour);
     ~Track();
 
-    TrackProcessor* getProcessor() const { return processor; }
+    TrackBase* getProcessor() const { return processor; }
 
     void paint (Graphics& g) override;
     void resized() override;
@@ -50,8 +50,8 @@ public:
     bool getIsSelected() { return isSelected; }
     void setSelected (bool selected) { isSelected = selected; }
 
-    bool isSoloed() { return processor->getSoloed() == TrackProcessor::SoloState::thisTrack; }
-    void setSoloed (TrackProcessor::SoloState state) { processor->setSoloed (state); }
+    bool isSoloed() { return processor->getSoloed() == TrackBase::SoloState::thisTrack; }
+    void setSoloed (TrackBase::SoloState state) { processor->setSoloed (state); }
 
     bool toggleMute();
     void togglePlay();
@@ -96,7 +96,7 @@ private:
     bool isSelected = false;
     bool isPlaying = false;
 
-    TrackProcessor* processor;
+    TrackBase* processor;
 
     AutoHelper autoHelper;
 

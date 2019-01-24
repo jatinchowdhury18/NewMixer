@@ -21,12 +21,12 @@ private:
             {
                 if (track->isSoloed())
                 {
-                    track->setSoloed (TrackProcessor::SoloState::noTracks);
+                    track->setSoloed (TrackBase::SoloState::noTracks);
                     return false;
                 }
                 else
                 {
-                    track->setSoloed (TrackProcessor::SoloState::thisTrack);
+                    track->setSoloed (TrackBase::SoloState::thisTrack);
                     return true;
                 }
             }
@@ -40,8 +40,8 @@ private:
         for (auto track : tracks)
         {
             if (! track->getIsSelected())
-                track->setSoloed (aTrackIsSoloed ? TrackProcessor::SoloState::otherTrack
-                                                 : TrackProcessor::SoloState::noTracks);
+                track->setSoloed (aTrackIsSoloed ? TrackBase::SoloState::otherTrack
+                                                 : TrackBase::SoloState::noTracks);
         }
     }
 };

@@ -1,4 +1,6 @@
 #include "Track.h"
+#include "../Processors/TrackProcessor.h"
+#include "../Processors/InputTrackProcessor.h"
 #include "ActionHelper.h"
 #include "PaintHelper.h"
 
@@ -34,12 +36,13 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     startTimer (50);
 }
 
-Track::Track (int64 sampleLength, int64 startSample, String name, String shortName, int x, int y, Colour colour) :
+Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour) :
     name (name),
     shortName (shortName),
-    trackColour (colour)
+    trackColour (colour),
+    isPlaying (playing)
 {
-    processor = new TrackProcessor (sampleLength, startSample);
+    processor = new InputTrackProcessor (sampleLength, startSample);
     processor->addListener (this);
 
     setBounds (x, y, width, width);
@@ -75,7 +78,10 @@ void Track::timerCallback()
 void Track::newLoop()
 {
     autoHelper.setRecordingStatus();
-    processor->setRecordingStatus();
+    
+    auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (processor);
+    if (inputProcessor != nullptr)
+        inputProcessor->setRecordingStatus();
 
     MessageManagerLock mml;
     repaint();
