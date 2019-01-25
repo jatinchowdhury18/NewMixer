@@ -194,3 +194,27 @@ void MainComponent::togglePlay()
     for (auto track : tracks)
         track->togglePlay();
 }
+
+//=====================================================
+#if JUCE_DEBUG
+
+class AutomationTest : public UnitTest
+{
+public:
+    AutomationTest() : UnitTest ("Automation") {}
+
+    void dummyTest (int val1, int val2)
+    {
+        expectEquals<int> (val1, val2, "Dummy Error");
+    }
+
+    void runTest() override
+    {
+        beginTest ("Automation");
+
+        dummyTest (1, 1);
+    }
+};
+
+static AutomationTest autoTest;
+#endif

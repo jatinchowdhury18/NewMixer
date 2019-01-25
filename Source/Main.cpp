@@ -23,9 +23,12 @@ public:
     bool moreThanOneInstanceAllowed() override       { return true; }
 
     //==============================================================================
-    void initialise (const String& /*commandLine*/) override
+    void initialise (const String& commandLine) override
     {
         // This method is where you should put your application's initialisation code..
+        if (handleInternalCommandLineOperations (commandLine))
+            return;
+
 
         mainWindow.reset (new MainWindow (getApplicationName()));
     }
@@ -45,11 +48,40 @@ public:
         quit();
     }
 
-    void anotherInstanceStarted (const String& /*commandLine*/) override
+    void anotherInstanceStarted (const String& commandLine) override
     {
         // When another instance of the app is launched while this one is running,
         // this method is invoked, and the commandLine parameter tells you what
         // the other instance's command-line arguments were.
+        if (handleInternalCommandLineOperations (commandLine))
+            return;
+    }
+
+    bool handleInternalCommandLineOperations (const String& commandLine)
+    {
+        return handleUnitTests (commandLine);
+    }
+
+    bool handleUnitTests (const String& commandLine)
+    {
+        if (commandLine.contains ("--unit-tests"))
+        {
+            unitTestRunner.runAllTests();
+
+            for (int i = 0; i < unitTestRunner.getNumResults(); ++i)
+            {
+                if (unitTestRunner.getResult (i)->failures > 0)
+                {
+                    setApplicationReturnValue (1);
+                    break;
+                }
+            }
+
+            quit();
+            return true;
+        }
+
+        return false;
     }
 
     //==============================================================================
@@ -98,7 +130,26 @@ public:
     };
 
 private:
+    class MyUnitTestRunner : public UnitTestRunner
+    {
+    public:
+        MyUnitTestRunner() : abortTests (false) { }
+        void setAbortingTests (bool shouldAbortTests)   { abortTests = shouldAbortTests; }
+        bool shouldAbortTests() override                { return abortTests; }
+
+#if JUCE_WINDOWS
+        //on windows, override the default logMessage so that it prints to both VS and command-line console
+        void logMessage (const String& message) override { DBG (message); std::cout << message << "\n"; }
+#endif
+
+    private:
+        std::atomic<bool> abortTests;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MyUnitTestRunner)
+    };
+
     std::unique_ptr<MainWindow> mainWindow;
+    MyUnitTestRunner unitTestRunner;
 };
 
 //==============================================================================
