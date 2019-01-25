@@ -49,7 +49,7 @@ script:
 
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ clean; fi
   - if [[ $TRAVIS_JOB_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`; fi
-  - if [[ $TRAVIS_JOB_NAME == 'unit-tests' ]]; then xcodebuild -project NewMixer.xcodeproj/ --unit-tests -configuration Debug | xcpretty -s -f `xcpretty-travis-formatter`; fi
+  - if [[ $TRAVIS_JOB_NAME == 'unit-tests' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Debug --unit-tests | xcpretty -s -f `xcpretty-travis-formatter`; fi
   - if [[ $TRAVIS_JOB_NAME == 'win' ]]; then msbuild.exe -v:normal NewMixer.sln; fi
   - echo "SUCCESS"
 
