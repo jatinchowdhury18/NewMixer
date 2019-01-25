@@ -1,5 +1,5 @@
 #include "ActionHelper.h"
-#include "../Processors/InputTrackProcessor.h"
+#include "InputTrackProcessor.h"
 
 void ActionHelper::rightClickMenu (Track* track)
 {

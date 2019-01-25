@@ -1,10 +1,10 @@
 #ifndef TRACK_H_INCLUDED
 #define TRACK_H_INCLUDED
 
-#include "../Processors/TrackBase.h"
-#include "../GUI Extras/Colours.h"
-#include "AutomationHelper.h"
-#include "../GUI Extras/TrackRenameWindow.h"
+#include "TrackBase.h"
+#include "Colours.h"
+#include "TrackHelpers/AutomationHelper.h"
+#include "TrackRenameWindow.h"
 
 namespace TrackConstants
 {

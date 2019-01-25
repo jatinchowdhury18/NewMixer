@@ -1,7 +1,6 @@
 #ifndef MASTERTRACK_H_INCLUDED
 #define MASTERTRACK_H_INCLUDED
 
-#include "JuceHeader.h"
 #include "Track.h"
 
 class MasterTrack : public AudioProcessorGraph

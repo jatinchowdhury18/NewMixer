@@ -3,7 +3,7 @@
 <JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.1"
               version="0.1.0" companyName="Chowdhury DSP" companyWebsite="chowdsp.com"
               companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer"
-              headerPath="../../JUCE/ASIOSDK2.3.2/common/">
+              headerPath="../../JUCE/ASIOSDK2.3.2/common/&#10;../../Source/&#10;../../Source/Tracks/&#10;../../Source/Processors/&#10;../../Source/GUI Extras/">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
     <GROUP id="{4B66F25F-5A5F-AE8E-A3A4-8B7EAC0F8506}" name="Stems">
       <GROUP id="{F180A70B-FA56-1A51-53CC-34043B3BA250}" name="Chorus">
@@ -45,31 +45,33 @@
               file="Source/GUI Extras/TrackRenameWindow.h"/>
       </GROUP>
       <GROUP id="{B45D25AD-CEFF-02F9-6A66-DF7E89CDDA8E}" name="Processors">
-        <FILE id="SuB7XM" name="DelayProcessor.cpp" compile="1" resource="0"
-              file="Source/Processors/DelayProcessor.cpp"/>
-        <FILE id="lgpu5S" name="DelayProcessor.h" compile="0" resource="0"
-              file="Source/Processors/DelayProcessor.h"/>
-        <FILE id="PRAU4m" name="DistanceProcessor.cpp" compile="1" resource="0"
-              file="Source/Processors/DistanceProcessor.cpp"/>
-        <FILE id="NV52MN" name="DistanceProcessor.h" compile="0" resource="0"
-              file="Source/Processors/DistanceProcessor.h"/>
-        <FILE id="KKoudv" name="FilterProcessor.cpp" compile="1" resource="0"
-              file="Source/Processors/FilterProcessor.cpp"/>
-        <FILE id="cJ0m9j" name="FilterProcessor.h" compile="0" resource="0"
-              file="Source/Processors/FilterProcessor.h"/>
-        <FILE id="MF7oUy" name="GainProcessor.h" compile="0" resource="0" file="Source/Processors/GainProcessor.h"/>
+        <GROUP id="{26FBB757-F206-78D2-9409-271399682CF3}" name="Effects">
+          <FILE id="rCUd7p" name="DelayProcessor.cpp" compile="1" resource="0"
+                file="Source/Processors/Effects/DelayProcessor.cpp"/>
+          <FILE id="h5QNKD" name="DelayProcessor.h" compile="0" resource="0"
+                file="Source/Processors/Effects/DelayProcessor.h"/>
+          <FILE id="AJAdqh" name="DistanceProcessor.cpp" compile="1" resource="0"
+                file="Source/Processors/Effects/DistanceProcessor.cpp"/>
+          <FILE id="uHLQwE" name="DistanceProcessor.h" compile="0" resource="0"
+                file="Source/Processors/Effects/DistanceProcessor.h"/>
+          <FILE id="iUEA0m" name="FilterProcessor.cpp" compile="1" resource="0"
+                file="Source/Processors/Effects/FilterProcessor.cpp"/>
+          <FILE id="rmPDcd" name="FilterProcessor.h" compile="0" resource="0"
+                file="Source/Processors/Effects/FilterProcessor.h"/>
+          <FILE id="YJLNcZ" name="GainProcessor.h" compile="0" resource="0" file="Source/Processors/Effects/GainProcessor.h"/>
+          <FILE id="junnUo" name="PanProcessor.cpp" compile="1" resource="0"
+                file="Source/Processors/Effects/PanProcessor.cpp"/>
+          <FILE id="QuW7z0" name="PanProcessor.h" compile="0" resource="0" file="Source/Processors/Effects/PanProcessor.h"/>
+          <FILE id="kX8ZtU" name="ReverbProcessor.cpp" compile="1" resource="0"
+                file="Source/Processors/Effects/ReverbProcessor.cpp"/>
+          <FILE id="AfJ63c" name="ReverbProcessor.h" compile="0" resource="0"
+                file="Source/Processors/Effects/ReverbProcessor.h"/>
+        </GROUP>
         <FILE id="XD4Qae" name="InputTrackProcessor.cpp" compile="1" resource="0"
               file="Source/Processors/InputTrackProcessor.cpp"/>
         <FILE id="a6kKBU" name="InputTrackProcessor.h" compile="0" resource="0"
               file="Source/Processors/InputTrackProcessor.h"/>
-        <FILE id="dTSvlI" name="PanProcessor.cpp" compile="1" resource="0"
-              file="Source/Processors/PanProcessor.cpp"/>
-        <FILE id="cEo9Bs" name="PanProcessor.h" compile="0" resource="0" file="Source/Processors/PanProcessor.h"/>
         <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
-        <FILE id="ecxR4T" name="ReverbProcessor.cpp" compile="1" resource="0"
-              file="Source/Processors/ReverbProcessor.cpp"/>
-        <FILE id="XP8yBO" name="ReverbProcessor.h" compile="0" resource="0"
-              file="Source/Processors/ReverbProcessor.h"/>
         <FILE id="Fbtunr" name="TrackBase.cpp" compile="1" resource="0" file="Source/Processors/TrackBase.cpp"/>
         <FILE id="Rw8iSM" name="TrackBase.h" compile="0" resource="0" file="Source/Processors/TrackBase.h"/>
         <FILE id="b5w13C" name="TrackProcessor.cpp" compile="1" resource="0"
@@ -78,17 +80,19 @@
               file="Source/Processors/TrackProcessor.h"/>
       </GROUP>
       <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
-        <FILE id="vix8qs" name="ActionHelper.cpp" compile="1" resource="0"
-              file="Source/Tracks/ActionHelper.cpp"/>
-        <FILE id="Z9jR4N" name="ActionHelper.h" compile="0" resource="0" file="Source/Tracks/ActionHelper.h"/>
-        <FILE id="DHn4ua" name="AutomationHelper.cpp" compile="1" resource="0"
-              file="Source/Tracks/AutomationHelper.cpp"/>
-        <FILE id="uo0bqw" name="AutomationHelper.h" compile="0" resource="0"
-              file="Source/Tracks/AutomationHelper.h"/>
+        <GROUP id="{FBD60609-1200-7D68-FE0A-2AF2C3EFEFBF}" name="Track Helpers">
+          <FILE id="ezawxC" name="ActionHelper.cpp" compile="1" resource="0"
+                file="Source/Tracks/TrackHelpers/ActionHelper.cpp"/>
+          <FILE id="ITOksQ" name="ActionHelper.h" compile="0" resource="0" file="Source/Tracks/TrackHelpers/ActionHelper.h"/>
+          <FILE id="xciFJL" name="AutomationHelper.cpp" compile="1" resource="0"
+                file="Source/Tracks/TrackHelpers/AutomationHelper.cpp"/>
+          <FILE id="byk3sG" name="AutomationHelper.h" compile="0" resource="0"
+                file="Source/Tracks/TrackHelpers/AutomationHelper.h"/>
+          <FILE id="GrvQdE" name="PaintHelper.h" compile="0" resource="0" file="Source/Tracks/TrackHelpers/PaintHelper.h"/>
+          <FILE id="uF7wFW" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/TrackHelpers/SoloHelper.h"/>
+        </GROUP>
         <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
         <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
-        <FILE id="Izy78n" name="PaintHelper.h" compile="0" resource="0" file="Source/Tracks/PaintHelper.h"/>
-        <FILE id="cL39Yp" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/SoloHelper.h"/>
         <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
         <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
       </GROUP>

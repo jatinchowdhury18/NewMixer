@@ -1,6 +1,6 @@
 #include "MainComponent.h"
-#include "Tracks/SoloHelper.h"
-#include "Tracks/ActionHelper.h"
+#include "TrackHelpers/SoloHelper.h"
+#include "TrackHelpers/ActionHelper.h"
 
 //==============================================================================
 MainComponent::MainComponent()

@@ -1,6 +1,6 @@
 #include "TrackBase.h"
-#include "../Tracks/Track.h"
-#include "../MainComponent.h"
+#include "Track.h"
+#include "MainComponent.h"
 
 namespace
 {

@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
-#include "Tracks/Track.h"
-#include "Tracks/MasterTrack.h"
-#include "GUI Extras/Colours.h"
-#include "GUI Extras/Settings.h"
+#include "JuceHeader.h"
+#include "Track.h"
+#include "MasterTrack.h"
+#include "Colours.h"
+#include "Settings.h"
 
 //==============================================================================
 /*
