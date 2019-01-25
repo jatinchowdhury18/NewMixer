@@ -55,8 +55,7 @@ script:
     if [[ $TRAVIS_JOB_NAME == 'unit-tests' ]]; then 
       xcodebuild -project NewMixer.xcodeproj/ -configuration Debug | xcpretty -s -f `xcpretty-travis-formatter`
       cd build/Debug/NewMixer.app/Contents/MacOS
-      ls
-      NewMixer --unit-tests
+      ./NewMixer --unit-tests
     fi
 
   - echo "SUCCESS"
