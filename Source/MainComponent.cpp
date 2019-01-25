@@ -213,7 +213,6 @@ public:
         beginTest ("Automation");
 
         dummyTest (1, 1);
-        dummyTest (1, 2);
     }
 };
 
