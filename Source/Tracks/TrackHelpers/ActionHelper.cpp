@@ -157,3 +157,5 @@ void ActionHelper::changeColour (Track* track, int index)
     track->setTrackColour (track->getColours().getColour (index));
     track->repaint();
 }
+
+//@TODO: Unit tests for constraint functions

@@ -9,6 +9,9 @@ void AutoHelper::addAutoPoint (int x, int y, float diameter)
 
 void AutoHelper::getPoint (int& x, int& y, float& diameter)
 {
+    if (numPoints <= 0)
+        return;
+
     x = points[curPoint]->x;
     y = points[curPoint]->y;
     diameter = points[curPoint]->diameter;

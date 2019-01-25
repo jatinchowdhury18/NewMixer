@@ -197,24 +197,119 @@ void MainComponent::togglePlay()
 
 //=====================================================
 #if JUCE_DEBUG
+enum
+{
+    numTestTracks = 15,
+};
+
+class PlayTest : public UnitTest
+{
+public:
+    PlayTest() : UnitTest ("Play") {}
+
+    void checkPlaying (Track* track,  bool shouldBePlaying)
+    {
+        expect (track->getIsPlaying() == shouldBePlaying,
+                "Track playstate incorrect: " + String ((int) track->getIsPlaying()));
+    }
+
+    void checkPlayheads (Track* track0, Track* track1)
+    {
+        expect (track0->getProcessor()->getStartSample() == track1->getProcessor()->getStartSample(),
+                "Track playheads misaligned: " + String (track0->getProcessor()->getStartSample())
+                                        + ", " + String (track1->getProcessor()->getStartSample()));
+    }
+
+    void playTests(MainComponent& main, bool& playState)
+    {
+        for (auto track : main.tracks)
+            checkPlaying (track, playState);
+
+        for (int i = 1; i < main.tracks.size(); i++)
+            checkPlayheads (main.tracks[i - 1], main.tracks[i]);
+
+        main.togglePlay();
+        playState = ! playState;
+    }
+
+    void runTest() override
+    {
+        beginTest ("Play");
+        MainComponent main;
+        bool playState = false;
+        
+        for (int i = 0; i < numTestTracks; i++)
+        {
+            main.addRecordingTrack();
+            playTests (main, playState);
+        } 
+    }
+};
 
 class AutomationTest : public UnitTest
 {
 public:
     AutomationTest() : UnitTest ("Automation") {}
 
-    void dummyTest (int val1, int val2)
+    int randInt()
     {
-        expectEquals<int> (val1, val2, "Dummy Error");
+        Random r;
+        r.setSeedRandomly();
+
+        return (r.nextInt() % 1000) - 200;
+    }
+
+    void setAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
+    {
+        logMessage ("Setting test automation points");
+        for (int i = 0; i < 5000; i++)
+        {
+            for (int t = 0; t < numTestTracks; t++)
+            {
+                x[t].add (randInt());
+                y[t].add (randInt());
+                diameter[t].add ((float) randInt());
+                tracks[t]->getAutoHelper().addAutoPoint (x[t].getLast(), y[t].getLast(), diameter[t].getLast());
+            }
+        }
+    }
+
+    void checkAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
+    {
+        logMessage ("Checking test automation points");
+        for (int i = 0; i < 5000; i++)
+        {
+            for (int t = 0; t < numTestTracks; t++)
+            {
+                int xTest = 0;
+                int yTest = 0;
+                float dTest = 0;
+                tracks[t]->getAutoHelper().getPoint (xTest, yTest, dTest);
+
+                expect (xTest == x[t][i], "Track x position incorrect: " + String (xTest));
+                expect (yTest == y[t][i], "Track y position incorrect: " + String (yTest));
+                expect (dTest == diameter[t][i], "Track diameter incorrect: " + String (dTest));
+            }
+        }
     }
 
     void runTest() override
     {
         beginTest ("Automation");
+        MainComponent main;
 
-        dummyTest (1, 1);
+        Array<int> x[numTestTracks];
+        Array<int> y[numTestTracks];
+        Array<float> diameter[numTestTracks];
+
+        for (int i = 0; i < numTestTracks; i++)
+            main.addRecordingTrack();
+        
+        setAutoPoints (main.tracks, x, y, diameter);
+        checkAutoPoints (main.tracks, x, y, diameter);
     }
 };
 
+static PlayTest playTest;
 static AutomationTest autoTest;
 #endif
