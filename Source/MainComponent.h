@@ -44,6 +44,11 @@ public:
     void togglePlay();
 
 private:
+#if JUCE_DEBUG
+    friend class PlayTest;
+    friend class AutomationTest;
+#endif
+
     void initSettings();
     void addTracks (String stemsToUse);
 
