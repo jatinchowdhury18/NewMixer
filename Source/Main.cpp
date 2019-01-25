@@ -67,6 +67,16 @@ public:
         if (commandLine.contains ("--unit-tests"))
         {
             unitTestRunner.runAllTests();
+
+            for (int i = 0; i < unitTestRunner.getNumResults(); ++i)
+            {
+                if (unitTestRunner.getResult (i)->failures > 0)
+                {
+                    setApplicationReturnValue (1);
+                    break;
+                }
+            }
+
             quit();
             return true;
         }
@@ -120,8 +130,26 @@ public:
     };
 
 private:
+    class MyUnitTestRunner : public UnitTestRunner
+    {
+    public:
+        MyUnitTestRunner() : abortTests (false) { }
+        void setAbortingTests (bool shouldAbortTests)   { abortTests = shouldAbortTests; }
+        bool shouldAbortTests() override                { return abortTests; }
+
+#if JUCE_WINDOWS
+        //on windows, override the default logMessage so that it prints to both VS and command-line console
+        void logMessage (const String& message) override { DBG (message); std::cout << message << "\n"; }
+#endif
+
+    private:
+        std::atomic<bool> abortTests;
+
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MyUnitTestRunner)
+    };
+
     std::unique_ptr<MainWindow> mainWindow;
-    UnitTestRunner unitTestRunner;
+    MyUnitTestRunner unitTestRunner;
 };
 
 //==============================================================================
