@@ -94,3 +94,5 @@ void TrackBase::trackMoved (int x, int y, int width, bool mouseUp)
     
     distProcessor->setVerb (1.0f - distFactor);
 }
+
+//@TODO: processor unit testing (math)

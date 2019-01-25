@@ -209,21 +209,19 @@ public:
 
     void checkPlaying (Track* track,  bool shouldBePlaying)
     {
-        expect (track->getIsPlaying() == shouldBePlaying, "Track playstate incorrect");
+        expect (track->getIsPlaying() == shouldBePlaying,
+                "Track playstate incorrect: " + String ((int) track->getIsPlaying()));
     }
 
     void checkPlayheads (Track* track0, Track* track1)
     {
-        expect (track0->getProcessor()->getStartSample() == track1->getProcessor()->getStartSample(), "Track playheads misaligned");
+        expect (track0->getProcessor()->getStartSample() == track1->getProcessor()->getStartSample(),
+                "Track playheads misaligned: " + String (track0->getProcessor()->getStartSample())
+                                        + ", " + String (track1->getProcessor()->getStartSample()));
     }
 
     void playTests(MainComponent& main, bool& playState)
     {
-        if (playState)
-            logMessage ("Testing: play");
-        else
-            logMessage ("Testing: pause");
-
         for (auto track : main.tracks)
             checkPlaying (track, playState);
 
@@ -253,6 +251,14 @@ class AutomationTest : public UnitTest
 public:
     AutomationTest() : UnitTest ("Automation") {}
 
+    int randInt()
+    {
+        Random r;
+        r.setSeedRandomly();
+
+        return (r.nextInt() % 1000) - 200;
+    }
+
     void setAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
     {
         logMessage ("Setting test automation points");
@@ -260,9 +266,9 @@ public:
         {
             for (int t = 0; t < numTestTracks; t++)
             {
-                x[t].add (getRandom().nextInt());
-                y[t].add (getRandom().nextInt());
-                diameter[t].add (getRandom().nextFloat());
+                x[t].add (randInt());
+                y[t].add (randInt());
+                diameter[t].add ((float) randInt());
                 tracks[t]->getAutoHelper().addAutoPoint (x[t].getLast(), y[t].getLast(), diameter[t].getLast());
             }
         }
@@ -280,9 +286,9 @@ public:
                 float dTest = 0;
                 tracks[t]->getAutoHelper().getPoint (xTest, yTest, dTest);
 
-                expect (xTest == x[t][i], "Track x position incorrect");
-                expect (yTest == y[t][i], "Track y position incorrect");
-                expect (dTest == diameter[t][i], "Track diameter incorrect");
+                expect (xTest == x[t][i], "Track x position incorrect: " + String (xTest));
+                expect (yTest == y[t][i], "Track y position incorrect: " + String (yTest));
+                expect (dTest == diameter[t][i], "Track diameter incorrect: " + String (dTest));
             }
         }
     }

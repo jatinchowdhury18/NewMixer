@@ -180,3 +180,50 @@ void Track::togglePlay()
     else
         autoHelper.throwAway();
 }
+
+#if JUCE_DEBUG
+class MoveTest : public UnitTest
+{
+public:
+    MoveTest() : UnitTest ("Move Track") {}
+
+    int randInt()
+    {
+        Random r;
+        r.setSeedRandomly();
+
+        return (r.nextInt() % 1000) - 200;
+    }
+
+    void checkPosition (Track* track)
+    {
+        Point<int> center = Point<int> (track->getX() + width / 2, track->getY() + width / 2);
+
+        expect (0 <= center.x && center.x <= track->getParentWidth(),
+                "X coordinate out of range: " + String (center.x));
+
+        expect (0 <= center.y && center.y <= track->getParentHeight(),
+            "Y coordinate out of range: " + String (center.x));
+
+        expect (minDiameter <= track->getDiameter() && track->getDiameter() <= maxDiameter,
+                "Track diameter out of range: " + String (track->getDiameter()));
+    }
+
+    void runTest() override
+    {
+        beginTest ("Move Track");
+        std::unique_ptr<Track> track;
+        track.reset (new Track (100, 0, false, "Test", "T", 10, 10, Colours::white));
+        
+        for (int i = 0; i < 5000; i++)
+        {
+            ActionHelper::setPositionConstrained (track.get(), Point<int> (randInt(), randInt()));
+            ActionHelper::setSizeConstrained (track.get(), track->getDiameter(), (float) randInt());
+
+            checkPosition (track.get());
+        }
+    }
+};
+
+static MoveTest moveTest;
+#endif
