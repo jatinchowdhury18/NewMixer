@@ -22,7 +22,6 @@ namespace TrackConstants
 
 class Track : public Component,
               public SettableTooltipClient,
-              private Timer,
               private TrackBase::Listener,
               private TrackRenameComponent::Listener
 {
@@ -56,7 +55,6 @@ public:
     bool toggleMute();
     void togglePlay();
 
-    void timerCallback() override;
     void trackMoved();
     void newLoop() override;
 
@@ -84,6 +82,26 @@ private:
     friend class NameTest;
 #endif
 
+    class LambdaTimer : public juce::Timer
+    {
+    public:
+        LambdaTimer() = default;
+
+        void setCallback (std::function<void()> newCallback) { callback = std::move (newCallback); }
+
+        void timerCallback() override
+        {
+            if (callback)
+                callback();
+        }
+
+    private:
+        std::function<void()> callback;
+    };
+
+    void setupTimers();
+    void automationCallback();
+
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
@@ -103,6 +121,9 @@ private:
     TrackBase* processor;
 
     AutoHelper autoHelper;
+    
+    LambdaTimer autoTimer;
+    LambdaTimer paintTimer;
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
 

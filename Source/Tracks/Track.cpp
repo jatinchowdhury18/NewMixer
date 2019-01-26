@@ -18,7 +18,7 @@ Track::Track (File& file, String name, String shortName, int x, int y, Colour co
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (50);
+    setupTimers();
 }
 
 Track::Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour) : 
@@ -33,7 +33,7 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (50);
+    setupTimers();
 }
 
 Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour) :
@@ -49,7 +49,7 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (50);
+    setupTimers();
 }
 
 Track::~Track()
@@ -57,10 +57,18 @@ Track::~Track()
     processor->removeListener (this);
 }
 
-void Track::timerCallback()
+void Track::setupTimers()
 {
-    repaint(); 
+    autoTimer.startTimer (20);
+    autoTimer.setCallback ([this] () { automationCallback(); });    
+    
+    //@TODO: lower timer interval after optimizing paint callback
+    paintTimer.startTimer (50);
+    paintTimer.setCallback ([this] () { repaint(); });
+}
 
+void Track::automationCallback()
+{
     if (autoHelper.isRecording())
         autoHelper.addAutoPoint (getX(), getY(), diameter);
     else if (isPlaying && autoHelper.isRecorded())
