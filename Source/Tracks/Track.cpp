@@ -18,7 +18,7 @@ Track::Track (File& file, String name, String shortName, int x, int y, Colour co
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (50);
+    setupTimers();
 }
 
 Track::Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour) : 
@@ -33,7 +33,7 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (50);
+    setupTimers();
 }
 
 Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour) :
@@ -49,7 +49,7 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (50);
+    setupTimers();
 }
 
 Track::~Track()
@@ -57,10 +57,18 @@ Track::~Track()
     processor->removeListener (this);
 }
 
-void Track::timerCallback()
+void Track::setupTimers()
 {
-    repaint(); 
+    autoTimer.startTimer (20);
+    autoTimer.setCallback ([this] () { automationCallback(); });    
+    
+    //@TODO: lower timer interval after optimizing paint callback
+    paintTimer.startTimer (50);
+    paintTimer.setCallback ([this] () { repaint(); });
+}
 
+void Track::automationCallback()
+{
     if (autoHelper.isRecording())
         autoHelper.addAutoPoint (getX(), getY(), diameter);
     else if (isPlaying && autoHelper.isRecorded())
@@ -91,17 +99,25 @@ void Track::trackRename()
 {
     renameWindow.reset (new TrackRenameWindow (name));
     renameWindow->getComp()->addListener (this);
+    renameWindow->getComp()->setFocused();
 }
 
 void Track::trackNameChanged (String newName, String newShortName)
 {
     if (newName.isNotEmpty())
+    {
         name = newName;
-    if (newShortName.isNotEmpty())
-        shortName = newShortName;
+
+        if (newShortName.isNotEmpty())
+            shortName = newShortName;
+        else
+            shortName = name.substring (0, jmin<int> (4, name.length()));
+    }
 
     repaint();
-    renameWindow->getComp()->removeListener (this);
+
+    if (renameWindow.get() != nullptr)
+        renameWindow->getComp()->removeListener (this);
 }
 
 void Track::trackMoved()
@@ -185,7 +201,7 @@ void Track::togglePlay()
 class MoveTest : public UnitTest
 {
 public:
-    MoveTest() : UnitTest ("Move Track") {}
+    MoveTest() : UnitTest ("Move Tracks") {}
 
     int randInt()
     {
@@ -195,7 +211,7 @@ public:
         return (r.nextInt() % 1000) - 200;
     }
 
-    void checkPosition (Track* track)
+    void checkPosition()
     {
         Point<int> center = Point<int> (track->getX() + width / 2, track->getY() + width / 2);
 
@@ -211,19 +227,70 @@ public:
 
     void runTest() override
     {
-        beginTest ("Move Track");
-        std::unique_ptr<Track> track;
-        track.reset (new Track (100, 0, false, "Test", "T", 10, 10, Colours::white));
+        beginTest ("Move");
         
         for (int i = 0; i < 5000; i++)
         {
-            ActionHelper::setPositionConstrained (track.get(), Point<int> (randInt(), randInt()));
-            ActionHelper::setSizeConstrained (track.get(), track->getDiameter(), (float) randInt());
+            ActionHelper::setPositionConstrained (track, Point<int> (randInt(), randInt()));
+            ActionHelper::setSizeConstrained (track, track->getDiameter(), (float) randInt());
 
-            checkPosition (track.get());
+            checkPosition();
         }
     }
+
+    void initialise() override { track = new Track (100, 0, false, "Test", "Tst", 100, 100, Colours::white); }
+    void shutdown() override 
+    {
+        delete track->getProcessor(); 
+        delete track;
+    }
+
+private:
+    Track* track;
+};
+
+class NameTest : public UnitTest
+{
+public:
+    NameTest() : UnitTest ("Name Tracks") {}
+
+    void checkNames (String expName, String expShort)
+    {
+        expect (expName == track->name, "Track name incorrect: " + track->name
+                                               + ", expected: " + expName);
+        expect (expShort == track->shortName, "Track short name incorrect, got: " + track->shortName
+                                                                + ", expected: " + expShort);
+    }
+
+    void nameTest (String setName, String setShort, String expName, String expShort)
+    {
+        track->trackNameChanged (setName, setShort);
+        checkNames (expName, expShort);
+    }
+
+    void runTest() override
+    {
+        beginTest ("Names");
+
+        nameTest ("", "", "Test", "Tst");
+        nameTest ("", "squaminous", "Test", "Tst");
+        nameTest ("Guitar", "Gtr", "Guitar", "Gtr");
+        nameTest ("Drums", "", "Drums", "Drum");
+        nameTest ("Ttesttttttt", "", "Ttesttttttt", "Ttes");
+        nameTest ("Gtr", "", "Gtr", "Gtr");
+    }
+
+    void initialise() override { track = new Track (100, 0, false, "Test", "Tst", 100, 100, Colours::white); }
+    void shutdown() override 
+    {
+        delete track->getProcessor(); 
+        delete track;
+    }
+
+private:
+    Track* track;
 };
 
 static MoveTest moveTest;
+static NameTest nameTest;
 #endif

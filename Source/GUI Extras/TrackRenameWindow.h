@@ -10,6 +10,7 @@ public:
 
     void paint (Graphics& g) override { g.fillAll (Colours::black); }
     void resized() override;
+    bool keyPressed (const KeyPress& key) override;
 
     class Listener
     {
@@ -20,8 +21,11 @@ public:
 
     void addListener (Listener* listener) { listeners.add (listener); }
     void removeListener (Listener* listener) { listeners.remove (listener); }
+    void setFocused() { nameEditor.grabKeyboardFocus(); }
 
 private:
+    void setName();
+
     ListenerList<Listener> listeners;
 
     Label nameLabel;
