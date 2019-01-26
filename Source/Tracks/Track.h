@@ -80,6 +80,10 @@ public:
     bool getIsPlaying() { return isPlaying; }
 
 private:
+#if JUCE_DEBUG
+    friend class NameTest;
+#endif
+
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;

@@ -29,25 +29,38 @@ TrackRenameComponent::TrackRenameComponent (DocumentWindow* win) :
     window (win)
 {
     setSize (xBuffer + smallWidth + editorWidth, height * 3 + yBuffer * 4);
+    setWantsKeyboardFocus (true);
+
+    Colour myColour = Colours::lightgrey;
 
     nameLabel.setText (String ("Name:"), dontSendNotification);
+    nameLabel.setColour (Label::textColourId, myColour);
     addAndMakeVisible (nameLabel);
 
     shortLabel.setText (String ("Abbr:"), dontSendNotification);
+    shortLabel.setColour (Label::textColourId, myColour);
     addAndMakeVisible (shortLabel);
 
-    nameEditor.setMultiLine (false);
-    addAndMakeVisible (nameEditor);
+    auto setupEditor = [this, myColour] (TextEditor& editor)
+    {
+        editor.setMultiLine (false);
+        editor.setEscapeAndReturnKeysConsumed (false);
+        editor.setColour (TextEditor::textColourId, myColour);
+        editor.setColour (CaretComponent::caretColourId, myColour);
+        editor.setColour (TextEditor::highlightColourId, myColour);
+        editor.setColour (TextEditor::highlightedTextColourId, findColour (TextEditor::backgroundColourId));
+        editor.setColour (TextEditor::outlineColourId, myColour);
+        editor.setColour (TextEditor::focusedOutlineColourId, myColour);
+        addAndMakeVisible (editor);
+    };
 
-    shortEditor.setMultiLine (false);
-    addAndMakeVisible (shortEditor);
+    setupEditor (nameEditor);
+    setupEditor (shortEditor);
 
     setButton.setButtonText (String ("Set"));
-    setButton.onClick = [this] () 
-    { 
-        listeners.call (&Listener::trackNameChanged, nameEditor.getText(), shortEditor.getText());
-        window->closeButtonPressed(); 
-    };
+    setButton.setColour (TextButton::textColourOffId, myColour);
+    setButton.setColour (ComboBox::outlineColourId, myColour);
+    setButton.onClick = [this] () { setName(); };
     addAndMakeVisible (setButton);
 }
 
@@ -60,4 +73,21 @@ void TrackRenameComponent::resized()
     shortEditor.setBounds (smallWidth, height + yBuffer * 2, editorWidth, height);
 
     setButton.setBounds ((getWidth() - smallWidth) / 2, height * 2 + yBuffer * 3, smallWidth, height);
+}
+
+bool TrackRenameComponent::keyPressed (const KeyPress& key)
+{
+    if (key == KeyPress::returnKey)
+    {
+        setName();
+        return true;
+    }
+
+    return false;
+}
+
+void TrackRenameComponent::setName()
+{
+    listeners.call (&Listener::trackNameChanged, nameEditor.getText(), shortEditor.getText());
+    window->closeButtonPressed();
 }

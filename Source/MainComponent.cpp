@@ -205,7 +205,7 @@ enum
 class PlayTest : public UnitTest
 {
 public:
-    PlayTest() : UnitTest ("Play") {}
+    PlayTest() : UnitTest ("Play Test") {}
 
     void checkPlaying (Track* track,  bool shouldBePlaying)
     {
@@ -261,7 +261,7 @@ public:
 
     void setAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
     {
-        logMessage ("Setting test automation points");
+        beginTest ("Setting test automation points");
         for (int i = 0; i < 5000; i++)
         {
             for (int t = 0; t < numTestTracks; t++)
@@ -276,7 +276,7 @@ public:
 
     void checkAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
     {
-        logMessage ("Checking test automation points");
+        beginTest ("Checking test automation points");
         for (int i = 0; i < 5000; i++)
         {
             for (int t = 0; t < numTestTracks; t++)
@@ -295,7 +295,6 @@ public:
 
     void runTest() override
     {
-        beginTest ("Automation");
         MainComponent main;
 
         Array<int> x[numTestTracks];
