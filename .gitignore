@@ -18,3 +18,6 @@ BinaryData2.cpp
 
 #Demos
 Demos
+
+#Unit Tests script
+unit-test.sh
