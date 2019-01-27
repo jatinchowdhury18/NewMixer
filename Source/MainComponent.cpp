@@ -104,13 +104,14 @@ void MainComponent::addTracks (String stemsToUse)
     }
 }
 
-void MainComponent::addRecordingTrack()
+void MainComponent::addRecordingTrack (int x, int y)
 {
     auto len = tracks[0]->getProcessor()->getLengthSamples();
     auto startSample = tracks[0]->getProcessor()->getStartSample();
     auto playing = tracks[0]->getIsPlaying();
 
-    tracks.add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"), width / 2, 400, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"),
+                x - TrackConstants::width / 2, y - TrackConstants::width / 2, trackColours.getColour (tracks.size())));
     addAndMakeVisible (tracks.getLast());
     tracks.getLast()->addListener (this);
 
@@ -158,7 +159,7 @@ void MainComponent::mouseDown (const MouseEvent& e)
 
         m.addItem (Cmds::newRecordTrack, String ("New Track"));
 
-        m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this));
+        m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this, Point<int> (e.x, e.y)));
     }
 }
 
@@ -169,7 +170,7 @@ void MainComponent::clearSelectedTrack()
     repaint();
 }
 
-void MainComponent::rightClickCallback (int result, MainComponent* mc)
+void MainComponent::rightClickCallback (int result, MainComponent* mc, Point<int> p)
 {
     switch (result)
     {
@@ -177,7 +178,7 @@ void MainComponent::rightClickCallback (int result, MainComponent* mc)
         return;
 
     case Cmds::newRecordTrack:
-        mc->addRecordingTrack();
+        mc->addRecordingTrack (p.x, p.y);
         return;
 
     default:
@@ -258,7 +259,7 @@ public:
         
         for (int i = 0; i < numTestTracks; i++)
         {
-            main.addRecordingTrack();
+            main.addRecordingTrack (0, 0);
             playTests (main, playState);
         } 
     }
@@ -320,7 +321,7 @@ public:
         Array<float> diameter[numTestTracks];
 
         for (int i = 0; i < numTestTracks; i++)
-            main.addRecordingTrack();
+            main.addRecordingTrack (0, 0);
         
         setAutoPoints (main.tracks, x, y, diameter);
         checkAutoPoints (main.tracks, x, y, diameter);
@@ -339,7 +340,7 @@ public:
         beginTest ("Adding Tracks");
 
         for (int i = 0; i < numTestTracks; i++)
-            main.addRecordingTrack();
+            main.addRecordingTrack (0, 0);
 
         main.togglePlay();
 
