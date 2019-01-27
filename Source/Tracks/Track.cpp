@@ -14,11 +14,7 @@ Track::Track (File& file, String name, String shortName, int x, int y, Colour co
     processor = new TrackProcessor (file);
     processor->addListener (this);
 
-    setBounds (x, y, width, width);
-    setBroughtToFrontOnMouseClick (true);
-
-    setTooltip (name);
-    setupTimers();
+    initialise (x, y);
 }
 
 Track::Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour) : 
@@ -29,11 +25,7 @@ Track::Track (MemoryInputStream* input, String name, String shortName, int x, in
     processor = new TrackProcessor (input);
     processor->addListener (this);
 
-    setBounds (x, y, width, width);
-    setBroughtToFrontOnMouseClick (true);
-
-    setTooltip (name);
-    setupTimers();
+    initialise (x, y);
 }
 
 Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour) :
@@ -45,11 +37,19 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     processor = new InputTrackProcessor (sampleLength, startSample);
     processor->addListener (this);
 
+    initialise (x, y);
+}
+
+void Track::initialise (int x, int y)
+{
+    meter.reset (new TrackMeter (this));
+    addAndMakeVisible (meter.get());
+
     setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    setupTimers();
+    startTimer (25);
 }
 
 Track::~Track()
@@ -57,17 +57,7 @@ Track::~Track()
     processor->removeListener (this);
 }
 
-void Track::setupTimers()
-{
-    autoTimer.startTimer (20);
-    autoTimer.setCallback ([this] () { automationCallback(); });    
-    
-    //@TODO: lower timer interval after optimizing paint callback
-    paintTimer.startTimer (50);
-    paintTimer.setCallback ([this] () { repaint(); });
-}
-
-void Track::automationCallback()
+void Track::timerCallback()
 {
     if (autoHelper.isRecording())
         autoHelper.addAutoPoint (getX(), getY(), diameter);
@@ -126,8 +116,13 @@ void Track::trackMoved()
     processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, false);
 }
 
-void Track::paint (Graphics& g) { PaintHelper::paint (this, g); }
-void Track::resized() { trackMoved(); }
+void Track::paintOverChildren (Graphics& g) { PaintHelper::paint (this, g); }
+
+void Track::resized()
+{
+    trackMoved();
+    meter->setBounds (0, 0, width, width);
+}
 
 bool Track::hitTest (int x, int y)
 {

@@ -95,6 +95,8 @@
         <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
         <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
         <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
+        <FILE id="IkwDkf" name="TrackMeter.cpp" compile="1" resource="0" file="Source/Tracks/TrackMeter.cpp"/>
+        <FILE id="IhxrcD" name="TrackMeter.h" compile="0" resource="0" file="Source/Tracks/TrackMeter.h"/>
       </GROUP>
       <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
