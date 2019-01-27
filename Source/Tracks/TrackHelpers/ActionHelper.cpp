@@ -19,11 +19,10 @@ void ActionHelper::rightClickMenu (Track* track)
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
     if (inputProcessor != nullptr)
-    {
         m.addItem (TrackCmds::recordInput, String ("Record"),
                    ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
-        m.addItem (TrackCmds::deleteTrack, String ("Delete"));
-    }
+        
+    m.addItem (TrackCmds::deleteTrack, String ("Delete"));
 
 
     m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (ActionHelper::rightClickCallback, track));

@@ -98,7 +98,10 @@ void MainComponent::addTracks (String stemsToUse)
     }
 
     for (auto* track : tracks)
+    {
         addAndMakeVisible (track);
+        track->addListener (this);
+    }
 }
 
 void MainComponent::addRecordingTrack()
@@ -324,6 +327,35 @@ public:
     }
 };
 
+class AddRemoveTracksTest : public UnitTest
+{
+public:
+    AddRemoveTracksTest() : UnitTest ("Track adding and removing") {}
+
+    void runTest() override
+    {
+        MainComponent main;
+
+        beginTest ("Adding Tracks");
+
+        for (int i = 0; i < numTestTracks; i++)
+            main.addRecordingTrack();
+
+        main.togglePlay();
+
+        beginTest ("Removing tracks");
+        for (int i = numTestTracks - 1; i >= 0; i--)
+        {
+            main.tracks[i]->setSelected (true);
+            main.tracks[i]->deleteSelectedTrack();
+            main.togglePlay();
+        }
+
+        main.deleteSelectedTrack();
+    }
+};
+
 static PlayTest playTest;
 static AutomationTest autoTest;
+static AddRemoveTracksTest arTracksTest;
 #endif

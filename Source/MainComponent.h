@@ -48,6 +48,7 @@ private:
 #if JUCE_DEBUG
     friend class PlayTest;
     friend class AutomationTest;
+    friend class AddRemoveTracksTest;
 #endif
 
     void initSettings();
