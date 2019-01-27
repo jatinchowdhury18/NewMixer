@@ -31,7 +31,7 @@ public:
     };
 
     //==============================================================================
-    MainComponent();
+    MainComponent (String mode = "Test");
     ~MainComponent();
 
     //==============================================================================
@@ -54,8 +54,8 @@ private:
     void initSettings();
     void addTracks (String stemsToUse);
 
-    static void rightClickCallback (int result, MainComponent* mc);
-    void addRecordingTrack();
+    static void rightClickCallback (int result, MainComponent* mc, Point<int> p);
+    void addRecordingTrack (int x, int y);
     void deleteSelectedTrack() override;
 
     //==============================================================================

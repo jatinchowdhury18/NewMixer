@@ -29,8 +29,7 @@ public:
         if (handleInternalCommandLineOperations (commandLine))
             return;
 
-
-        mainWindow.reset (new MainWindow (getApplicationName()));
+        mainWindow.reset (new MainWindow (getApplicationName(), commandLine));
     }
 
     void shutdown() override
@@ -59,29 +58,27 @@ public:
 
     bool handleInternalCommandLineOperations (const String& commandLine)
     {
-        return handleUnitTests (commandLine);
+        if (commandLine.contains ("--unit-tests"))
+            return handleUnitTests();
+        else
+            return false;
     }
 
-    bool handleUnitTests (const String& commandLine)
+    bool handleUnitTests()
     {
-        if (commandLine.contains ("--unit-tests"))
+        unitTestRunner.runAllTests();
+
+        for (int i = 0; i < unitTestRunner.getNumResults(); ++i)
         {
-            unitTestRunner.runAllTests();
-
-            for (int i = 0; i < unitTestRunner.getNumResults(); ++i)
+            if (unitTestRunner.getResult (i)->failures > 0)
             {
-                if (unitTestRunner.getResult (i)->failures > 0)
-                {
-                    setApplicationReturnValue (1);
-                    break;
-                }
+                setApplicationReturnValue (1);
+                break;
             }
-
-            quit();
-            return true;
         }
 
-        return false;
+        quit();
+        return true;
     }
 
     //==============================================================================
@@ -92,13 +89,16 @@ public:
     class MainWindow    : public DocumentWindow
     {
     public:
-        MainWindow (String name)  : DocumentWindow (name,
+        MainWindow (String name, String mode)  : DocumentWindow (name,
                                                     Desktop::getInstance().getDefaultLookAndFeel()
                                                                           .findColour (ResizableWindow::backgroundColourId),
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new MainComponent(), true);
+            if (mode == "Test" || mode == "Bridge" || mode == "Chorus")
+                setContentOwned (new MainComponent (mode), true);
+            else
+                setContentOwned (new MainComponent(), true);
 
            #if JUCE_IOS || JUCE_ANDROID
             setFullScreen (true);
