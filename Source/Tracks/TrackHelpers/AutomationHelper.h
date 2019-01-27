@@ -14,6 +14,7 @@ public:
     void setRecordingStatus();
     void throwAway();
     void arm() { armedForRecording = true; }
+    void rewind() {curPoint = 0; }
 
     bool isRecording() { return recording; }
     bool isRecorded() { return automationRecorded; }

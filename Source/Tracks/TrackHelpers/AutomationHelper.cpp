@@ -3,7 +3,6 @@
 void AutoHelper::addAutoPoint (int x, int y, float diameter)
 {
     points.add (new AutoPoint (x, y, diameter));
-
     numPoints++;
 }
 
@@ -26,6 +25,7 @@ void AutoHelper::setRecordingStatus()
     if (armedForRecording)
     {
         points.clear();
+        numPoints = 0;
 
         armedForRecording = false;
         recording = true;
