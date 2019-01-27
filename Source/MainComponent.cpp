@@ -194,9 +194,16 @@ bool MainComponent::keyPressed (const KeyPress& key)
         repaint();
         return true;
     }
-
-    if (key == KeyPress::spaceKey) //play/pause
+    else if (key == KeyPress::spaceKey) //play/pause
+    {
         togglePlay();
+        return true;
+    }
+    else if (key == KeyPress::deleteKey)
+    {
+        deleteSelectedTrack();
+        return true;
+    }
 
     for (auto track : tracks)
     {
