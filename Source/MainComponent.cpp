@@ -3,9 +3,9 @@
 #include "TrackHelpers/ActionHelper.h"
 
 //==============================================================================
-MainComponent::MainComponent()
+MainComponent::MainComponent (String mode)
 {
-    addTracks ("Test"); //"Test", "Chorus", or "Bridge"
+    addTracks (mode); //"Test" (default), "Chorus", or "Bridge"
 
     master.reset (new MasterTrack (tracks));
 
