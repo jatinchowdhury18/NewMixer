@@ -73,3 +73,14 @@ void MasterTrack::addTrack (Track* track)
                          { audioOutputNode->nodeID, channel } });
     }
 }
+
+void MasterTrack::removeTrack (Track* track)
+{
+    ReferenceCountedObjectPtr<Node> nodeToDelete;
+    for (int i = 0; i < trackNodes.size(); i++)
+        if (track->getProcessor() == trackNodes[i]->getProcessor())
+            nodeToDelete = trackNodes.removeAndReturn (i);
+
+    removeNode (nodeToDelete.get());
+    nodeToDelete.reset();
+}

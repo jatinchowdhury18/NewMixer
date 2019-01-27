@@ -18,6 +18,8 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    for (auto track : tracks)
+        track->removeListener (this);
 }
 
 void MainComponent::initSettings()
@@ -107,8 +109,21 @@ void MainComponent::addRecordingTrack()
 
     tracks.add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"), width / 2, 400, trackColours.getColour (tracks.size())));
     addAndMakeVisible (tracks.getLast());
+    tracks.getLast()->addListener (this);
 
     master->addTrack (tracks.getLast());
+}
+
+void MainComponent::deleteSelectedTrack()
+{
+    Track* trackToDelete = nullptr;
+    for (int i = 0; i < tracks.size(); i++)
+        if (tracks[i]->getIsSelected())
+            trackToDelete = tracks.removeAndReturn (i);
+
+    if (trackToDelete != nullptr)
+        master->removeTrack (trackToDelete);
+    delete trackToDelete;
 }
 
 //==============================================================================
