@@ -13,10 +13,6 @@ public:
         const float pos = (TrackConstants::width - track->getDiameter()) / 2.0f;
 
         paintCircle (track, g, pos, darken);
-
-        if (track->getIsPlaying())
-            paintMeter (track, g, darken);
-
         paintName (track, g, pos, darken);
         
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
@@ -50,20 +46,6 @@ public:
 
         g.drawFittedText (track->getShortName(), (int) pos, (int) pos, 
                           (int) track->getDiameter(), (int) track->getDiameter(), Justification::centred, 1);
-    }
-
-    static void paintMeter (Track* track, Graphics& g, bool darken)
-    {
-        g.setColour (darken ? track->getColour().withAlpha (TrackConstants::darkAlpha) : track->getColour());
-
-        float rmsFactor = 1.0f + std::expf (std::logf (track->getProcessor()->getRMSLevel()) / 2.5f);
-
-        for (float factor = 1.0f; factor < rmsFactor; factor += 0.1f)
-        {
-            const float pos = (TrackConstants::width - factor * track->getDiameter()) / 2.0f;
-            g.drawEllipse (pos, pos, factor * track->getDiameter(),
-                           factor * track->getDiameter(), track->getDiameter() / 40.0f);
-        }
     }
 
     static void paintRing (Track* track, Graphics& g, float pos, Colour colour)
