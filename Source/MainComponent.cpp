@@ -18,6 +18,8 @@ MainComponent::MainComponent()
 
 MainComponent::~MainComponent()
 {
+    for (auto track : tracks)
+        track->removeListener (this);
 }
 
 void MainComponent::initSettings()
@@ -96,7 +98,10 @@ void MainComponent::addTracks (String stemsToUse)
     }
 
     for (auto* track : tracks)
+    {
         addAndMakeVisible (track);
+        track->addListener (this);
+    }
 }
 
 void MainComponent::addRecordingTrack()
@@ -107,8 +112,21 @@ void MainComponent::addRecordingTrack()
 
     tracks.add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"), width / 2, 400, trackColours.getColour (tracks.size())));
     addAndMakeVisible (tracks.getLast());
+    tracks.getLast()->addListener (this);
 
     master->addTrack (tracks.getLast());
+}
+
+void MainComponent::deleteSelectedTrack()
+{
+    Track* trackToDelete = nullptr;
+    for (int i = 0; i < tracks.size(); i++)
+        if (tracks[i]->getIsSelected())
+            trackToDelete = tracks.removeAndReturn (i);
+
+    if (trackToDelete != nullptr)
+        master->removeTrack (trackToDelete);
+    delete trackToDelete;
 }
 
 //==============================================================================
@@ -309,6 +327,35 @@ public:
     }
 };
 
+class AddRemoveTracksTest : public UnitTest
+{
+public:
+    AddRemoveTracksTest() : UnitTest ("Track adding and removing") {}
+
+    void runTest() override
+    {
+        MainComponent main;
+
+        beginTest ("Adding Tracks");
+
+        for (int i = 0; i < numTestTracks; i++)
+            main.addRecordingTrack();
+
+        main.togglePlay();
+
+        beginTest ("Removing tracks");
+        for (int i = numTestTracks - 1; i >= 0; i--)
+        {
+            main.tracks[i]->setSelected (true);
+            main.tracks[i]->deleteSelectedTrack();
+            main.togglePlay();
+        }
+
+        main.deleteSelectedTrack();
+    }
+};
+
 static PlayTest playTest;
 static AutomationTest autoTest;
+static AddRemoveTracksTest arTracksTest;
 #endif

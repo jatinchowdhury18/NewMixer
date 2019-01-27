@@ -35,6 +35,7 @@ public:
         rename,
         recordAutomation,
         recordInput,
+        deleteTrack,
     };
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
@@ -79,6 +80,17 @@ public:
 
     bool getIsPlaying() { return isPlaying; }
 
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void deleteSelectedTrack() {}
+    };
+
+    void addListener (Listener* listener) { listeners.add (listener); }
+    void removeListener (Listener* listener) { listeners.remove (listener); }
+    void deleteSelectedTrack() { listeners.call (&Track::Listener::deleteSelectedTrack); }
+
 private:
 #if JUCE_DEBUG
     friend class NameTest;
@@ -90,6 +102,8 @@ private:
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
+
+    ListenerList<Listener> listeners;
 
     String name;
     String shortName;

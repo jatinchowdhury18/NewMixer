@@ -11,7 +11,8 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-class MainComponent : public Component
+class MainComponent : public Component,
+                      public Track::Listener
 {
 public:
     enum
@@ -47,6 +48,7 @@ private:
 #if JUCE_DEBUG
     friend class PlayTest;
     friend class AutomationTest;
+    friend class AddRemoveTracksTest;
 #endif
 
     void initSettings();
@@ -54,6 +56,7 @@ private:
 
     static void rightClickCallback (int result, MainComponent* mc);
     void addRecordingTrack();
+    void deleteSelectedTrack() override;
 
     //==============================================================================
     std::unique_ptr<MasterTrack> master;

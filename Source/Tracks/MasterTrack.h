@@ -20,6 +20,7 @@ public:
     bool getIsPlaying() { return isPlaying; }
 
     void addTrack (Track* track);
+    void removeTrack (Track* track);
 
 private:
     void connectTracks();
