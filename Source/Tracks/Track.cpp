@@ -76,6 +76,7 @@ void Track::timerCallback()
 void Track::newLoop()
 {
     autoHelper.setRecordingStatus();
+    autoHelper.rewind();
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (processor);
     if (inputProcessor != nullptr)
@@ -188,8 +189,10 @@ void Track::togglePlay()
 
     if (isPlaying)
         autoHelper.setRecordingStatus();
-    else
+    else if (autoHelper.isRecording())
         autoHelper.throwAway();
+    else
+        autoHelper.rewind();
 }
 
 #if JUCE_DEBUG
