@@ -3,6 +3,14 @@
 
 #include "TrackBase.h"
 
+enum NumLoops
+{
+    Free = 0x9191,
+    One,
+    Two,
+    Four
+};
+
 class InputTrackProcessor : public TrackBase
 {
 public:
@@ -15,13 +23,15 @@ public:
     bool isInputTrack() { return inputTrack; }
     bool isArmed() { return armed; }
     bool isRecording() { return recording; }
-    void arm() { armed = true; }
+    void arm (NumLoops numLoops = Free) { armed = true; loopsToRecord = numLoops - Free; }
     void setRecordingStatus();
+    void throwAway();
     
 private:
     bool inputTrack = false;
     bool recording = false;
     bool armed = false;
+    int loopsToRecord = 0;
     AudioBuffer<float> inputBuffer;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputTrackProcessor)
