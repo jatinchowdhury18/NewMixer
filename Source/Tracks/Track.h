@@ -34,7 +34,6 @@ public:
         mute,
         rename,
         recordAutomation,
-        recordInput,
         deleteTrack,
     };
 
