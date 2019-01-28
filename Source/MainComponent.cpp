@@ -3,6 +3,13 @@
 #include "TrackHelpers/ActionHelper.h"
 
 //==============================================================================
+enum
+{
+    xSpace = MainComponent::width / 9, //stems.size();
+    xOffset = (xSpace / 2) - (TrackConstants::width / 2),
+    yPos = 475,
+};
+
 MainComponent::MainComponent (String mode)
 {
     addTracks (mode); //"Test" (default), "Chorus", or "Bridge"
@@ -48,60 +55,54 @@ void MainComponent::addTracks (String stemsToUse)
         tracks.add (new Track (file, file.getFileNameWithoutExtension(), xPos, 500, trackColours.getColour (n)));
     }
     */
-    const int xSpace = width / 9; //stems.size();
-    const int xOffset = (xSpace / 2) - (TrackConstants::width / 2);
-    const int yPos = 475;
-    
+
     if (stemsToUse == "Bridge")
-    {
-        int xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* bass = new MemoryInputStream (BinaryData::Bass_wav, BinaryData::Bass_wavSize, false);
-        tracks.add (new Track (bass, String ("Bass"), String ("Bass"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* drums = new MemoryInputStream (BinaryData::Drums_wav, BinaryData::Drums_wavSize, false);
-        tracks.add (new Track (drums, String ("Drums"), String ("Drum"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* gtr1 = new MemoryInputStream (BinaryData::Gtr1_wav, BinaryData::Gtr1_wavSize, false);
-        tracks.add (new Track (gtr1, String ("Gtr1"), String ("Gtr1"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* gtr2 = new MemoryInputStream (BinaryData::Gtr2_wav, BinaryData::Gtr2_wavSize, false);
-        tracks.add (new Track (gtr2, String ("Gtr2"), String ("Gtr2"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* organ = new MemoryInputStream (BinaryData::Organ_wav, BinaryData::Organ_wavSize, false);
-        tracks.add (new Track (organ, String ("Organ"), String ("Org"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* vox1 = new MemoryInputStream (BinaryData::Vox1_wav, BinaryData::Vox1_wavSize, false);
-        tracks.add (new Track (vox1, String ("Vox1"), String ("Vox1"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* vox2 = new MemoryInputStream (BinaryData::Vox2_wav, BinaryData::Vox2_wavSize, false);
-        tracks.add (new Track (vox2, String ("Vox2"), String ("Vox2"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* vox3 = new MemoryInputStream (BinaryData::Vox3_wav, BinaryData::Vox3_wavSize, false);
-        tracks.add (new Track (vox3, String ("Vox3"), String ("Vox3"), xPos, yPos, trackColours.getColour (tracks.size())));
-
-        xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* vox4 = new MemoryInputStream (BinaryData::Vox4_wav, BinaryData::Vox4_wavSize, false);
-        tracks.add (new Track (vox4, String ("Vox4"), String ("Vox4"), xPos, yPos, trackColours.getColour (tracks.size())));
-    }
+        bridgeTracks();
+    else if (stemsToUse == "Chorus")
+        chorusTracks();
     else if (stemsToUse == "Test")
-    {
-        int xPos = xOffset + xSpace * tracks.size();
-        MemoryInputStream* drums = new MemoryInputStream (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, false);
-        tracks.add (new Track (drums, String ("Drums"), String ("Drum"), xPos, yPos, trackColours.getColour (tracks.size())));
-    }
+        testTracks();
 
     for (auto* track : tracks)
     {
         addAndMakeVisible (track);
         track->addListener (this);
     }
+}
+
+void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName)
+{
+    int xPos = xOffset + xSpace * tracks.size();
+    MemoryInputStream* mis = new MemoryInputStream (sourceData, sourceSize, false);
+    tracks.add (new Track (mis, name, shortName, xPos, yPos, trackColours.getColour (tracks.size())));
+}
+
+void MainComponent::bridgeTracks()
+{
+    setupTrack (BinaryData::Bass_wav, BinaryData::Bass_wavSize, String ("Bass"), String ("Bass"));
+    setupTrack (BinaryData::Drums_wav, BinaryData::Drums_wavSize, String ("Drums"), String ("Drum"));
+    setupTrack (BinaryData::Gtr1_wav, BinaryData::Gtr1_wavSize, String ("Guitar 1"), String ("Gtr1"));
+    setupTrack (BinaryData::Gtr2_wav, BinaryData::Gtr2_wavSize, String ("Guitar 2"), String ("Gtr2"));
+    setupTrack (BinaryData::Organ_wav, BinaryData::Organ_wavSize, String ("Organ"), String ("Org"));
+    setupTrack (BinaryData::Vox1_wav, BinaryData::Vox1_wavSize, String ("Vocals 1"), String ("Vox1"));
+    setupTrack (BinaryData::Vox2_wav, BinaryData::Vox2_wavSize, String ("Vocals 2"), String ("Vox2"));
+    setupTrack (BinaryData::Vox3_wav, BinaryData::Vox3_wavSize, String ("Vocals 3"), String ("Vox3"));
+}
+
+void MainComponent::chorusTracks()
+{
+    setupTrack (BinaryData::Chorus_Bass_wav, BinaryData::Chorus_Bass_wavSize, String ("Bass"), String ("Bass"));
+    setupTrack (BinaryData::Chorus_Drums_wav, BinaryData::Chorus_Drums_wavSize, String ("Drums"), String ("Drum"));
+    setupTrack (BinaryData::Chorus_Gtr1_wav, BinaryData::Chorus_Gtr1_wavSize, String ("Guitar 1"), String ("Gtr1"));
+    setupTrack (BinaryData::Chorus_Gtr2_wav, BinaryData::Chorus_Gtr2_wavSize, String ("Guitar 2"), String ("Gtr2"));
+    setupTrack (BinaryData::Chorus_Vox1_wav, BinaryData::Chorus_Vox1_wavSize, String ("Vocals 1"), String ("Vox1"));
+    setupTrack (BinaryData::Chorus_Vox2_wav, BinaryData::Chorus_Vox2_wavSize, String ("Vocals 2"), String ("Vox2"));
+    setupTrack (BinaryData::Chorus_Vox3_wav, BinaryData::Chorus_Vox3_wavSize, String ("Vocals 3"), String ("Vox3"));
+}
+
+void MainComponent::testTracks()
+{
+    setupTrack (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, String ("Drums"), String ("Drum"));
 }
 
 void MainComponent::addRecordingTrack (int x, int y)
