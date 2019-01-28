@@ -48,7 +48,24 @@ void InputTrackProcessor::setRecordingStatus()
     }
     if (recording)
     {
-        recording = false;
+        loopsToRecord--;
+        if (loopsToRecord == 0)
+            recording = false;
+
         return;
+    }
+}
+
+void InputTrackProcessor::throwAway()
+{
+    inputBuffer.clear();
+
+    if (armed)
+        armed = false;
+
+    if (recording)
+    {
+        recording = false;
+        loopsToRecord = 0;
     }
 }

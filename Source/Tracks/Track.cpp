@@ -186,6 +186,9 @@ void Track::togglePlay()
     isPlaying = ! isPlaying;
 
     processor->rewind();
+    auto input = dynamic_cast<InputTrackProcessor*> (processor);
+    if (! isPlaying && input != nullptr)
+        input->throwAway();
 
     if (isPlaying)
         autoHelper.setRecordingStatus();

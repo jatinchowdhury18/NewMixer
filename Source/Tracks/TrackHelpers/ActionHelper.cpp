@@ -10,6 +10,12 @@ void ActionHelper::rightClickMenu (Track* track)
         colorMenu.addItem (ind, track->getColours().getColourName (ind - 1), true,
                            track->getColour() == track->getColours().getColour (ind - 1));
 
+    PopupMenu recordMenu;
+    recordMenu.addItem (NumLoops::One, "1 Loop");
+    recordMenu.addItem (NumLoops::Two, "2 Loops");
+    recordMenu.addItem (NumLoops::Four, "4 Loops");
+    recordMenu.addItem (NumLoops::Free, "Free");
+
     m.addItem (TrackCmds::mute, String ("Mute"), true, track->getProcessor()->getIsMute());
     m.addItem (TrackCmds::solo, String ("Solo"), true, track->isSoloed());
     m.addSubMenu (String ("Change Colour"), colorMenu);
@@ -19,11 +25,10 @@ void ActionHelper::rightClickMenu (Track* track)
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
     if (inputProcessor != nullptr)
-        m.addItem (TrackCmds::recordInput, String ("Record"),
-                   ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
+        m.addSubMenu (String ("Record"), recordMenu,
+                      ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
         
     m.addItem (TrackCmds::deleteTrack, String ("Delete"));
-
 
     m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (ActionHelper::rightClickCallback, track));
 }
@@ -48,8 +53,11 @@ void ActionHelper::rightClickCallback (int result, Track* track)
         track->repaint();
         return;
 
-    case TrackCmds::recordInput:
-        dynamic_cast<InputTrackProcessor*> (track->getProcessor())->arm();
+    case NumLoops::One:
+    case NumLoops::Two:
+    case NumLoops::Four:
+    case NumLoops::Free:
+        dynamic_cast<InputTrackProcessor*> (track->getProcessor())->arm (NumLoops (result));
         track->repaint();
         return;
 
