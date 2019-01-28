@@ -200,9 +200,19 @@ bool MainComponent::keyPressed (const KeyPress& key)
         togglePlay();
         return true;
     }
-    else if (key == KeyPress::deleteKey)
+    else if (key == KeyPress::deleteKey) //delete track
     {
         deleteSelectedTrack();
+        return true;
+    }
+    else if (key == KeyPress::returnKey) //select track
+    {
+        changeSelect (true);
+        return true;
+    }
+    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::shiftModifier, juce_wchar (NULL)))
+    {
+        changeSelect (false);
         return true;
     }
 
@@ -220,6 +230,22 @@ void MainComponent::togglePlay()
     master->togglePlay();
     for (auto track : tracks)
         track->togglePlay();
+}
+
+void MainComponent::changeSelect (bool forward)
+{
+    int trackToSelect = 0;
+    for (int i = 0; i < tracks.size(); i++)
+    {
+        if (tracks[i]->getIsSelected())
+        {
+            trackToSelect = negativeAwareModulo ((forward ? i + 1 : i - 1), tracks.size());
+            break;
+        }
+    }
+
+    clearSelectedTrack();
+    tracks[trackToSelect]->setSelected (true);
 }
 
 //=====================================================

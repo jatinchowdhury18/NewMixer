@@ -43,6 +43,7 @@ public:
 
     bool keyPressed (const KeyPress& key) override;
     void togglePlay();
+    void changeSelect (bool forward);
 
 private:
 #if JUCE_DEBUG
