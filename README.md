@@ -23,7 +23,7 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
   # Initialize JUCE submodule
   $ git submodule update --init --recursive
   ```
-  Executable binary files can be found in the "Bin" subfolder. Instructions for building from scratch can be found [here](#Instructions-for-Building).
+  Executable binary files can be found in the "Bin" subfolder. Instructions for building from scratch can be found [here](#Building).
 
 ## Getting Started
 ### Mixing
@@ -36,9 +36,9 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
 
 ### Recording
 - To create a new input track, right-click and select "New Track," or use "CTRL + N"
-- To record one loop, press "r", to free record, press "SHIFT + R", or use right-click menu
+- Press "r" to record a single loop, "SHIFT + R" to free record, or use right-click menu
 
-## Develop Instructions
+## Developer Instructions
 ### Building
   - Navigate to "JUCE/extras/Projucer/Builds/"
   - Build the Projucer using XCode (Mac), Visual Studio (Windows), or Makefile (Linux)
