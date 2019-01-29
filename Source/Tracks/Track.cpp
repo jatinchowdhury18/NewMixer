@@ -49,7 +49,7 @@ void Track::initialise (int x, int y)
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (25);
+    startTimer (5);
 }
 
 Track::~Track()
@@ -187,8 +187,13 @@ void Track::togglePlay()
 
     processor->rewind();
     auto input = dynamic_cast<InputTrackProcessor*> (processor);
-    if (! isPlaying && input != nullptr)
-        input->throwAway();
+    if (input != nullptr)
+    {
+        if (isPlaying)
+            input->setRecordingStatus();
+        else if (input->isRecording())
+            input->throwAway();
+    }
 
     if (isPlaying)
         autoHelper.setRecordingStatus();
