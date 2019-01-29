@@ -14,25 +14,44 @@ InputTrackProcessor::InputTrackProcessor (int64 len, int64 startSample) :
 
 void InputTrackProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &midiMessages)
 {
-    if (readerStartSample + buffer.getNumSamples() > inputBuffer.getNumSamples())
+    const auto numSamples = buffer.getNumSamples();
+    if (readerStartSample + numSamples <= inputBuffer.getNumSamples())
     {
-        listeners.call (&TrackBase::Listener::newLoop);
-        readerStartSample = 0;
-    }
-    
-    if (recording)
-    {
-        for (int ch = 0; ch < buffer.getNumChannels(); ch++)
-            inputBuffer.copyFrom (ch, (int) readerStartSample, buffer, ch, 0, buffer.getNumSamples());
+        if (recording)
+        {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                inputBuffer.copyFrom (ch, (int) readerStartSample, buffer, ch, 0, numSamples);
+        }
+        else
+        {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+                buffer.copyFrom (ch, 0, inputBuffer, ch, (int) readerStartSample, numSamples);
+        }
+        readerStartSample += numSamples;
     }
     else
     {
-        for (int ch = 0; ch < buffer.getNumChannels(); ch++)
-            buffer.copyFrom (ch, 0, inputBuffer, ch, (int) readerStartSample, buffer.getNumSamples());
+        auto samplesUnder = inputBuffer.getNumSamples() - readerStartSample;
+        if (recording)
+        {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+            {
+                inputBuffer.copyFrom (ch, (int) readerStartSample, buffer, ch, 0, (int) samplesUnder);
+                inputBuffer.copyFrom (ch, 0, buffer, ch, (int) samplesUnder, numSamples - (int) samplesUnder);
+            }
+        }
+        else
+        {
+            for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+            {
+                buffer.copyFrom (ch, 0, inputBuffer, ch, (int) readerStartSample, (int) samplesUnder);
+                buffer.copyFrom (ch, (int) samplesUnder, inputBuffer, ch, 0, numSamples - (int) samplesUnder);
+            }
+        }
+        readerStartSample = numSamples - samplesUnder;
+
+        listeners.call (&TrackBase::Listener::newLoop);
     }
-    
-    readerStartSample += buffer.getNumSamples();
-    
     TrackBase::processBlock(buffer, midiMessages);
 }
 

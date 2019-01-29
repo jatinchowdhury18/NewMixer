@@ -67,7 +67,7 @@ public:
     Colour getColour() { return trackColour; }
     void setTrackColour (Colour newColour) { trackColour = newColour; }
 
-    AutoHelper& getAutoHelper() { return autoHelper; }
+    AutoHelper* getAutoHelper() { return autoHelper.get(); }
 
     void setDiameter (float newD) { diameter = newD; }
     float getDiameter() { return diameter; }
@@ -119,7 +119,7 @@ private:
     TrackBase* processor;
 
     std::unique_ptr<TrackMeter> meter;
-    AutoHelper autoHelper;
+    std::unique_ptr<AutoHelper> autoHelper;
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
 

@@ -18,16 +18,21 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input) : TrackBase (String ("
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-
-    if (readerStartSample > reader->lengthInSamples)
+    const auto numSamples = buffer.getNumSamples();
+    if (readerStartSample + numSamples <= reader->lengthInSamples)
     {
-        listeners.call (&TrackBase::Listener::newLoop);
-        readerStartSample = 0;
+        reader->read (&buffer, 0, numSamples, readerStartSample, true, true);
+        readerStartSample += numSamples;
     }
+    else
+    {
+        auto samplesUnder = reader->lengthInSamples - readerStartSample;
+        reader->read (&buffer, 0, (int) samplesUnder, readerStartSample, true, true);
+        reader->read (&buffer, (int) samplesUnder, numSamples - (int) samplesUnder, 0, true, true);
+        readerStartSample = numSamples - samplesUnder;
 
-    reader->read (&buffer, 0, buffer.getNumSamples(), readerStartSample, true, true);
-    
-    readerStartSample += buffer.getNumSamples();
+        listeners.call (&TrackBase::Listener::newLoop);
+    }
 
     TrackBase::processBlock (buffer, midiMessages);
 }

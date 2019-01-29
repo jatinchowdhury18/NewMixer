@@ -217,7 +217,7 @@ public:
                 x[t].add (randInt());
                 y[t].add (randInt());
                 diameter[t].add ((float) randInt());
-                tracks[t]->getAutoHelper().addAutoPoint (x[t].getLast(), y[t].getLast(), diameter[t].getLast());
+                tracks[t]->getAutoHelper()->addAutoPoint (x[t].getLast(), y[t].getLast(), diameter[t].getLast());
             }
         }
     }
@@ -232,7 +232,7 @@ public:
                 int xTest = 0;
                 int yTest = 0;
                 float dTest = 0;
-                tracks[t]->getAutoHelper().getPoint (xTest, yTest, dTest);
+                tracks[t]->getAutoHelper()->getPoint (xTest, yTest, dTest);
 
                 expect (xTest == x[t][i], "Track x position incorrect: " + String (xTest));
                 expect (yTest == y[t][i], "Track y position incorrect: " + String (yTest));
