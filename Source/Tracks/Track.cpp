@@ -42,6 +42,8 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
 
 void Track::initialise (int x, int y)
 {
+    autoHelper.reset (new AutoHelper);
+
     meter.reset (new TrackMeter (this));
     addAndMakeVisible (meter.get());
 
@@ -49,7 +51,7 @@ void Track::initialise (int x, int y)
     setBroughtToFrontOnMouseClick (true);
 
     setTooltip (name);
-    startTimer (5);
+    startTimer (AutoHelper::timerInterval);
 }
 
 Track::~Track()
@@ -59,14 +61,14 @@ Track::~Track()
 
 void Track::timerCallback()
 {
-    if (autoHelper.isRecording())
-        autoHelper.addAutoPoint (getX(), getY(), diameter);
-    else if (isPlaying && autoHelper.isRecorded())
+    if (autoHelper->isRecording())
+        autoHelper->addAutoPoint (getX(), getY(), diameter);
+    else if (isPlaying && autoHelper->isRecorded())
     {
         int x = getX();
         int y = getY();
 
-        autoHelper.getPoint (x, y, diameter);
+        autoHelper->getPoint (x, y, diameter);
         setTopLeftPosition (x, y);
 
         trackMoved();
@@ -75,8 +77,8 @@ void Track::timerCallback()
 
 void Track::newLoop()
 {
-    autoHelper.setRecordingStatus();
-    autoHelper.rewind();
+    autoHelper->setRecordingStatus();
+    autoHelper->rewind();
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (processor);
     if (inputProcessor != nullptr)
@@ -196,11 +198,11 @@ void Track::togglePlay()
     }
 
     if (isPlaying)
-        autoHelper.setRecordingStatus();
-    else if (autoHelper.isRecording())
-        autoHelper.throwAway();
+        autoHelper->setRecordingStatus();
+    else if (autoHelper->isRecording())
+        autoHelper->throwAway();
     else
-        autoHelper.rewind();
+        autoHelper->rewind();
 }
 
 #if JUCE_DEBUG

@@ -6,6 +6,11 @@
 class AutoHelper
 {
 public:
+    enum
+    {
+        timerInterval = 1,
+    };
+
     AutoHelper() {}
 
     void addAutoPoint (int x, int y, float diameter);
@@ -36,9 +41,8 @@ private:
     };
 
     OwnedArray<AutoPoint> points;
-
-    int numPoints = 0;
     int curPoint = 0;
+    int numPoints = 0;
 
     bool recording = false;
     bool armedForRecording = false;

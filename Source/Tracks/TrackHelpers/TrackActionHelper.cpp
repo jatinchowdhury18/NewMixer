@@ -21,7 +21,7 @@ void TrackActionHelper::rightClickMenu (Track* track)
     m.addSubMenu (String ("Change Colour"), colorMenu);
     m.addItem (TrackCmds::rename, String ("Rename [CMD + R]"));
     m.addItem (TrackCmds::recordAutomation, String ("Automate [a]"),
-               ! (track->getAutoHelper().armed() || track->getAutoHelper().isRecording()));
+               ! (track->getAutoHelper()->armed() || track->getAutoHelper()->isRecording()));
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
     if (inputProcessor != nullptr)
@@ -49,7 +49,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::recordAutomation:
-        track->getAutoHelper().arm();
+        track->getAutoHelper()->arm();
         track->repaint();
         return;
 
@@ -85,7 +85,7 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
         return track->toggleMute();
     else if (key == KeyPress::createFromDescription ("a"))        //Automate
     {
-        track->getAutoHelper().arm();
+        track->getAutoHelper()->arm();
         track->repaint();
     }
     else if (key == KeyPress::createFromDescription ("r"))        //Record

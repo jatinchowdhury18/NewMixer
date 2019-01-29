@@ -16,10 +16,10 @@ public:
         paintName (track, g, pos, darken);
         
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
-        bool armed = inputProcessor == nullptr ? track->getAutoHelper().armed()
-                     : track->getAutoHelper().armed() || inputProcessor->isArmed();
-        bool recording = inputProcessor == nullptr ? track->getAutoHelper().isRecording()
-                         : track->getAutoHelper().isRecording() || inputProcessor->isRecording();
+        bool armed = inputProcessor == nullptr ? track->getAutoHelper()->armed()
+                     : track->getAutoHelper()->armed() || inputProcessor->isArmed();
+        bool recording = inputProcessor == nullptr ? track->getAutoHelper()->isRecording()
+                         : track->getAutoHelper()->isRecording() || inputProcessor->isRecording();
         
         if (armed)
             paintRing (track, g, pos, Colours::deeppink);
