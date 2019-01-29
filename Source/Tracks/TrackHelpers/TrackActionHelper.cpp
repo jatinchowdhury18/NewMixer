@@ -12,8 +12,8 @@ void TrackActionHelper::rightClickMenu (Track* track)
 
     PopupMenu recordMenu;
     recordMenu.addItem (NumLoops::One, "1 Loop");
-    recordMenu.addItem (NumLoops::Two, "2 Loops");
-    recordMenu.addItem (NumLoops::Four, "4 Loops");
+    //recordMenu.addItem (NumLoops::Two, "2 Loops");
+    //recordMenu.addItem (NumLoops::Four, "4 Loops");
     recordMenu.addItem (NumLoops::Free, "Free");
 
     m.addItem (TrackCmds::mute, String ("Mute [m]"), true, track->getProcessor()->getIsMute());
@@ -93,6 +93,13 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
         if (inputProcessor != nullptr)
             inputProcessor->arm (NumLoops::One, true);
+        track->repaint();
+    }
+    else if (key == KeyPress::createFromDescription ("SHIFT + R"))        //Record
+    {
+        auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
+        if (inputProcessor != nullptr)
+            inputProcessor->arm (NumLoops::Free, true);
         track->repaint();
     }
     else if (key == KeyPress::createFromDescription ("CMD + R"))
