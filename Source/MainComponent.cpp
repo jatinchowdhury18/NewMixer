@@ -1,6 +1,7 @@
 #include "MainComponent.h"
 #include "TrackHelpers/SoloHelper.h"
-#include "TrackHelpers/ActionHelper.h"
+#include "TrackHelpers/TrackActionHelper.h"
+#include "ActionHelper.h"
 
 //==============================================================================
 enum
@@ -74,7 +75,7 @@ void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, Strin
 {
     int xPos = xOffset + xSpace * tracks.size();
     MemoryInputStream* mis = new MemoryInputStream (sourceData, sourceSize, false);
-    tracks.add (new Track (mis, name, shortName, xPos, yPos, trackColours.getColour (tracks.size())));
+    tracks.add (new Track (mis, name, shortName, xPos, yPos, getNextColour()));
 }
 
 void MainComponent::bridgeTracks()
@@ -105,30 +106,9 @@ void MainComponent::testTracks()
     setupTrack (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, String ("Drums"), String ("Drum"));
 }
 
-void MainComponent::addRecordingTrack (int x, int y)
-{
-    auto len = tracks[0]->getProcessor()->getLengthSamples();
-    auto startSample = tracks[0]->getProcessor()->getStartSample();
-    auto playing = tracks[0]->getIsPlaying();
-
-    tracks.add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"),
-                x - TrackConstants::width / 2, y - TrackConstants::width / 2, trackColours.getColour (tracks.size())));
-    addAndMakeVisible (tracks.getLast());
-    tracks.getLast()->addListener (this);
-
-    master->addTrack (tracks.getLast());
-}
-
 void MainComponent::deleteSelectedTrack()
 {
-    Track* trackToDelete = nullptr;
-    for (int i = 0; i < tracks.size(); i++)
-        if (tracks[i]->getIsSelected())
-            trackToDelete = tracks.removeAndReturn (i);
-
-    if (trackToDelete != nullptr)
-        master->removeTrack (trackToDelete);
-    delete trackToDelete;
+    ActionHelper::deleteSelectedTrack (this);
 }
 
 //==============================================================================
@@ -148,104 +128,19 @@ void MainComponent::resized()
 
 void MainComponent::mouseDown (const MouseEvent& e)
 {
-    clearSelectedTrack();
+    ActionHelper::clearSelectedTrack (this);
 
     for (auto track : tracks)
         if (track->hitTest (e.x, e.y))
             return;
 
     if (e.mods.isPopupMenu())
-    {
-        PopupMenu m;
-
-        m.addItem (Cmds::newRecordTrack, String ("New Track"));
-
-        m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, this, Point<int> (e.x, e.y)));
-    }
-}
-
-void MainComponent::clearSelectedTrack()
-{
-    for (auto track : tracks)
-        track->setSelected (false);
-    repaint();
-}
-
-void MainComponent::rightClickCallback (int result, MainComponent* mc, Point<int> p)
-{
-    switch (result)
-    {
-    case 0: //Nothing selected
-        return;
-
-    case Cmds::newRecordTrack:
-        mc->addRecordingTrack (p.x, p.y);
-        return;
-
-    default:
-        return;
-    }
+        ActionHelper::rightClickMenu (this, e);
 }
 
 bool MainComponent::keyPressed (const KeyPress& key)
 {
-    if (key == KeyPress::createFromDescription ("s")) //Solo
-    {
-        SoloHelper::soloButtonPressed (tracks);
-        repaint();
-        return true;
-    }
-    else if (key == KeyPress::spaceKey) //play/pause
-    {
-        togglePlay();
-        return true;
-    }
-    else if (key == KeyPress::deleteKey) //delete track
-    {
-        deleteSelectedTrack();
-        return true;
-    }
-    else if (key == KeyPress::returnKey) //select track
-    {
-        changeSelect (true);
-        return true;
-    }
-    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::shiftModifier, juce_wchar (NULL)))
-    {
-        changeSelect (false);
-        return true;
-    }
-
-    for (auto track : tracks)
-    {
-        if (track->getIsSelected())
-            return ActionHelper::doKeyPressed (track, key);
-    }
-
-    return false;
-}
-
-void MainComponent::togglePlay()
-{
-    master->togglePlay();
-    for (auto track : tracks)
-        track->togglePlay();
-}
-
-void MainComponent::changeSelect (bool forward)
-{
-    int trackToSelect = 0;
-    for (int i = 0; i < tracks.size(); i++)
-    {
-        if (tracks[i]->getIsSelected())
-        {
-            trackToSelect = negativeAwareModulo ((forward ? i + 1 : i - 1), tracks.size());
-            break;
-        }
-    }
-
-    clearSelectedTrack();
-    tracks[trackToSelect]->setSelected (true);
+    return ActionHelper::doKeyPressed (this, key);
 }
 
 //=====================================================
@@ -281,7 +176,7 @@ public:
         for (int i = 1; i < main.tracks.size(); i++)
             checkPlayheads (main.tracks[i - 1], main.tracks[i]);
 
-        main.togglePlay();
+        ActionHelper::togglePlay (&main);
         playState = ! playState;
     }
 
@@ -293,7 +188,7 @@ public:
         
         for (int i = 0; i < numTestTracks; i++)
         {
-            main.addRecordingTrack (0, 0);
+            ActionHelper::addRecordingTrack (&main, 0, 0);
             playTests (main, playState);
         } 
     }
@@ -355,7 +250,7 @@ public:
         Array<float> diameter[numTestTracks];
 
         for (int i = 0; i < numTestTracks; i++)
-            main.addRecordingTrack (0, 0);
+            ActionHelper::addRecordingTrack (&main, 0, 0);
         
         setAutoPoints (main.tracks, x, y, diameter);
         checkAutoPoints (main.tracks, x, y, diameter);
@@ -374,16 +269,16 @@ public:
         beginTest ("Adding Tracks");
 
         for (int i = 0; i < numTestTracks; i++)
-            main.addRecordingTrack (0, 0);
+            ActionHelper::addRecordingTrack (&main, 0, 0);
 
-        main.togglePlay();
+        ActionHelper::togglePlay (&main);
 
         beginTest ("Removing tracks");
         for (int i = numTestTracks - 1; i >= 0; i--)
         {
             main.tracks[i]->setSelected (true);
             main.tracks[i]->deleteSelectedTrack();
-            main.togglePlay();
+            ActionHelper::togglePlay (&main);
         }
 
         main.deleteSelectedTrack();

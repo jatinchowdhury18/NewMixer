@@ -1,7 +1,7 @@
-#include "ActionHelper.h"
+#include "TrackActionHelper.h"
 #include "InputTrackProcessor.h"
 
-void ActionHelper::rightClickMenu (Track* track)
+void TrackActionHelper::rightClickMenu (Track* track)
 {
     PopupMenu m;
 
@@ -16,24 +16,24 @@ void ActionHelper::rightClickMenu (Track* track)
     recordMenu.addItem (NumLoops::Four, "4 Loops");
     recordMenu.addItem (NumLoops::Free, "Free");
 
-    m.addItem (TrackCmds::mute, String ("Mute"), true, track->getProcessor()->getIsMute());
-    m.addItem (TrackCmds::solo, String ("Solo"), true, track->isSoloed());
+    m.addItem (TrackCmds::mute, String ("Mute [m]"), true, track->getProcessor()->getIsMute());
+    m.addItem (TrackCmds::solo, String ("Solo [s]"), true, track->isSoloed());
     m.addSubMenu (String ("Change Colour"), colorMenu);
-    m.addItem (TrackCmds::rename, String ("Rename"));
-    m.addItem (TrackCmds::recordAutomation, String ("Automate"),
+    m.addItem (TrackCmds::rename, String ("Rename [CMD + R]"));
+    m.addItem (TrackCmds::recordAutomation, String ("Automate [a]"),
                ! (track->getAutoHelper().armed() || track->getAutoHelper().isRecording()));
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
     if (inputProcessor != nullptr)
-        m.addSubMenu (String ("Record"), recordMenu,
+        m.addSubMenu (String ("Record [r]"), recordMenu,
                       ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
         
-    m.addItem (TrackCmds::deleteTrack, String ("Delete"));
+    m.addItem (TrackCmds::deleteTrack, String ("Delete [del]"));
 
-    m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (ActionHelper::rightClickCallback, track));
+    m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (TrackActionHelper::rightClickCallback, track));
 }
 
-void ActionHelper::rightClickCallback (int result, Track* track)
+void TrackActionHelper::rightClickCallback (int result, Track* track)
 {
     switch (result)
     {
@@ -74,22 +74,36 @@ void ActionHelper::rightClickCallback (int result, Track* track)
     }
 }
 
-bool ActionHelper::doKeyPressed (Track* track, const KeyPress& key)
+bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
 {
     if (! track->getIsSelected())
         return false;
 
-    if (key.getModifiers().isAltDown())                    //Change volume
-        ActionHelper::changeSize (track);
-    else if (key == KeyPress::createFromDescription ("m"))  //Mute Track
+    if (key.getModifiers().isAltDown())                           //Change volume
+        TrackActionHelper::changeSize (track);
+    else if (key == KeyPress::createFromDescription ("m"))        //Mute Track
         return track->toggleMute();
-    else                                                    // Normal move
-        ActionHelper::changePosition (track);
+    else if (key == KeyPress::createFromDescription ("a"))        //Automate
+    {
+        track->getAutoHelper().arm();
+        track->repaint();
+    }
+    else if (key == KeyPress::createFromDescription ("r"))        //Record
+    {
+        auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
+        if (inputProcessor != nullptr)
+            inputProcessor->arm (NumLoops::One, true);
+        track->repaint();
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + R"))
+        track->trackRename();
+    else                                                          // Normal move
+        TrackActionHelper::changePosition (track);
 
     return true;
 }
 
-void ActionHelper::changeSize (Track* track, const MouseEvent& e)
+void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
 {
     e.source.enableUnboundedMouseMovement (true);
     const float initValue = track->getDiameter();
@@ -107,7 +121,7 @@ void ActionHelper::changeSize (Track* track, const MouseEvent& e)
     track->resized();
 }
 
-void ActionHelper::changeSize (Track* track)
+void TrackActionHelper::changeSize (Track* track)
 {
     const float initValue = track->getDiameter(); 
 
@@ -119,7 +133,7 @@ void ActionHelper::changeSize (Track* track)
     track->resized();
 }
 
-void ActionHelper::setSizeConstrained (Track* track, float oldSize, float change)
+void TrackActionHelper::setSizeConstrained (Track* track, float oldSize, float change)
 {
     float newSize = jlimit<float> (TrackConstants::minDiameter, TrackConstants::maxDiameter, (oldSize + change));
 
@@ -130,7 +144,7 @@ void ActionHelper::setSizeConstrained (Track* track, float oldSize, float change
     setPositionConstrained (track, track->getPosition());
 }
 
-void ActionHelper::changePosition (Track* track, const MouseEvent& e)
+void TrackActionHelper::changePosition (Track* track, const MouseEvent& e)
 {
     Point<int> newPos = e.getEventRelativeTo (track->getParentComponent()).position.toInt();
     newPos.x -= TrackConstants::width / 2;
@@ -140,7 +154,7 @@ void ActionHelper::changePosition (Track* track, const MouseEvent& e)
     track->resized();
 }
 
-void ActionHelper::changePosition (Track* track)
+void TrackActionHelper::changePosition (Track* track)
 {
     Point<int> pos = track->getBoundsInParent().getTopLeft();
     const int changeVal = 10;
@@ -158,7 +172,7 @@ void ActionHelper::changePosition (Track* track)
     track->resized();
 }
 
-void ActionHelper::setPositionConstrained (Track* track, Point<int> pos)
+void TrackActionHelper::setPositionConstrained (Track* track, Point<int> pos)
 {
     const int halfWidth = TrackConstants::width / 2;
     pos.x = jlimit<int> (-halfWidth, track->getParentWidth() - halfWidth, pos.x);
@@ -167,7 +181,7 @@ void ActionHelper::setPositionConstrained (Track* track, Point<int> pos)
     track->setTopLeftPosition (pos);
 }
 
-void ActionHelper::changeColour (Track* track, int index)
+void TrackActionHelper::changeColour (Track* track, int index)
 { 
     track->setTrackColour (track->getColours().getColour (index));
     track->repaint();

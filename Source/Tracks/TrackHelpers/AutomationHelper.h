@@ -13,7 +13,7 @@ public:
 
     void setRecordingStatus();
     void throwAway();
-    void arm() { armedForRecording = true; }
+    void arm() { armedForRecording = ! armedForRecording; }
     void rewind() {curPoint = 0; }
 
     bool isRecording() { return recording; }

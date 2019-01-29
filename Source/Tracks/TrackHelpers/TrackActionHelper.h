@@ -1,9 +1,9 @@
-#ifndef ACTIONHELPER_H_INCLUDED
-#define ACTIONHELPER_H_INCLUDED
+#ifndef TRACKACTIONHELPER_H_INCLUDED
+#define TRACKACTIONHELPER_H_INCLUDED
 
 #include "Track.h"
 
-class ActionHelper
+class TrackActionHelper
 {
 public:
     using TrackCmds = Track::TrackCmds;
@@ -22,7 +22,7 @@ public:
     static void setSizeConstrained (Track* track, float oldSize, float change);
 
 private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ActionHelper)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackActionHelper)
 };
 
-#endif //ACTIONHELPER_H_INCLUDED
+#endif //TRACKACTIONHELPER_H_INCLUDED
