@@ -36,6 +36,16 @@ void InputTrackProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &m
     TrackBase::processBlock(buffer, midiMessages);
 }
 
+void InputTrackProcessor::arm (NumLoops numLoops, bool keyboardTrigger)
+{ 
+    if (keyboardTrigger)
+        armed = ! armed;
+    else
+        armed = true;
+
+    loopsToRecord = numLoops - Free; 
+}
+
 void InputTrackProcessor::setRecordingStatus()
 {
     if (armed)

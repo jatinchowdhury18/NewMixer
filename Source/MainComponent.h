@@ -39,11 +39,11 @@ public:
     void resized() override;
 
     void mouseDown (const MouseEvent& /*event*/) override;
-    void clearSelectedTrack();
-
     bool keyPressed (const KeyPress& key) override;
-    void togglePlay();
-    void changeSelect (bool forward);
+
+    OwnedArray<Track>& getTracks() { return tracks; }
+    MasterTrack* getMaster() { return master.get(); }
+    Colour getNextColour() { return trackColours.getColour (tracks.size()); }
 
 private:
 #if JUCE_DEBUG
@@ -59,8 +59,6 @@ private:
     void testTracks();
     void setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName);
 
-    static void rightClickCallback (int result, MainComponent* mc, Point<int> p);
-    void addRecordingTrack (int x, int y);
     void deleteSelectedTrack() override;
 
     //==============================================================================

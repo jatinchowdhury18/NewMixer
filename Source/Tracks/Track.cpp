@@ -1,7 +1,7 @@
 #include "Track.h"
 #include "TrackProcessor.h"
 #include "InputTrackProcessor.h"
-#include "TrackHelpers/ActionHelper.h"
+#include "TrackHelpers/TrackActionHelper.h"
 #include "TrackHelpers/PaintHelper.h"
 
 using namespace TrackConstants;
@@ -150,15 +150,15 @@ void Track::mouseDown (const MouseEvent& e)
     repaint();
 
     if (e.mods.isPopupMenu())
-        ActionHelper::rightClickMenu (this);
+        TrackActionHelper::rightClickMenu (this);
 }
 
 void Track::mouseDrag (const MouseEvent& e)
 {
     if (e.mods.isAltDown())  //Change volume
-        ActionHelper::changeSize (this, e);
+        TrackActionHelper::changeSize (this, e);
     else                      // Normal drag
-        ActionHelper::changePosition (this, e);
+        TrackActionHelper::changePosition (this, e);
 
     getParentComponent()->repaint();
 }
@@ -232,8 +232,8 @@ public:
         
         for (int i = 0; i < 5000; i++)
         {
-            ActionHelper::setPositionConstrained (track, Point<int> (randInt(), randInt()));
-            ActionHelper::setSizeConstrained (track, track->getDiameter(), (float) randInt());
+            TrackActionHelper::setPositionConstrained (track, Point<int> (randInt(), randInt()));
+            TrackActionHelper::setSizeConstrained (track, track->getDiameter(), (float) randInt());
 
             checkPosition();
         }

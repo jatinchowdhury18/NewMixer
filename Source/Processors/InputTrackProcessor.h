@@ -23,7 +23,7 @@ public:
     bool isInputTrack() { return inputTrack; }
     bool isArmed() { return armed; }
     bool isRecording() { return recording; }
-    void arm (NumLoops numLoops = Free) { armed = true; loopsToRecord = numLoops - Free; }
+    void arm (NumLoops numLoops = Free, bool keyboardTrigger = false);
     void setRecordingStatus();
     void throwAway();
     
