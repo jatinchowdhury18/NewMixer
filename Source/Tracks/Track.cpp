@@ -202,6 +202,13 @@ void Track::mouseDown (const MouseEvent& e)
         TrackActionHelper::rightClickMenu (this);
 }
 
+#ifdef JUCE_ANDROID
+void Track::mouseDoubleClick(const MouseEvent& e)
+{
+    TrackActionHelper::rightClickMenu (this);
+}
+#endif
+
 void Track::mouseDrag (const MouseEvent& e)
 {
     if (e.mods.isAltDown())  //Change volume
