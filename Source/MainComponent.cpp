@@ -160,6 +160,13 @@ void MainComponent::mouseDown (const MouseEvent& e)
         ActionHelper::rightClickMenu (this, e);
 }
 
+#if JUCE_ANDROID
+void MainComponent::mouseDoubleClick (const MouseEvent& e)
+{
+    ActionHelper::rightClickMenu (this, e);
+}
+#endif
+
 bool MainComponent::keyPressed (const KeyPress& key)
 {
     return ActionHelper::doKeyPressed (this, key);
