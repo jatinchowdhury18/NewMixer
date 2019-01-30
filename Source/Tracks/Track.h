@@ -131,7 +131,7 @@ private:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
-#ifdef JUCE_ANDROID
+#if JUCE_ANDROID
     void mouseDoubleClick (const MouseEvent& e) override;
 #endif
 

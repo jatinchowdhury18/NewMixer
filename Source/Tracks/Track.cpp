@@ -220,7 +220,7 @@ void Track::mouseDown (const MouseEvent& e)
         TrackActionHelper::rightClickMenu (this);
 }
 
-#ifdef JUCE_ANDROID
+#if JUCE_ANDROID
 void Track::mouseDoubleClick(const MouseEvent& e)
 {
     TrackActionHelper::rightClickMenu (this);
