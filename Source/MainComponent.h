@@ -97,6 +97,8 @@ private:
 
     File sessionDirectory;
 #if JUCE_ANDROID
+    void mouseDoubleClick (const MouseEvent& e) override;
+
     TextButton playButton;
 #endif
 
