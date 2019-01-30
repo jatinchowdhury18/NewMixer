@@ -71,6 +71,8 @@ private:
 #endif
 
     void initSettings();
+    void initPlayButton();
+
     void addTracks (String stemsToUse);
     void bridgeTracks();
     void testTracks();
@@ -94,6 +96,9 @@ private:
     std::unique_ptr<SettingsWindow> settingsWindow;
 
     File sessionDirectory;
+#if JUCE_ANDROID
+    TextButton playButton;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

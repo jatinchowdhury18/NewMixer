@@ -25,6 +25,10 @@ MainComponent::MainComponent (String mode)
 
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
     initSettings();
+
+#if JUCE_ANDROID
+    initPlayButton();
+#endif
 }
 
 MainComponent::~MainComponent()
@@ -41,6 +45,16 @@ void MainComponent::initSettings()
     settingsButton.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
     settingsButton.onClick = [this] () { settingsWindow.reset (new SettingsWindow (String ("Settings"), master->getDeviceManager())); };
     addAndMakeVisible (settingsButton);
+}
+
+void MainComponent::initPlayButton()
+{
+    playButton.setButtonText ("Play/Pause");
+    playButton.setColour (TextButton::buttonColourId, Colours::transparentBlack);
+    playButton.setColour (TextButton::textColourOffId, Colours::darkred);
+    playButton.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
+    playButton.onClick = [this] () { ActionHelper::togglePlay (this); };
+    addAndMakeVisible (playButton);
 }
 
 void MainComponent::addTracks (String stemsToUse)
@@ -123,6 +137,10 @@ void MainComponent::resized()
 
     for (auto track : tracks)
         track->resized();
+
+#if JUCE_ANDROID
+    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(), buttonWidth, buttonHeight);
+#endif
 }
 
 void MainComponent::mouseDown (const MouseEvent& e)
