@@ -88,6 +88,7 @@ void MainComponent::bridgeTracks()
     setupTrack (BinaryData::Vox1_wav, BinaryData::Vox1_wavSize, String ("Vocals 1"), String ("Vox1"));
     setupTrack (BinaryData::Vox2_wav, BinaryData::Vox2_wavSize, String ("Vocals 2"), String ("Vox2"));
     setupTrack (BinaryData::Vox3_wav, BinaryData::Vox3_wavSize, String ("Vocals 3"), String ("Vox3"));
+    setupTrack (BinaryData::Vox4_wav, BinaryData::Vox4_wavSize, String ("Vocals 4"), String ("Vox4"));
 }
 
 void MainComponent::chorusTracks()

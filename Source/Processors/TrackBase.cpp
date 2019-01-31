@@ -24,7 +24,7 @@ void TrackBase::initProcessors()
     processors.add (gainProcessor.get());
     
     delayProcessor.reset (new DelayProcessor);
-    //processors.add (delayProcessor.get());
+    processors.add (delayProcessor.get());
     
     panProcessor.reset (new PanProcessor);
     processors.add (panProcessor.get());
@@ -68,24 +68,25 @@ void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessag
 
 void TrackBase::trackMoved (int x, int y, int width, bool mouseUp)
 {
+    //update gain
     float gain = powf ((float) width / TrackConstants::maxDiameter, 5.0f);
     gainProcessor->setGain (gain);
     
-    if (mouseUp) //adjust delay
-    {
-        const float trackX = (float) (x - MainComponent::width / 2) * roomWidth / (float) MainComponent::width;
-        const float trackY = (float) (MainComponent::height - y) * roomWidth / (float) MainComponent::height;
-        
-        const float leftDelay  = sqrtf (powf (trackX - leftEarX, 2)  + powf (trackY, 2)) * 1000.0f / speedOfSound;
-        const float rightDelay = sqrtf (powf (trackX - rightEarX, 2) + powf (trackY, 2)) * 1000.0f / speedOfSound;
-        
-        delayProcessor->setLengthMs (0, leftDelay);
-        delayProcessor->setLengthMs (1, rightDelay);
-    }
+    //update Delays
+    const float trackX = (float) (x - MainComponent::width / 2) * roomWidth / (float) MainComponent::width;
+    const float trackY = (float) (MainComponent::height - y) * roomWidth / (float) MainComponent::height;
     
+    const float leftDelay  = sqrtf (powf (trackX - leftEarX, 2)  + powf (trackY, 2)) * 1000.0f / speedOfSound;
+    const float rightDelay = sqrtf (powf (trackX - rightEarX, 2) + powf (trackY, 2)) * 1000.0f / speedOfSound;
+    
+    delayProcessor->setLengthMs (0, leftDelay);
+    delayProcessor->setLengthMs (1, rightDelay);
+    
+    //update pan
     float pan = (float) x / (float) MainComponent::width;
     panProcessor->setPan (pan);
     
+    //update dist
     float distFactor = (float) y / (float) MainComponent::height;
     distProcessor->setGain (distFactor);
     

@@ -1,10 +1,10 @@
 #include "DelayProcessor.h"
 
-void DelayProcessor::DelayChannel::setWritePtr (int maxLength)
+void DelayProcessor::DelayChannel::setReadPtr (int maxLength)
 {
-    writePtr++;
-    if (writePtr >= maxLength) //wrap
-        writePtr = 0;
+    readPtr++;
+    if (readPtr >= maxLength) //wrap
+        readPtr = 0;
 }
 
 double DelayProcessor::getTailLengthSeconds() const
@@ -31,7 +31,7 @@ void DelayProcessor::prepareToPlay (double sampleRate, int maximumExpectedSample
     delayBuffer.clear();
 
     for (auto& ch : dChannels)
-        ch.length.reset (sampleRate, 1e-2);
+        ch.length.reset (sampleRate, 1e-1);
 }
 
 void DelayProcessor::releaseResources()
@@ -55,23 +55,24 @@ void DelayProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& /*mid
 float DelayProcessor::delay (int channel, float x)
 {
     auto& ch = dChannels[channel];
-    float y = x;
+    
+    // Erase head
+    const int erasePtr = negativeAwareModulo(ch.readPtr - 1, bufferSize);
+    delayBuffer.setSample (channel, erasePtr, 0.0f);
 
+    // Write head
     const float len = ch.length.getNextValue();
     const float fractionSample = len - (int) len;
-    const int readPtr = (int) (ch.writePtr - len + bufferSize) % bufferSize;
+    const int writePtr = (ch.readPtr + (int) floorf (len)) % bufferSize;
 
-    if (readPtr != ch.writePtr)
-    {
-        float samp0 = delayBuffer.getSample (channel, readPtr);
-        float samp1 = delayBuffer.getSample (channel, (readPtr + 1) % bufferSize);
-        y = samp0 + fractionSample * (samp1 - samp0);
+    delayBuffer.addSample (channel, writePtr, x * (1.0f - fractionSample));
+    delayBuffer.addSample (channel, (writePtr + 1) % bufferSize, x * fractionSample);
 
-        delayBuffer.setSample (channel, ch.writePtr, x);	    //write to buffer
-    }
+    // Read head
+    float y = delayBuffer.getSample (channel, ch.readPtr);
 
     //update pointers
-    ch.setWritePtr (bufferSize);
+    ch.setReadPtr (bufferSize);
 
     return y;
 }

@@ -25,10 +25,10 @@ private:
     struct DelayChannel
     {
         LinearSmoothedValue<float> length = 0.0f;
-        int writePtr = 0;
+        int readPtr = 0;
 
-        void resetPtrs() { writePtr = 0; }
-        void setWritePtr (int maxLength);
+        void resetPtrs() { readPtr = 0; }
+        void setReadPtr (int maxLength);
     };
 
     DelayChannel dChannels[2];

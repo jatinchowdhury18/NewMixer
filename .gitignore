@@ -16,5 +16,6 @@ BinaryData2.cpp
 #Visual Studio Code files
 .vscode/
 
-#Demos
+#Extra folders
 Demos
+AndroidTest

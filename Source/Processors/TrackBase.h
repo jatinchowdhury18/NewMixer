@@ -62,7 +62,6 @@ private:
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
     
-    
     bool isMute = true;
     SoloState soloState = noTracks;
     float lastRMS = 0.0f;
