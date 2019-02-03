@@ -112,6 +112,11 @@ void MainComponent::deleteSelectedTrack()
     ActionHelper::deleteSelectedTrack (this);
 }
 
+void MainComponent::duplicateSelectedTrack()
+{
+    ActionHelper::duplicateSelectedTrack (this);
+}
+
 //==============================================================================
 void MainComponent::paint (Graphics& g)
 {

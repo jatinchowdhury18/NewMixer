@@ -12,6 +12,17 @@ InputTrackProcessor::InputTrackProcessor (int64 len, int64 startSample) :
     setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
 }
 
+InputTrackProcessor::InputTrackProcessor (const InputTrackProcessor& processor) : 
+    TrackBase (String ("Input Track Processor"))
+{
+    readerStartSample = processor.getStartSample();
+
+    inputTrack = true;
+    inputBuffer.makeCopyOf (processor.inputBuffer, false);
+
+    setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
+}
+
 void InputTrackProcessor::processBlock(AudioBuffer<float> &buffer, MidiBuffer &midiMessages)
 {
     const auto numSamples = buffer.getNumSamples();

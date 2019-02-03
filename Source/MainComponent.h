@@ -60,6 +60,7 @@ private:
     void setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName);
 
     void deleteSelectedTrack() override;
+    void duplicateSelectedTrack() override;
 
     //==============================================================================
     std::unique_ptr<MasterTrack> master;

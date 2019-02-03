@@ -40,6 +40,23 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     initialise (x, y);
 }
 
+Track::Track (const Track& track, int x, int y) :
+    name (track.getName()),
+    shortName (track.getShortName()),
+    trackColour (track.getColour()),
+    isPlaying (track.getIsPlaying())
+{
+    auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track.getProcessor());
+    if (inputProcessor == nullptr) //File track
+        processor = new TrackProcessor (*dynamic_cast<TrackProcessor*> (track.getProcessor()));
+    else //Record track
+        processor = new InputTrackProcessor (*inputProcessor);
+
+    processor->addListener (this);
+
+    initialise (x, y);
+}
+
 void Track::initialise (int x, int y)
 {
     autoHelper.reset (new AutoHelper);

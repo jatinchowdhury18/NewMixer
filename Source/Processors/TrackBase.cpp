@@ -66,6 +66,7 @@ void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessag
     lastRMS = rmsSum / buffer.getNumChannels();
 }
 
+//@TODO: refactor this
 void TrackBase::trackMoved (int x, int y, int width)
 {
     //update gain
