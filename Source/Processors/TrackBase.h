@@ -26,7 +26,7 @@ public:
     void releaseResources() override;
     virtual void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
     
-    void trackMoved (int x, int y, int width, bool mouseUp);
+    void trackMoved (int x, int y, int width);
     
     void setMute (bool mute) { isMute = mute; }
     bool getIsMute() { return isMute; }

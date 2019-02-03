@@ -7,7 +7,7 @@ namespace
     constexpr float roomWidth = 3.0f; //meters
     constexpr float headWidth = 0.215f; //meters
     
-    constexpr float leftEarX = headWidth / 2.0f;
+    constexpr float leftEarX = - headWidth / 2.0f;
     constexpr float rightEarX = - leftEarX;
     
     constexpr float speedOfSound = 343.0f;
@@ -66,7 +66,7 @@ void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessag
     lastRMS = rmsSum / buffer.getNumChannels();
 }
 
-void TrackBase::trackMoved (int x, int y, int width, bool mouseUp)
+void TrackBase::trackMoved (int x, int y, int width)
 {
     //update gain
     float gain = powf ((float) width / TrackConstants::maxDiameter, 5.0f);
