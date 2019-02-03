@@ -46,8 +46,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::solo:
-        //@TODO: do this using listener
-        track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
+        track->soloSelectedTrack();
         return;
 
     case TrackCmds::recordAutomation:

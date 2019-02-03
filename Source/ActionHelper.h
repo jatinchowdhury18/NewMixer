@@ -15,6 +15,7 @@ public:
     static void togglePlay (MainComponent* mc);
     static void duplicateSelectedTrack (MainComponent* mc);
     static void deleteSelectedTrack (MainComponent* mc);
+    static void soloSelectedTrack (MainComponent* mc);
     static void clearSelectedTrack (MainComponent* mc);
     static void changeSelect (MainComponent* mc, bool forward);
     static void addRecordingTrack (MainComponent* mc, int x, int y);

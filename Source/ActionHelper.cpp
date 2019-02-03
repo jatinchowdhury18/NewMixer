@@ -31,8 +31,7 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
 {
     if (key == KeyPress::createFromDescription ("s")) //Solo
     {
-        SoloHelper::soloButtonPressed (mc->getTracks());
-        mc->repaint();
+        soloSelectedTrack (mc);
         return true;
     }
     else if (key == KeyPress::spaceKey) //play/pause
@@ -80,6 +79,12 @@ void ActionHelper::togglePlay (MainComponent* mc)
     mc->getMaster()->togglePlay();
     for (auto track : mc->getTracks())
         track->togglePlay();
+}
+
+void ActionHelper::soloSelectedTrack (MainComponent* mc)
+{
+    SoloHelper::soloButtonPressed (mc->getTracks());
+    mc->repaint();
 }
 
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)

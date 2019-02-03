@@ -88,12 +88,14 @@ public:
         virtual ~Listener() {}
         virtual void deleteSelectedTrack() {}
         virtual void duplicateSelectedTrack() {}
+        virtual void soloSelectedTrack() {}
     };
 
     void addListener (Listener* listener) { listeners.add (listener); }
     void removeListener (Listener* listener) { listeners.remove (listener); }
     void deleteSelectedTrack() { listeners.call (&Track::Listener::deleteSelectedTrack); }
     void duplicateSelectedTrack() { listeners.call (&Track::Listener::duplicateSelectedTrack); }
+    void soloSelectedTrack() { listeners.call (&Track::Listener::soloSelectedTrack); }
 
 private:
 #if JUCE_DEBUG

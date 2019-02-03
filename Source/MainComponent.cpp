@@ -1,5 +1,4 @@
 #include "MainComponent.h"
-#include "TrackHelpers/SoloHelper.h"
 #include "TrackHelpers/TrackActionHelper.h"
 #include "ActionHelper.h"
 
@@ -107,15 +106,9 @@ void MainComponent::testTracks()
     setupTrack (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, String ("Drums"), String ("Drum"));
 }
 
-void MainComponent::deleteSelectedTrack()
-{
-    ActionHelper::deleteSelectedTrack (this);
-}
-
-void MainComponent::duplicateSelectedTrack()
-{
-    ActionHelper::duplicateSelectedTrack (this);
-}
+void MainComponent::deleteSelectedTrack() { ActionHelper::deleteSelectedTrack (this); }
+void MainComponent::duplicateSelectedTrack() { ActionHelper::duplicateSelectedTrack (this); }
+void MainComponent::soloSelectedTrack() { ActionHelper::soloSelectedTrack (this); }
 
 //==============================================================================
 void MainComponent::paint (Graphics& g)

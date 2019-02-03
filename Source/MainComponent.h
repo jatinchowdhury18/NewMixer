@@ -61,6 +61,7 @@ private:
 
     void deleteSelectedTrack() override;
     void duplicateSelectedTrack() override;
+    void soloSelectedTrack() override;
 
     //==============================================================================
     std::unique_ptr<MasterTrack> master;
