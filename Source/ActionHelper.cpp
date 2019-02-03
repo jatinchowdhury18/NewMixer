@@ -31,8 +31,7 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
 {
     if (key == KeyPress::createFromDescription ("s")) //Solo
     {
-        SoloHelper::soloButtonPressed (mc->getTracks());
-        mc->repaint();
+        soloSelectedTrack (mc);
         return true;
     }
     else if (key == KeyPress::spaceKey) //play/pause
@@ -43,6 +42,11 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
     else if (key == KeyPress::deleteKey) //delete track
     {
         ActionHelper::deleteSelectedTrack (mc);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + D"))
+    {
+        ActionHelper::duplicateSelectedTrack (mc);
         return true;
     }
     else if (key == KeyPress::returnKey) //select track
@@ -77,6 +81,12 @@ void ActionHelper::togglePlay (MainComponent* mc)
         track->togglePlay();
 }
 
+void ActionHelper::soloSelectedTrack (MainComponent* mc)
+{
+    SoloHelper::soloButtonPressed (mc->getTracks());
+    mc->repaint();
+}
+
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
     Track* trackToDelete = nullptr;
@@ -87,6 +97,28 @@ void ActionHelper::deleteSelectedTrack (MainComponent* mc)
     if (trackToDelete != nullptr)
         mc->getMaster()->removeTrack (trackToDelete);
     delete trackToDelete;
+}
+
+void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
+{
+    Track* trackToDuplicate = nullptr;
+    for (int i = 0; i < mc->getTracks().size(); i++)
+    {
+        if (mc->getTracks()[i]->getIsSelected())
+        {
+            trackToDuplicate = mc->getTracks()[i];
+            break;
+        }
+    }
+
+    if (trackToDuplicate != nullptr)
+    {
+        mc->getTracks().add (new Track (*trackToDuplicate, trackToDuplicate->getX() + 10, trackToDuplicate->getY() + 10));
+        mc->addAndMakeVisible (mc->getTracks().getLast());
+        mc->getTracks().getLast()->addListener (mc);
+
+        mc->getMaster()->addTrack (mc->getTracks().getLast());
+    }
 }
 
 void ActionHelper::clearSelectedTrack (MainComponent* mc)
@@ -119,7 +151,7 @@ void ActionHelper::addRecordingTrack (MainComponent* mc, int x, int y)
     auto playing =     mc->getTracks().isEmpty() ? false           : mc->getTracks()[0]->getIsPlaying();
 
     mc->getTracks().add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"),
-        x - TrackConstants::width / 2, y - TrackConstants::width / 2, mc->getNextColour()));
+                                    x - TrackConstants::width / 2, y - TrackConstants::width / 2, mc->getNextColour()));
     mc->addAndMakeVisible (mc->getTracks().getLast());
     mc->getTracks().getLast()->addListener (mc);
 

@@ -13,18 +13,20 @@ public:
         noTracks,
     };
 
-    TrackProcessor (File& file);
-    TrackProcessor (MemoryInputStream* input);
+    TrackProcessor (File& file, int64 startSample = 0);
+    TrackProcessor (MemoryInputStream* input, int64 startSample = 0);
+    TrackProcessor (const TrackProcessor& processor);
 
     void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
     
-    int64 getLengthSamples() override { return reader->lengthInSamples; }
+    int64 getLengthSamples() const override { return reader->lengthInSamples; }
+    AudioFormatReader* getReader() const { return reader.get(); }
 
 private:
     AudioFormatManager formatManager;
     std::unique_ptr<AudioFormatReader> reader;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackProcessor)
+    JUCE_LEAK_DETECTOR (TrackProcessor)
 };
 
 #endif // !TRACKPROCESSOR_H_INCLUDED

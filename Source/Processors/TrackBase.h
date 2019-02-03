@@ -26,7 +26,7 @@ public:
     void releaseResources() override;
     virtual void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
     
-    void trackMoved (int x, int y, int width, bool mouseUp);
+    void trackMoved (int x, int y, int width);
     
     void setMute (bool mute) { isMute = mute; }
     bool getIsMute() { return isMute; }
@@ -37,8 +37,8 @@ public:
     void rewind() { readerStartSample = 0; }
     float getRMSLevel() { return jmin<float> (lastRMS, 1.0f); }
     
-    virtual int64 getLengthSamples() = 0;
-    int64 getStartSample() { return readerStartSample; }
+    virtual int64 getLengthSamples() const = 0;
+    int64 getStartSample() const { return readerStartSample; }
     
     class Listener
     {

@@ -35,11 +35,13 @@ public:
         rename,
         recordAutomation,
         deleteTrack,
+        duplicateTrack,
     };
 
     Track (File& file, String name, String shortName, int x, int y, Colour colour);
     Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
     Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour);
+    Track (const Track& track, int x, int y);
     ~Track();
 
     TrackBase* getProcessor() const { return processor; }
@@ -64,7 +66,7 @@ public:
     void trackNameChanged (String newName, String newShortName) override;
 
     TrackColours& getColours() { return colours; }
-    Colour getColour() { return trackColour; }
+    Colour getColour() const { return trackColour; }
     void setTrackColour (Colour newColour) { trackColour = newColour; }
 
     AutoHelper* getAutoHelper() { return autoHelper.get(); }
@@ -75,20 +77,25 @@ public:
     int& getLastDrag() { return lastDragLocation; }
     void setDragging (bool drag) { isDragging = drag; }
 
-    String getShortName() { return shortName; }
+    String getName() const { return name; }
+    String getShortName() const { return shortName; }
 
-    bool getIsPlaying() { return isPlaying; }
+    bool getIsPlaying() const { return isPlaying; }
 
     class Listener
     {
     public:
         virtual ~Listener() {}
         virtual void deleteSelectedTrack() {}
+        virtual void duplicateSelectedTrack() {}
+        virtual void soloSelectedTrack() {}
     };
 
     void addListener (Listener* listener) { listeners.add (listener); }
     void removeListener (Listener* listener) { listeners.remove (listener); }
     void deleteSelectedTrack() { listeners.call (&Track::Listener::deleteSelectedTrack); }
+    void duplicateSelectedTrack() { listeners.call (&Track::Listener::duplicateSelectedTrack); }
+    void soloSelectedTrack() { listeners.call (&Track::Listener::soloSelectedTrack); }
 
 private:
 #if JUCE_DEBUG

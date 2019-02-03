@@ -28,6 +28,7 @@ void TrackActionHelper::rightClickMenu (Track* track)
         m.addSubMenu (String ("Record [r]"), recordMenu,
                       ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
         
+    m.addItem (TrackCmds::duplicateTrack, String ("Duplicate [CMD + D]"));
     m.addItem (TrackCmds::deleteTrack, String ("Delete [del]"));
 
     m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (TrackActionHelper::rightClickCallback, track));
@@ -45,7 +46,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::solo:
-        track->getParentComponent()->keyPressed (KeyPress::createFromDescription ("s"));
+        track->soloSelectedTrack();
         return;
 
     case TrackCmds::recordAutomation:
@@ -67,6 +68,10 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
 
     case TrackCmds::deleteTrack:
         track->deleteSelectedTrack();
+        return;
+
+    case TrackCmds::duplicateTrack:
+        track->duplicateSelectedTrack();
         return;
 
     default: //Change Colour

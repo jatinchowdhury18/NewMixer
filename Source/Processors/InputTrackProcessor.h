@@ -15,10 +15,11 @@ class InputTrackProcessor : public TrackBase
 {
 public:
     InputTrackProcessor (int64 len, int64 startSample);
+    InputTrackProcessor (const InputTrackProcessor& processor);
     
     void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
     
-    int64 getLengthSamples() override { return inputBuffer.getNumSamples(); }
+    int64 getLengthSamples() const override { return inputBuffer.getNumSamples(); }
     
     bool isInputTrack() { return inputTrack; }
     bool isArmed() { return armed; }
@@ -34,7 +35,7 @@ private:
     int loopsToRecord = 0;
     AudioBuffer<float> inputBuffer;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InputTrackProcessor)
+    JUCE_LEAK_DETECTOR (InputTrackProcessor)
 };
 
 #endif //INPUTTRACKPROCESSOR_H_INCLUED
