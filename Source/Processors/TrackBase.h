@@ -61,6 +61,11 @@ private:
     std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
+
+    void updateGain (int width);
+    void updateDelay (int x, int y);
+    void updatePan (int x);
+    void updateDist (int y);
     
     bool isMute = true;
     SoloState soloState = noTracks;

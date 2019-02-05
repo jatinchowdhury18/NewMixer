@@ -69,31 +69,44 @@ void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessag
 //@TODO: refactor this
 void TrackBase::trackMoved (int x, int y, int width)
 {
-    //update gain
+    updateGain (width);
+    updateDelay (x, y);
+    updatePan (x);
+    updateDist (y);
+}
+
+void TrackBase::updateGain (int width)
+{
     float gain = powf ((float) width / TrackConstants::maxDiameter, 5.0f);
     gainProcessor->setGain (gain);
-    
-    //update Delays
+}
+
+void TrackBase::updateDelay (int x, int y)
+{
     const float trackX = (float) (x - MainComponent::width / 2) * roomWidth / (float) MainComponent::width;
     const float trackY = (float) (MainComponent::height - y) * roomWidth / (float) MainComponent::height;
-    
+
     const float leftDelay  = sqrtf (powf (trackX - leftEarX, 2)  + powf (trackY, 2)) * 1000.0f / speedOfSound;
     const float rightDelay = sqrtf (powf (trackX - rightEarX, 2) + powf (trackY, 2)) * 1000.0f / speedOfSound;
-    
+
     delayProcessor->setLengthMs (0, leftDelay);
     delayProcessor->setLengthMs (1, rightDelay);
-    
-    //update pan
+}
+
+void TrackBase::updatePan (int x)
+{
     float pan = (float) x / (float) MainComponent::width;
     panProcessor->setPan (pan);
-    
-    //update dist
+}
+
+void TrackBase::updateDist (int y)
+{
     float distFactor = (float) y / (float) MainComponent::height;
     distProcessor->setGain (distFactor);
-    
+
     float distFreq = (float) (FilterProcessor::farFreq) + distFactor * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
     distProcessor->setFreq (distFreq);
-    
+
     distProcessor->setVerb (1.0f - distFactor);
 }
 
