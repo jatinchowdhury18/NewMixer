@@ -8,7 +8,7 @@ class AutoHelper
 public:
     enum
     {
-        timerInterval = 1,
+        timerInterval = 10,
     };
 
     AutoHelper() {}
