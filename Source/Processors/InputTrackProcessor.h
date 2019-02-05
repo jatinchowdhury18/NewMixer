@@ -8,7 +8,8 @@ enum NumLoops
     Free = 0x9191,
     One,
     Two,
-    Four
+    Three,
+    Four,
 };
 
 class InputTrackProcessor : public TrackBase
@@ -34,6 +35,7 @@ private:
     bool armed = false;
     int loopsToRecord = 0;
     AudioBuffer<float> inputBuffer;
+    int64 baseLengthSamples = 0;
     
     JUCE_LEAK_DETECTOR (InputTrackProcessor)
 };

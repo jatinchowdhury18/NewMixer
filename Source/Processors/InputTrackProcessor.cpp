@@ -1,7 +1,8 @@
 #include "InputTrackProcessor.h"
 
 InputTrackProcessor::InputTrackProcessor (int64 len, int64 startSample) :
-    TrackBase (String ("Input Track Processor"))
+    TrackBase (String ("Input Track Processor")),
+    baseLengthSamples (len)
 {
     readerStartSample = startSample;
     
@@ -13,7 +14,8 @@ InputTrackProcessor::InputTrackProcessor (int64 len, int64 startSample) :
 }
 
 InputTrackProcessor::InputTrackProcessor (const InputTrackProcessor& processor) : 
-    TrackBase (String ("Input Track Processor"))
+    TrackBase (String ("Input Track Processor")),
+    baseLengthSamples (processor.baseLengthSamples)
 {
     readerStartSample = processor.getStartSample();
 
@@ -73,13 +75,14 @@ void InputTrackProcessor::arm (NumLoops numLoops, bool keyboardTrigger)
     else
         armed = true;
 
-    loopsToRecord = numLoops - Free; 
+    loopsToRecord = numLoops - Free;
 }
 
 void InputTrackProcessor::setRecordingStatus()
 {
     if (armed)
     {
+        inputBuffer.setSize (2, (int) (baseLengthSamples * jmax<int64>(loopsToRecord, 1)));
         inputBuffer.clear();
         
         armed = false;
@@ -88,8 +91,7 @@ void InputTrackProcessor::setRecordingStatus()
     }
     if (recording)
     {
-        loopsToRecord--;
-        if (loopsToRecord == 0)
+        if (loopsToRecord != Free)
             recording = false;
 
         return;
