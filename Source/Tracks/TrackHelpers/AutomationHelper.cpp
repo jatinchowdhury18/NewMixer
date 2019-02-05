@@ -48,4 +48,7 @@ void AutoHelper::throwAway()
 
     if (recording)
         recording = false;
+
+    if (automationRecorded)
+        automationRecorded = false;
 }

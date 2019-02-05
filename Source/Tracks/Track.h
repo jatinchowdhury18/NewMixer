@@ -34,6 +34,7 @@ public:
         mute,
         rename,
         recordAutomation,
+        deleteAutomation,
         deleteTrack,
         duplicateTrack,
     };
