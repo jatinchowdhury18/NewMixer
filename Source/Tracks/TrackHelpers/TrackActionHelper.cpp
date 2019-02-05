@@ -12,22 +12,22 @@ void TrackActionHelper::rightClickMenu (Track* track)
 
     PopupMenu recordMenu;
     recordMenu.addItem (NumLoops::One, "1 Loop");
-    //recordMenu.addItem (NumLoops::Two, "2 Loops");
-    //recordMenu.addItem (NumLoops::Four, "4 Loops");
+    recordMenu.addItem (NumLoops::Two, "2 Loops");
+    recordMenu.addItem (NumLoops::Three, "3 Loops");
+    recordMenu.addItem (NumLoops::Four, "4 Loops");
     recordMenu.addItem (NumLoops::Free, "Free");
 
     m.addItem (TrackCmds::mute, String ("Mute [m]"), true, track->getProcessor()->getIsMute());
     m.addItem (TrackCmds::solo, String ("Solo [s]"), true, track->isSoloed());
     m.addSubMenu (String ("Change Colour"), colorMenu);
     m.addItem (TrackCmds::rename, String ("Rename [CMD + R]"));
-    m.addItem (TrackCmds::recordAutomation, String ("Automate [a]"), ! track->getAutoHelper()->isRecording());
+    m.addItem (TrackCmds::recordAutomation, String ("Automate [a]"));
     m.addItem (TrackCmds::deleteAutomation, String ("Delete Automation [SHIFT + del]"),
                (track->getAutoHelper()->isRecorded() || track->getAutoHelper()->isRecording()));
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
     if (inputProcessor != nullptr)
-        m.addSubMenu (String ("Record [r]"), recordMenu,
-                      ! (inputProcessor->isArmed() || inputProcessor->isRecording()));
+        m.addSubMenu (String ("Record [r]"), recordMenu);
         
     m.addItem (TrackCmds::duplicateTrack, String ("Duplicate [CMD + D]"));
     m.addItem (TrackCmds::deleteTrack, String ("Delete [del]"));
@@ -62,6 +62,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
 
     case NumLoops::One:
     case NumLoops::Two:
+    case NumLoops::Three:
     case NumLoops::Four:
     case NumLoops::Free:
         dynamic_cast<InputTrackProcessor*> (track->getProcessor())->arm (NumLoops (result));
