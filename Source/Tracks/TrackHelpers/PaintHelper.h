@@ -13,6 +13,9 @@ public:
         const float pos = (TrackConstants::width - track->getDiameter()) / 2.0f;
 
         paintCircle (track, g, pos, darken);
+
+        paintTimeline (track, g, pos, darken);
+
         paintName (track, g, pos, darken);
         
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
@@ -36,6 +39,19 @@ public:
     {
         g.setColour (darken ? track->getColour().withAlpha (TrackConstants::darkAlpha) : track->getColour());
         g.fillEllipse (pos, pos, track->getDiameter(), track->getDiameter());
+    }
+
+    static void paintTimeline (Track* track, Graphics& g, float pos, bool darken)
+    {
+        Colour timeColour = Colours::goldenrod.darker (0.25f);
+        g.setColour (darken ? timeColour.withAlpha (TrackConstants::darkAlpha) : timeColour);
+
+        float loopFraction = (float) track->getProcessor()->getStartSample() / (float) track->getProcessor()->getLengthSamples();
+
+        Path p;
+        p.addPieSegment (pos, pos, track->getDiameter(), track->getDiameter(),
+                         0.0f, loopFraction * MathConstants<float>::twoPi, 0.88f);
+        g.fillPath (p);
     }
 
     static void paintName (Track* track, Graphics& g, float pos, bool darken)
