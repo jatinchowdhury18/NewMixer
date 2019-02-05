@@ -20,8 +20,9 @@ void TrackActionHelper::rightClickMenu (Track* track)
     m.addItem (TrackCmds::solo, String ("Solo [s]"), true, track->isSoloed());
     m.addSubMenu (String ("Change Colour"), colorMenu);
     m.addItem (TrackCmds::rename, String ("Rename [CMD + R]"));
-    m.addItem (TrackCmds::recordAutomation, String ("Automate [a]"),
-               ! (track->getAutoHelper()->armed() || track->getAutoHelper()->isRecording()));
+    m.addItem (TrackCmds::recordAutomation, String ("Automate [a]"), ! track->getAutoHelper()->isRecording());
+    m.addItem (TrackCmds::deleteAutomation, String ("Delete Automation [SHIFT + del]"),
+               (track->getAutoHelper()->isRecorded() || track->getAutoHelper()->isRecording()));
     
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
     if (inputProcessor != nullptr)
@@ -51,6 +52,11 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
 
     case TrackCmds::recordAutomation:
         track->getAutoHelper()->arm();
+        track->repaint();
+        return;
+
+    case TrackCmds::deleteAutomation:
+        track->getAutoHelper()->throwAway();
         track->repaint();
         return;
 
@@ -92,6 +98,14 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
     {
         track->getAutoHelper()->arm();
         track->repaint();
+    }
+    else if (key == KeyPress::createFromDescription ("SHIFT + DELETE")) //Delete automation
+    {
+        if (track->getAutoHelper()->isRecorded() || track->getAutoHelper()->isRecording())
+        {
+            track->getAutoHelper()->throwAway();
+            track->repaint();
+        }
     }
     else if (key == KeyPress::createFromDescription ("r"))        //Record
     {
