@@ -36,6 +36,8 @@ public:
         curGain = gain;
     }
 
+    float getGain() const { return curGain; }
+
 private:
     float curGain = 1.0f;
     float oldGain = 0.0f;

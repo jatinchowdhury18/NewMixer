@@ -56,6 +56,10 @@ protected:
     int64 readerStartSample = 0;
     
 private:
+#if JUCE_DEBUG
+    friend class ProcessorTest;
+#endif
+
     Array<AudioProcessor*> processors;
     std::unique_ptr<GainProcessor> gainProcessor;
     std::unique_ptr<DelayProcessor> delayProcessor;

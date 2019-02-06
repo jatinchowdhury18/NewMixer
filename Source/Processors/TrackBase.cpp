@@ -66,7 +66,6 @@ void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessag
     lastRMS = rmsSum / buffer.getNumChannels();
 }
 
-//@TODO: refactor this
 void TrackBase::trackMoved (int x, int y, int width)
 {
     updateGain (width);
@@ -110,4 +109,84 @@ void TrackBase::updateDist (int y)
     distProcessor->setVerb (1.0f - distFactor);
 }
 
-//@TODO: processor unit testing (math)
+#if JUCE_DEBUG
+#include "InputTrackProcessor.h"
+class ProcessorTest : public UnitTest
+{
+public:
+    ProcessorTest() : UnitTest ("Test Processors") {}
+
+    void checkProcessors (float gain, float delayL, float delayR, float pan, float distGain, float distFreq, float distVerb)
+    {
+        expectEquals<float> (processor->gainProcessor->getGain(), gain, "Processor Gain incorrect");
+
+        expectWithinAbsoluteError<float> (processor->delayProcessor->getLengthMS (0), delayL, precise, "Processor Left Delay incorrect");
+        expectWithinAbsoluteError<float> (processor->delayProcessor->getLengthMS (1), delayR, precise, "Processor Right Delay incorrect");
+
+        expectEquals<float> (processor->panProcessor->getPan(), pan, "Processor Pan Incorrect");
+
+        expectEquals<float> (processor->distProcessor->getGain(), distGain, "Processor Dist Gain Incorrect");
+        expectEquals<float> (processor->distProcessor->getFreq(), distFreq, "Processor Dist Freq Incorrect");
+        expectEquals<float> (processor->distProcessor->getVerb(), distVerb, "Processor Dist Verb Incorrect");
+    }
+
+    void runTest() override
+    {
+        beginTest ("Gain Processor");
+        processor->trackMoved (0, 0, 50);
+        checkProcessors (0.03125f, 9.6426f, 9.9228f, 0.0f, 0.0f, 12000.0f, 1.0f);
+
+        processor->trackMoved (0, 0, 100);
+        checkProcessors (1.0f, 9.6426f, 9.9228f, 0.0f, 0.0f, 12000.0f, 1.0f);
+
+        processor->trackMoved (0, 0, 0);
+        checkProcessors (0.0f, 9.6426f, 9.9228f, 0.0f, 0.0f, 12000.0f, 1.0f);
+
+        beginTest ("Delay Processor");
+        processor->trackMoved (MainComponent::width, 0, 50);
+        checkProcessors (0.03125f, 9.9228f, 9.6426f, 1.0f, 0.0f, 12000.0f, 1.0f);
+
+        processor->trackMoved (MainComponent::width, MainComponent::height, 50);
+        checkProcessors (0.03125f, 4.6866f, 4.0598f, 1.0f, 1.0f, 22000.0f, 0.0f);
+
+        processor->trackMoved (0, MainComponent::height, 50);
+        checkProcessors (0.03125f, 4.0598f, 4.6866f, 0.0f, 1.0f, 22000.0f, 0.0f);
+
+        beginTest ("Pan Processor");
+        processor->trackMoved (MainComponent::width / 2, 0, 50);
+        checkProcessors (0.03125f, 8.752f, 8.752f, 0.5f, 0.0f, 12000.0f, 1.0f);
+
+        processor->trackMoved (MainComponent::width / 4, 0, 50);
+        checkProcessors (0.03125f, 8.9447f, 9.0966f,  0.25f, 0.0f, 12000.0f, 1.0f);
+
+        processor->trackMoved (3 * MainComponent::width / 4, 0, 50);
+        checkProcessors (0.03125f, 9.0966f, 8.9447f, 0.75f, 0.0f, 12000.0f, 1.0f);
+
+        beginTest ("Dist Processor");
+        processor->trackMoved (MainComponent::width / 2, MainComponent::height / 2, 50);
+        checkProcessors (0.03125f, 4.3844f, 4.3844f, 0.5f, 0.5f, 17000.0f, 0.5f);
+
+        processor->trackMoved (MainComponent::width / 2, MainComponent::height / 4, 50);
+        checkProcessors (0.03125f, 6.5673f, 6.5673f, 0.5f, 0.25f, 14500.0f, 0.75f);
+
+        processor->trackMoved (MainComponent::width / 2, 3 * MainComponent::height / 4, 50);
+        checkProcessors (0.03125f, 2.2089f, 2.2089f, 0.5f, 0.75f, 19500.0f, 0.25f);
+    }
+
+    void initialise() override
+    { 
+        processor = new InputTrackProcessor (100, 0);
+        processor->prepareToPlay (44100.0, 480);
+    }
+    void shutdown() override 
+    {
+        delete processor;
+    }
+
+private:
+    TrackBase* processor;
+    float precise = 0.05f;
+};
+
+static ProcessorTest procTest;
+#endif

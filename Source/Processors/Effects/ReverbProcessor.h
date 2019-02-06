@@ -13,6 +13,7 @@ public:
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
     void setDryWet (float wetAmt);
+    float getWet() const { return reverbDsp.getParameters().wetLevel; }
 
 private:
     

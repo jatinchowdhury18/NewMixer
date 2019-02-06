@@ -20,6 +20,7 @@ public:
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
     void setFreq (float newFreq);
+    float setFreq() const { return cutoffFreq; }
 
 private:
     void initFilter();

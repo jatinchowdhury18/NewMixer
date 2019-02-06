@@ -15,8 +15,13 @@ public:
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
     void setFreq (float newFreq) { filterProcessor->setFreq (newFreq); }
+    float getFreq() const { return filterProcessor->setFreq(); }
+
     void setGain (float newGain) { gainProcessor->setGain (newGain); }
+    float getGain() const { return gainProcessor->getGain(); }
+
     void setVerb (float wetAmt) { reverbProcessor->setDryWet (wetAmt); }
+    float getVerb() const { return reverbProcessor->getWet(); }
 
 private:
     Array<AudioProcessor*> processors;

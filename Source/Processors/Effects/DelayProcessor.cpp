@@ -23,6 +23,12 @@ void DelayProcessor::setLengthMs (int channel, double lengthMs)
     dChannels[channel].length.setValue ((float) newLength);
 }
 
+float DelayProcessor::getLengthMS (int channel) const
+{
+    float lengthSamples = dChannels[channel].length.getTargetValue();
+    return (lengthSamples / (float) getSampleRate()) * 1000.0f;
+}
+
 void DelayProcessor::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)
 {
     setRateAndBufferSizeDetails (sampleRate, maximumExpectedSamplesPerBlock);
