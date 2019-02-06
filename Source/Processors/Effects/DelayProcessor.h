@@ -13,6 +13,7 @@ public:
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
     void setLengthMs (int channel, double lengthMs);
+    float getLengthMS (int channel) const;
 
     double getTailLengthSeconds() const override;
 

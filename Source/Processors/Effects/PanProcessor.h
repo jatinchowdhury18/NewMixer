@@ -10,6 +10,7 @@ public:
     PanProcessor();
 
     void setPan (float newPan);
+    float getPan() const { return pan; }
 
     void prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock) override;
     void releaseResources() override {}

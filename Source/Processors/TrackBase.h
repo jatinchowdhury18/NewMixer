@@ -56,11 +56,20 @@ protected:
     int64 readerStartSample = 0;
     
 private:
+#if JUCE_DEBUG
+    friend class ProcessorTest;
+#endif
+
     Array<AudioProcessor*> processors;
     std::unique_ptr<GainProcessor> gainProcessor;
     std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
+
+    void updateGain (int width);
+    void updateDelay (int x, int y);
+    void updatePan (int x);
+    void updateDist (int y);
     
     bool isMute = true;
     SoloState soloState = noTracks;
