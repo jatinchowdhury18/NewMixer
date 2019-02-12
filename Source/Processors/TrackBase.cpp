@@ -131,17 +131,17 @@ public:
     {
         beginTest ("Gain Processor");
         processor->trackMoved (0, 0, 50);
-        checkProcessors (0.03125f, 9.6426f, 9.9228f, 0.0f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (0.03125f, 9.6426f, 9.9228f, 0.0f, 0.0f, 1000.0f, 1.0f);
 
         processor->trackMoved (0, 0, 100);
-        checkProcessors (1.0f, 9.6426f, 9.9228f, 0.0f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (1.0f, 9.6426f, 9.9228f, 0.0f, 0.0f, 1000.0f, 1.0f);
 
         processor->trackMoved (0, 0, 0);
-        checkProcessors (0.0f, 9.6426f, 9.9228f, 0.0f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (0.0f, 9.6426f, 9.9228f, 0.0f, 0.0f, 1000.0f, 1.0f);
 
         beginTest ("Delay Processor");
         processor->trackMoved (MainComponent::width, 0, 50);
-        checkProcessors (0.03125f, 9.9228f, 9.6426f, 1.0f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (0.03125f, 9.9228f, 9.6426f, 1.0f, 0.0f, 1000.0f, 1.0f);
 
         processor->trackMoved (MainComponent::width, MainComponent::height, 50);
         checkProcessors (0.03125f, 4.6866f, 4.0598f, 1.0f, 1.0f, 22000.0f, 0.0f);
@@ -151,23 +151,23 @@ public:
 
         beginTest ("Pan Processor");
         processor->trackMoved (MainComponent::width / 2, 0, 50);
-        checkProcessors (0.03125f, 8.752f, 8.752f, 0.5f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (0.03125f, 8.752f, 8.752f, 0.5f, 0.0f, 1000.0f, 1.0f);
 
         processor->trackMoved (MainComponent::width / 4, 0, 50);
-        checkProcessors (0.03125f, 8.9447f, 9.0966f,  0.25f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (0.03125f, 8.9447f, 9.0966f,  0.25f, 0.0f, 1000.0f, 1.0f);
 
         processor->trackMoved (3 * MainComponent::width / 4, 0, 50);
-        checkProcessors (0.03125f, 9.0966f, 8.9447f, 0.75f, 0.0f, 12000.0f, 1.0f);
+        checkProcessors (0.03125f, 9.0966f, 8.9447f, 0.75f, 0.0f, 1000.0f, 1.0f);
 
         beginTest ("Dist Processor");
         processor->trackMoved (MainComponent::width / 2, MainComponent::height / 2, 50);
-        checkProcessors (0.03125f, 4.3844f, 4.3844f, 0.5f, 0.5f, 17000.0f, 0.5f);
+        checkProcessors (0.03125f, 4.3844f, 4.3844f, 0.5f, 0.5f, 6250.0f, 0.0625f);
 
         processor->trackMoved (MainComponent::width / 2, MainComponent::height / 4, 50);
-        checkProcessors (0.03125f, 6.5673f, 6.5673f, 0.5f, 0.25f, 14500.0f, 0.75f);
+        checkProcessors (0.03125f, 6.5673f, 6.5673f, 0.5f, 0.25f, 2312.5f, 0.31640625f);
 
         processor->trackMoved (MainComponent::width / 2, 3 * MainComponent::height / 4, 50);
-        checkProcessors (0.03125f, 2.2089f, 2.2089f, 0.5f, 0.75f, 19500.0f, 0.25f);
+        checkProcessors (0.03125f, 2.2089f, 2.2089f, 0.5f, 0.75f, 12812.5f, 0.00390625f);
     }
 
     void initialise() override
