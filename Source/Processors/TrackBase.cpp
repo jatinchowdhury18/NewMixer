@@ -39,10 +39,6 @@ void TrackBase::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerB
     
     for (auto* processor : processors)
         processor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-    
-    //Test Code
-    //delayProcessor->setLengthMs (0, 1000.0);
-    //reverbProcessor->setDryWet (1.0f);
 }
 
 void TrackBase::releaseResources()
@@ -82,11 +78,11 @@ void TrackBase::updateGain (int width)
 
 void TrackBase::updateDelay (int x, int y)
 {
-    const float trackX = (float) (x - MainComponent::width / 2) * roomWidth / (float) MainComponent::width;
-    const float trackY = (float) (MainComponent::height - y) * roomWidth / (float) MainComponent::height;
+    const auto trackX = (float) (x - MainComponent::width / 2) * roomWidth / (float) MainComponent::width;
+    const auto trackY = (float) (MainComponent::height - y) * roomWidth / (float) MainComponent::height;
 
-    const float leftDelay  = sqrtf (powf (trackX - leftEarX, 2)  + powf (trackY, 2)) * 1000.0f / speedOfSound;
-    const float rightDelay = sqrtf (powf (trackX - rightEarX, 2) + powf (trackY, 2)) * 1000.0f / speedOfSound;
+    const auto leftDelay  = sqrtf (powf (trackX - leftEarX, 2)  + powf (trackY, 2)) * 1000.0f / speedOfSound;
+    const auto rightDelay = sqrtf (powf (trackX - rightEarX, 2) + powf (trackY, 2)) * 1000.0f / speedOfSound;
 
     delayProcessor->setLengthMs (0, leftDelay);
     delayProcessor->setLengthMs (1, rightDelay);
@@ -94,19 +90,20 @@ void TrackBase::updateDelay (int x, int y)
 
 void TrackBase::updatePan (int x)
 {
-    float pan = (float) x / (float) MainComponent::width;
+    const auto pan = (float) x / (float) MainComponent::width;
     panProcessor->setPan (pan);
 }
 
 void TrackBase::updateDist (int y)
 {
-    float distFactor = (float) y / (float) MainComponent::height;
+    const auto distFactor = (float) y / (float) MainComponent::height;
     distProcessor->setGain (distFactor);
 
-    float distFreq = (float) (FilterProcessor::farFreq) + distFactor * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
+    const auto distFreq = (float) (FilterProcessor::farFreq) + powf (distFactor, 2.0f) * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
     distProcessor->setFreq (distFreq);
 
-    distProcessor->setVerb (1.0f - distFactor);
+    const auto verbFactor = powf (1.0f - distFactor, 4.0f);
+    distProcessor->setVerb (verbFactor);
 }
 
 #if JUCE_DEBUG
