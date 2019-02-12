@@ -9,7 +9,7 @@ DistanceProcessor::DistanceProcessor() : ProcessorBase (String ("Filter Processo
     processors.add (gainProcessor.get());
 
     reverbProcessor.reset (new ReverbProcessor);
-    //processors.add (reverbProcessor.get());
+    processors.add (reverbProcessor.get());
 }
 
 void DistanceProcessor::prepareToPlay (double sampleRate, int maxExpectedBlockSize)

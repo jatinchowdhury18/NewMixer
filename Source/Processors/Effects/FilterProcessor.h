@@ -10,7 +10,7 @@ public:
     {
         order = 2,
         maxFreq = 22000,
-        farFreq = 12000,
+        farFreq = 1000,
     };
 
     FilterProcessor() : ProcessorBase (String ("Filter Processor")) { initFilter(); }
