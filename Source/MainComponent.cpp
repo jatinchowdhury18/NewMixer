@@ -99,6 +99,7 @@ void MainComponent::chorusTracks()
     setupTrack (BinaryData::Chorus_Vox1_wav, BinaryData::Chorus_Vox1_wavSize, String ("Vocals 1"), String ("Vox1"));
     setupTrack (BinaryData::Chorus_Vox2_wav, BinaryData::Chorus_Vox2_wavSize, String ("Vocals 2"), String ("Vox2"));
     setupTrack (BinaryData::Chorus_Vox3_wav, BinaryData::Chorus_Vox3_wavSize, String ("Vocals 3"), String ("Vox3"));
+    setupTrack (BinaryData::Chorus_Vox4_wav, BinaryData::Chorus_Vox4_wavSize, String ("Vocals 4"), String ("Vox4"));
 }
 
 void MainComponent::testTracks()

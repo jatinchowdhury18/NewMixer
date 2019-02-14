@@ -7,26 +7,26 @@
   <MAINGROUP id="Gj1rsf" name="NewMixer">
     <GROUP id="{4B66F25F-5A5F-AE8E-A3A4-8B7EAC0F8506}" name="Stems">
       <GROUP id="{F180A70B-FA56-1A51-53CC-34043B3BA250}" name="Chorus">
-        <FILE id="Y5KRLu" name="Chorus_Bass.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Bass.wav"/>
-        <FILE id="GBjDgj" name="Chorus_Drums.wav" compile="0" resource="1"
+        <FILE id="q6KPaB" name="Chorus_Bass.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Bass.wav"/>
+        <FILE id="UtBuYf" name="Chorus_Drums.wav" compile="0" resource="1"
               file="Stems/Chorus/Chorus_Drums.wav"/>
-        <FILE id="lXEIqZ" name="Chorus_Gtr1.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Gtr1.wav"/>
-        <FILE id="plZ5Uj" name="Chorus_Gtr2.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Gtr2.wav"/>
-        <FILE id="ywZfHM" name="Chorus_Vox1.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox1.wav"/>
-        <FILE id="n62KiC" name="Chorus_Vox2.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox2.wav"/>
-        <FILE id="tB8zI0" name="Chorus_Vox3.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox3.wav"/>
-        <FILE id="dH2rdt" name="ChorusVox4.wav" compile="0" resource="1" file="Stems/Chorus/ChorusVox4.wav"/>
+        <FILE id="UxSY2d" name="Chorus_Gtr1.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Gtr1.wav"/>
+        <FILE id="jcv3Hy" name="Chorus_Gtr2.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Gtr2.wav"/>
+        <FILE id="HU7Rix" name="Chorus_Vox1.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox1.wav"/>
+        <FILE id="jcY3JX" name="Chorus_Vox2.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox2.wav"/>
+        <FILE id="zOA1ws" name="Chorus_Vox3.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox3.wav"/>
+        <FILE id="WMD8hK" name="Chorus_Vox4.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Vox4.wav"/>
       </GROUP>
       <GROUP id="{85FF26E2-A82E-522D-B4D4-3A080FBB9A6C}" name="Bridge">
-        <FILE id="vOaERH" name="Bass.wav" compile="0" resource="1" file="Stems/Bridge/Bass.wav"/>
-        <FILE id="Qrwjqz" name="Drums.wav" compile="0" resource="1" file="Stems/Bridge/Drums.wav"/>
-        <FILE id="sVkSxR" name="Gtr1.wav" compile="0" resource="1" file="Stems/Bridge/Gtr1.wav"/>
-        <FILE id="k7I3zC" name="Gtr2.wav" compile="0" resource="1" file="Stems/Bridge/Gtr2.wav"/>
-        <FILE id="HvUDoe" name="Organ.wav" compile="0" resource="1" file="Stems/Bridge/Organ.wav"/>
-        <FILE id="b4cYhU" name="Vox1.wav" compile="0" resource="1" file="Stems/Bridge/Vox1.wav"/>
-        <FILE id="zYFkCz" name="Vox2.wav" compile="0" resource="1" file="Stems/Bridge/Vox2.wav"/>
-        <FILE id="Z1gniF" name="Vox3.wav" compile="0" resource="1" file="Stems/Bridge/Vox3.wav"/>
-        <FILE id="EDLO9B" name="Vox4.wav" compile="0" resource="1" file="Stems/Bridge/Vox4.wav"/>
+        <FILE id="K7CwFk" name="Bass.wav" compile="0" resource="1" file="Stems/Bridge/Bass.wav"/>
+        <FILE id="l876MJ" name="Drums.wav" compile="0" resource="1" file="Stems/Bridge/Drums.wav"/>
+        <FILE id="DI9iJa" name="Gtr1.wav" compile="0" resource="1" file="Stems/Bridge/Gtr1.wav"/>
+        <FILE id="pGuJR5" name="Gtr2.wav" compile="0" resource="1" file="Stems/Bridge/Gtr2.wav"/>
+        <FILE id="kDmspN" name="Organ.wav" compile="0" resource="1" file="Stems/Bridge/Organ.wav"/>
+        <FILE id="h46Fsu" name="Vox1.wav" compile="0" resource="1" file="Stems/Bridge/Vox1.wav"/>
+        <FILE id="PVWbTn" name="Vox2.wav" compile="0" resource="1" file="Stems/Bridge/Vox2.wav"/>
+        <FILE id="rFbaMr" name="Vox3.wav" compile="0" resource="1" file="Stems/Bridge/Vox3.wav"/>
+        <FILE id="UfVIQy" name="Vox4.wav" compile="0" resource="1" file="Stems/Bridge/Vox4.wav"/>
       </GROUP>
       <GROUP id="{055D59DE-8498-9218-041B-64D89B9926ED}" name="Test">
         <FILE id="P16DWp" name="test_drums.wav" compile="0" resource="1" file="Stems/Test/test_drums.wav"/>
