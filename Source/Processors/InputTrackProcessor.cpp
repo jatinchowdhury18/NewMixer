@@ -75,14 +75,14 @@ void InputTrackProcessor::arm (NumLoops numLoops, bool keyboardTrigger)
     else
         armed = true;
 
-    loopsToRecord = numLoops - Free;
+    loopsToRecord = numLoops;
 }
 
 void InputTrackProcessor::setRecordingStatus()
 {
     if (armed)
     {
-        inputBuffer.setSize (2, (int) (baseLengthSamples * jmax<int64>(loopsToRecord, 1)));
+        inputBuffer.setSize (2, (int) (baseLengthSamples * jmax<int64>(loopsToRecord - Free, 1)));
         inputBuffer.clear();
         
         armed = false;
