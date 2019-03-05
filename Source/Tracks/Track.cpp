@@ -133,7 +133,10 @@ void Track::trackNameChanged (String newName, String newShortName)
 void Track::trackMoved()
 {
     const int radius = width / 2;
-    processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter);
+
+    const auto* parent = getParentComponent();
+    if (parent != nullptr)
+        processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, parent->getWidth(), parent->getHeight());
 }
 
 void Track::paintOverChildren (Graphics& g) { PaintHelper::paint (this, g); }
