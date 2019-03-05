@@ -26,7 +26,7 @@ public:
     void releaseResources() override;
     virtual void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
     
-    void trackMoved (int x, int y, int width);
+    void trackMoved (int x, int y, int width, int screenWidth, int screenHeight);
     
     void setMute (bool mute) { isMute = mute; }
     bool getIsMute() { return isMute; }
@@ -67,9 +67,9 @@ private:
     std::unique_ptr<DistanceProcessor> distProcessor;
 
     void updateGain (int width);
-    void updateDelay (int x, int y);
-    void updatePan (int x);
-    void updateDist (int y);
+    void updateDelay (int x, int y, int screenWidth, int screenHeight);
+    void updatePan (int x, int screenWidth);
+    void updateDist (int y, int screenHeight);
     
     bool isMute = true;
     SoloState soloState = noTracks;

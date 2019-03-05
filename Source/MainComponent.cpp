@@ -12,12 +12,12 @@ enum
 
 MainComponent::MainComponent (String mode)
 {
+    setSize (width, height);
+    setWantsKeyboardFocus (true);
+
     addTracks (mode); //"Test" (default), "Chorus", or "Bridge"
 
     master.reset (new MasterTrack (tracks));
-
-    setSize (width, height);
-    setWantsKeyboardFocus (true);
 
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
     initSettings();
@@ -67,6 +67,7 @@ void MainComponent::addTracks (String stemsToUse)
     {
         addAndMakeVisible (track);
         track->addListener (this);
+        track->resized();
     }
 }
 
@@ -123,7 +124,7 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    settingsButton.setBounds (width - buttonWidth, 0, buttonWidth, buttonHeight);
+    settingsButton.setBounds (getWidth() - buttonWidth, 0, buttonWidth, buttonHeight);
 }
 
 void MainComponent::mouseDown (const MouseEvent& e)
