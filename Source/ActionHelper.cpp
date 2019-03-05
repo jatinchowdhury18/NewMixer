@@ -113,11 +113,15 @@ void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 
     if (trackToDuplicate != nullptr)
     {
-        mc->getTracks().add (new Track (*trackToDuplicate, trackToDuplicate->getX() + 10, trackToDuplicate->getY() + 10));
-        mc->addAndMakeVisible (mc->getTracks().getLast());
-        mc->getTracks().getLast()->addListener (mc);
+        mc->getTracks().add (new Track (*trackToDuplicate));
+        
+        auto* newTrack = mc->getTracks().getLast();
 
-        mc->getMaster()->addTrack (mc->getTracks().getLast());
+        mc->addAndMakeVisible (newTrack);
+        newTrack->addListener (mc);
+        newTrack->initialise (trackToDuplicate->getX() + 10, trackToDuplicate->getY() + 10);
+
+        mc->getMaster()->addTrack (newTrack);
     }
 }
 
@@ -150,10 +154,13 @@ void ActionHelper::addRecordingTrack (MainComponent* mc, int x, int y)
     auto startSample = mc->getTracks().isEmpty() ? (int64) 0       : mc->getTracks()[0]->getProcessor()->getStartSample();
     auto playing =     mc->getTracks().isEmpty() ? false           : mc->getTracks()[0]->getIsPlaying();
 
-    mc->getTracks().add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"),
-                                    x - TrackConstants::width / 2, y - TrackConstants::width / 2, mc->getNextColour()));
-    mc->addAndMakeVisible (mc->getTracks().getLast());
-    mc->getTracks().getLast()->addListener (mc);
+    mc->getTracks().add (new Track (len, startSample, playing, String ("Record 1"), String ("Rec1"), mc->getNextColour()));
 
-    mc->getMaster()->addTrack (mc->getTracks().getLast());
+    auto* newTrack = mc->getTracks().getLast();
+
+    mc->addAndMakeVisible (newTrack);
+    newTrack->addListener (mc);
+    newTrack->initialise (x - TrackConstants::width / 2, y - TrackConstants::width / 2);
+
+    mc->getMaster()->addTrack (newTrack);
 }

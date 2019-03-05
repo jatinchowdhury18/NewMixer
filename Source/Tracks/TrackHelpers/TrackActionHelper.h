@@ -18,6 +18,7 @@ public:
     static void changePosition (Track* track);
     static void changeColour (Track* track, int index);
 
+    static void setRelPosition (Track* track, Point<int> pos);
     static void setPositionConstrained (Track* track, Point<int> pos);
     static void setSizeConstrained (Track* track, float oldSize, float change);
 

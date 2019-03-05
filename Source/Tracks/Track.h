@@ -39,10 +39,11 @@ public:
         duplicateTrack,
     };
 
-    Track (File& file, String name, String shortName, int x, int y, Colour colour);
-    Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour);
-    Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour);
-    Track (const Track& track, int x, int y);
+    Track (File& file, String name, String shortName, Colour colour);
+    Track (MemoryInputStream* input, String name, String shortName, Colour colour);
+    Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour);
+    Track (const Track& track);
+    void initialise (int x, int y);
     ~Track();
 
     TrackBase* getProcessor() const { return processor; }
@@ -98,12 +99,13 @@ public:
     void duplicateSelectedTrack() { listeners.call (&Track::Listener::duplicateSelectedTrack); }
     void soloSelectedTrack() { listeners.call (&Track::Listener::soloSelectedTrack); }
 
+    void setRelativePosition (float x, float y) { relX = x; relY = y; }
+
 private:
 #if JUCE_DEBUG
     friend class NameTest;
 #endif
 
-    void initialise (int x, int y);
     void timerCallback() override;
 
     void mouseDown (const MouseEvent& e) override;
@@ -111,6 +113,9 @@ private:
     void mouseUp (const MouseEvent& e) override;
 
     ListenerList<Listener> listeners;
+
+    float relX = 0.0f;
+    float relY = 0.0f;
 
     String name;
     String shortName;
@@ -131,7 +136,7 @@ private:
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Track)
+    JUCE_LEAK_DETECTOR (Track)
 };
 
 #endif //TRACK_H_INCLUDED
