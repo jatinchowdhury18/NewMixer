@@ -168,7 +168,9 @@ void TrackActionHelper::setSizeConstrained (Track* track, float oldSize, float c
         return;
 
     track->setDiameter (newSize);
+
     setPositionConstrained (track, track->getPosition());
+    setRelPosition (track, track->getPosition());
 }
 
 void TrackActionHelper::changePosition (Track* track, const MouseEvent& e)
@@ -178,6 +180,7 @@ void TrackActionHelper::changePosition (Track* track, const MouseEvent& e)
     newPos.y -= TrackConstants::width / 2;
 
     setPositionConstrained (track, newPos);
+    setRelPosition (track, newPos);
     track->resized();
 }
 
@@ -195,8 +198,18 @@ void TrackActionHelper::changePosition (Track* track)
     if (KeyPress::isKeyCurrentlyDown (KeyPress::rightKey))
         pos.x += changeVal; //right
 
+    setRelPosition (track, pos);
     setPositionConstrained (track, pos);
-    track->resized();
+    track->trackMoved();
+}
+
+void TrackActionHelper::setRelPosition (Track* track, Point<int> pos)
+{
+    const auto* parent = track->getParentComponent();
+    if (parent != nullptr)
+        track->setRelativePosition ((float) pos.x / parent->getWidth(), (float) pos.y / parent->getHeight());
+    else
+        jassertfalse; //No parent??
 }
 
 void TrackActionHelper::setPositionConstrained (Track* track, Point<int> pos)

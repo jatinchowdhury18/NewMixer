@@ -6,29 +6,25 @@
 
 using namespace TrackConstants;
 
-Track::Track (File& file, String name, String shortName, int x, int y, Colour colour) : 
+Track::Track (File& file, String name, String shortName, Colour colour) : 
     name (name),
     shortName (shortName),
     trackColour (colour)
 {
     processor = new TrackProcessor (file);
     processor->addListener (this);
-
-    initialise (x, y);
 }
 
-Track::Track (MemoryInputStream* input, String name, String shortName, int x, int y, Colour colour) : 
+Track::Track (MemoryInputStream* input, String name, String shortName, Colour colour) : 
     name (name),
     shortName (shortName),
     trackColour (colour)
 {
     processor = new TrackProcessor (input);
     processor->addListener (this);
-
-    initialise (x, y);
 }
 
-Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, int x, int y, Colour colour) :
+Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour) :
     name (name),
     shortName (shortName),
     trackColour (colour),
@@ -36,11 +32,9 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
 {
     processor = new InputTrackProcessor (sampleLength, startSample);
     processor->addListener (this);
-
-    initialise (x, y);
 }
 
-Track::Track (const Track& track, int x, int y) :
+Track::Track (const Track& track) :
     name (track.getName()),
     shortName (track.getShortName()),
     trackColour (track.getColour()),
@@ -53,8 +47,6 @@ Track::Track (const Track& track, int x, int y) :
         processor = new InputTrackProcessor (*inputProcessor);
 
     processor->addListener (this);
-
-    initialise (x, y);
 }
 
 void Track::initialise (int x, int y)
@@ -63,6 +55,15 @@ void Track::initialise (int x, int y)
 
     meter.reset (new TrackMeter (this));
     addAndMakeVisible (meter.get());
+
+    const auto* parent = getParentComponent();
+    if (parent != nullptr)
+    {
+        relX = (float) x / (float) parent->getWidth();
+        relY = (float) y / (float) parent->getHeight();
+    }
+    else
+        jassertfalse; //No Parent??
 
     setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
@@ -137,12 +138,21 @@ void Track::trackMoved()
     const auto* parent = getParentComponent();
     if (parent != nullptr)
         processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, parent->getWidth(), parent->getHeight());
+    else
+        jassertfalse; //No Parent??
 }
 
 void Track::paintOverChildren (Graphics& g) { PaintHelper::paint (this, g); }
 
 void Track::resized()
 {
+    const auto* parent = getParentComponent();
+    if (parent != nullptr)
+        TrackActionHelper::setPositionConstrained (this,
+            Point<int> ((int) (relX * parent->getWidth()), (int) (relY * parent->getHeight())));
+    else
+        jassertfalse; //No parent??
+
     trackMoved();
     meter->setBounds (0, 0, width, width);
 }
@@ -266,7 +276,12 @@ public:
         }
     }
 
-    void initialise() override { track = new Track (100, 0, false, "Test", "Tst", 100, 100, Colours::white); }
+    void initialise() override
+    {
+        track = new Track (100, 0, false, "Test", "Tst", Colours::white);
+        track->initialise (100, 100);
+    }
+
     void shutdown() override 
     {
         delete track->getProcessor(); 
@@ -308,7 +323,12 @@ public:
         nameTest ("Gtr", "", "Gtr", "Gtr");
     }
 
-    void initialise() override { track = new Track (100, 0, false, "Test", "Tst", 100, 100, Colours::white); }
+    void initialise() override
+    {
+        track = new Track (100, 0, false, "Test", "Tst", Colours::white);
+        track->initialise (100, 100);
+    }
+
     void shutdown() override 
     {
         delete track->getProcessor(); 

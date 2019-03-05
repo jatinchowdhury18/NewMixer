@@ -62,20 +62,16 @@ void MainComponent::addTracks (String stemsToUse)
         chorusTracks();
     else if (stemsToUse == "Test")
         testTracks();
-
-    for (auto* track : tracks)
-    {
-        addAndMakeVisible (track);
-        track->addListener (this);
-        track->resized();
-    }
 }
 
 void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName)
 {
     int xPos = xOffset + xSpace * tracks.size();
     MemoryInputStream* mis = new MemoryInputStream (sourceData, sourceSize, false);
-    tracks.add (new Track (mis, name, shortName, xPos, yPos, getNextColour()));
+    tracks.add (new Track (mis, name, shortName, getNextColour()));
+    addAndMakeVisible (tracks.getLast());
+    tracks.getLast()->addListener (this);
+    tracks.getLast()->initialise (xPos, yPos);
 }
 
 void MainComponent::bridgeTracks()
@@ -125,6 +121,9 @@ void MainComponent::paint (Graphics& g)
 void MainComponent::resized()
 {
     settingsButton.setBounds (getWidth() - buttonWidth, 0, buttonWidth, buttonHeight);
+
+    for (auto track : tracks)
+        track->resized();
 }
 
 void MainComponent::mouseDown (const MouseEvent& e)
