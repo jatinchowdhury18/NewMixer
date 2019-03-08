@@ -35,6 +35,18 @@
       </GROUP>
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
+      <GROUP id="{0E5CFD79-976A-F180-1D3F-50D60AAF4405}" name="Timeline">
+        <FILE id="zoscis" name="Marker.cpp" compile="1" resource="0" file="Source/Timeline/Marker.cpp"/>
+        <FILE id="uWj5C7" name="Marker.h" compile="0" resource="0" file="Source/Timeline/Marker.h"/>
+        <FILE id="ymYueU" name="MarkerView.cpp" compile="1" resource="0" file="Source/Timeline/MarkerView.cpp"/>
+        <FILE id="j64wW7" name="MarkerView.h" compile="0" resource="0" file="Source/Timeline/MarkerView.h"/>
+        <FILE id="MGCmS6" name="Playhead.cpp" compile="1" resource="0" file="Source/Timeline/Playhead.cpp"/>
+        <FILE id="APoJMD" name="Playhead.h" compile="0" resource="0" file="Source/Timeline/Playhead.h"/>
+        <FILE id="J9dR5u" name="WaveformViewer.cpp" compile="1" resource="0"
+              file="Source/Timeline/WaveformViewer.cpp"/>
+        <FILE id="P3HARG" name="WaveformViewer.h" compile="0" resource="0"
+              file="Source/Timeline/WaveformViewer.h"/>
+      </GROUP>
       <FILE id="WCzuLe" name="ActionHelper.cpp" compile="1" resource="0"
             file="Source/ActionHelper.cpp"/>
       <FILE id="PtVFiB" name="ActionHelper.h" compile="0" resource="0" file="Source/ActionHelper.h"/>

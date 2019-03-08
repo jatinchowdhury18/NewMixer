@@ -39,6 +39,7 @@ public:
     
     virtual int64 getLengthSamples() const = 0;
     int64 getStartSample() const { return readerStartSample; }
+    void setStartSample (int64 sample) { readerStartSample = sample; }
     
     class Listener
     {

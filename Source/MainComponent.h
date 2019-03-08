@@ -5,12 +5,19 @@
 #include "MasterTrack.h"
 #include "Colours.h"
 #include "Settings.h"
+#include "Timeline/WaveformViewer.h"
 
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
+
+namespace MainConstants
+{
+    constexpr float heightFactor = 0.8f;
+}
+
 class MainComponent : public Component,
                       public Track::Listener
 {
@@ -66,6 +73,8 @@ private:
     //==============================================================================
     std::unique_ptr<MasterTrack> master;
     OwnedArray<Track> tracks;
+
+    std::unique_ptr<WaveformViewer> waveformView;
 
     TrackColours trackColours;
     std::unique_ptr<TooltipWindow> tooltipWindow;

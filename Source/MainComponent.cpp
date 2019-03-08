@@ -7,7 +7,7 @@ enum
 {
     xSpace = MainComponent::width / 9, //stems.size();
     xOffset = (xSpace / 2) - (TrackConstants::width / 2),
-    yPos = 475,
+    yPos = 350,
 };
 
 MainComponent::MainComponent (String mode)
@@ -18,6 +18,10 @@ MainComponent::MainComponent (String mode)
     addTracks (mode); //"Test" (default), "Chorus", or "Bridge"
 
     master.reset (new MasterTrack (tracks));
+
+    waveformView.reset (new WaveformViewer (dynamic_cast<TrackProcessor*> (tracks.getFirst()->getProcessor())));
+    addAndMakeVisible (waveformView.get());
+    resized();
 
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
     initSettings();
@@ -116,11 +120,20 @@ void MainComponent::paint (Graphics& g)
     g.setFont (Font (40.0f));
     g.setColour (Colours::darkred);
     g.drawText ("New Mixer", getLocalBounds().removeFromTop (30), Justification::centred, true);
+
+    g.setColour (Colours::white);
+    const auto yLine = (float) getHeight() * MainConstants::heightFactor;
+    g.drawLine (0.0f, yLine, (float) getWidth(), yLine);
 }
 
 void MainComponent::resized()
 {
     settingsButton.setBounds (getWidth() - buttonWidth, 0, buttonWidth, buttonHeight);
+
+    if (waveformView != nullptr)
+        waveformView->setBounds (0, (int) (getHeight() * MainConstants::heightFactor), getWidth(), (int) (getHeight() * (1.0f - MainConstants::heightFactor)));
+    //    waveform->setBounds (0, (int) (getHeight() * MainConstants::heightFactor),
+    //                         getWidth(), (int) (getHeight() * (1.0f - MainConstants::heightFactor)));
 
     for (auto track : tracks)
         track->resized();
