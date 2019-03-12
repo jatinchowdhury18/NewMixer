@@ -1,34 +1,83 @@
 #include "WaveformViewer.h"
+#include "Track.h"
 
-WaveformViewer::WaveformViewer (TrackProcessor* trackProc) : 
-    cache (5),
-    waveform (512, trackProc->getFormatManager(), cache),
-    playhead (trackProc)
-    //marker (player)
+WaveformViewer::WaveformViewer (OwnedArray<Track>& tracks)
 {
-    waveform.setReader (trackProc->getReader(), 0x2345);
+    for (auto track : tracks)
+    {
+        auto proc = dynamic_cast<TrackProcessor*> (track->getProcessor());
+        if (proc == nullptr)
+            continue; //@TODO: figure something out for input tracks
 
-    addAndMakeVisible (playhead);
+        procs.add (proc);
+    
+        caches.add (new AudioThumbnailCache (5));
+        waveforms.add (new AudioThumbnail (512, proc->getFormatManager(), *caches.getLast()));
+
+        waveforms.getLast()->setReader (proc->getReader(), 0x2345);
+
+        colours.add (track->getColour());
+    }
+
+    playhead.reset (new Playhead (procs.getFirst()));
+
+    addAndMakeVisible (playhead.get());
 
     //addAndMakeVisible (marker);
 }
 
 WaveformViewer::~WaveformViewer()
 {
-    waveform.clear();
-    cache.clear();
-    waveform.setReader (nullptr, 0);
+    for (int i = 0; i < waveforms.size(); i++)
+    {
+        waveforms[i]->clear();
+        caches[i]->clear();
+        waveforms[i]->setReader (nullptr, 0);
+    }
 }
 
 void WaveformViewer::paint (Graphics& g)
 {
-    g.setColour (Colours::indianred);
 
-    waveform.drawChannels (g, getLocalBounds(), 0, waveform.getTotalLength(), 1.0f);
+    if (selectedTrack < 0)
+    {
+        g.setColour (Colours::indianred);
+
+        for (int i = 0; i < waveforms.size(); i++)
+        {
+            const auto zoom = powf (procs[i]->gain(), 0.4f);
+            waveforms[i]->drawChannels (g, getLocalBounds(), 0, waveforms[i]->getTotalLength(), zoom);
+        }
+    }
+    else
+    {
+        g.setColour (colours[selectedTrack]);
+
+        const auto zoom = powf (procs[selectedTrack]->gain(), 0.4f);
+        waveforms[selectedTrack]->drawChannels (g, getLocalBounds(), 0, waveforms[selectedTrack]->getTotalLength(), zoom);
+    }
 }
 
 void WaveformViewer::resized()
 {
     const auto bounds = getLocalBounds();
-    playhead.setBounds (bounds);
+    playhead->setBounds (bounds);
+}
+
+void WaveformViewer::deleteTrack (int index)
+{
+    if (selectedTrack < 0)
+        return;
+
+    if (index == selectedTrack)
+        selectedTrack = -1;
+
+    waveforms[index]->clear();
+    caches[index]->clear();
+    waveforms[index]->setReader (nullptr, 0);
+
+    procs.remove (index);
+    caches.remove (index);
+    waveforms.remove (index);
+    colours.remove (index);
 }

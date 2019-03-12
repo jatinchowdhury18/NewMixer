@@ -22,7 +22,7 @@ void Playhead::paint (Graphics& g)
         pos = roundToInt (curPos);
     }
 
-    g.drawLine (pos, (float) getY(), pos, (float) getBottom(), 3.0f);
+    g.drawLine ((float) pos, (float) getY(), (float) pos, (float) getBottom(), 3.0f);
 }
 
 void Playhead::mouseMove (const MouseEvent& e)

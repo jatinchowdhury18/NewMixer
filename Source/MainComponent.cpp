@@ -19,7 +19,7 @@ MainComponent::MainComponent (String mode)
 
     master.reset (new MasterTrack (tracks));
 
-    waveformView.reset (new WaveformViewer (dynamic_cast<TrackProcessor*> (tracks.getFirst()->getProcessor())));
+    waveformView.reset (new WaveformViewer (tracks));
     addAndMakeVisible (waveformView.get());
     resized();
 
@@ -75,7 +75,7 @@ void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, Strin
     tracks.add (new Track (mis, name, shortName, getNextColour()));
     addAndMakeVisible (tracks.getLast());
     tracks.getLast()->addListener (this);
-    tracks.getLast()->initialise (xPos, yPos);
+    tracks.getLast()->initialise (xPos, yPos, tracks.size() - 1);
 }
 
 void MainComponent::bridgeTracks()
@@ -128,7 +128,9 @@ void MainComponent::paint (Graphics& g)
 
 void MainComponent::resized()
 {
-    settingsButton.setBounds (getWidth() - buttonWidth, 0, buttonWidth, buttonHeight);
+    using namespace MainConstants;
+    settingsButton.setBounds ((int) (getWidth() * (1 - buttonWidthFactor)), 0,
+                              (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
 
     if (waveformView != nullptr)
         waveformView->setBounds (0, (int) (getHeight() * MainConstants::heightFactor), getWidth(), (int) (getHeight() * (1.0f - MainConstants::heightFactor)));

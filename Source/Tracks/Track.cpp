@@ -3,6 +3,7 @@
 #include "InputTrackProcessor.h"
 #include "TrackHelpers/TrackActionHelper.h"
 #include "TrackHelpers/PaintHelper.h"
+#include "MainComponent.h"
 
 using namespace TrackConstants;
 
@@ -49,8 +50,10 @@ Track::Track (const Track& track) :
     processor->addListener (this);
 }
 
-void Track::initialise (int x, int y)
+void Track::initialise (int x, int y, int ind)
 {
+    index = ind;
+
     autoHelper.reset (new AutoHelper);
 
     meter.reset (new TrackMeter (this));
@@ -62,8 +65,6 @@ void Track::initialise (int x, int y)
         relX = (float) x / (float) parent->getWidth();
         relY = (float) y / (float) parent->getHeight();
     }
-    else
-        jassertfalse; //No Parent??
 
     setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
@@ -138,8 +139,6 @@ void Track::trackMoved()
     const auto* parent = getParentComponent();
     if (parent != nullptr)
         processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, parent->getWidth(), parent->getHeight());
-    else
-        jassertfalse; //No Parent??
 }
 
 void Track::paintOverChildren (Graphics& g) { PaintHelper::paint (this, g); }
@@ -150,8 +149,6 @@ void Track::resized()
     if (parent != nullptr)
         TrackActionHelper::setPositionConstrained (this,
             Point<int> ((int) (relX * parent->getWidth()), (int) (relY * parent->getHeight())));
-    else
-        jassertfalse; //No parent??
 
     trackMoved();
     meter->setBounds (0, 0, width, width);
@@ -180,6 +177,8 @@ void Track::mouseDown (const MouseEvent& e)
 
     isSelected = true;
     repaint();
+
+    dynamic_cast<MainComponent*> (getParentComponent())->getWaveform()->setSelected (index);
 
     if (e.mods.isPopupMenu())
         TrackActionHelper::rightClickMenu (this);
@@ -217,7 +216,6 @@ void Track::togglePlay()
 {
     isPlaying = ! isPlaying;
 
-    processor->rewind();
     auto input = dynamic_cast<InputTrackProcessor*> (processor);
     if (input != nullptr)
     {
@@ -279,7 +277,7 @@ public:
     void initialise() override
     {
         track = new Track (100, 0, false, "Test", "Tst", Colours::white);
-        track->initialise (100, 100);
+        track->initialise (100, 100, 0);
     }
 
     void shutdown() override 
@@ -326,7 +324,7 @@ public:
     void initialise() override
     {
         track = new Track (100, 0, false, "Test", "Tst", Colours::white);
-        track->initialise (100, 100);
+        track->initialise (100, 100, 0);
     }
 
     void shutdown() override 

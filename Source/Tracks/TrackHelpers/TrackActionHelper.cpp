@@ -209,8 +209,6 @@ void TrackActionHelper::setRelPosition (Track* track, Point<int> pos)
     const auto* parent = track->getParentComponent();
     if (parent != nullptr)
         track->setRelativePosition ((float) pos.x / parent->getWidth(), (float) pos.y / parent->getHeight());
-    else
-        jassertfalse; //No parent??
 }
 
 void TrackActionHelper::setPositionConstrained (Track* track, Point<int> pos)
