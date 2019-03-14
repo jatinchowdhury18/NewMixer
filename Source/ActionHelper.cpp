@@ -39,6 +39,11 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
         ActionHelper::togglePlay (mc);
         return true;
     }
+    else if (key == KeyPress::homeKey) //rewind
+    {
+        ActionHelper::rewind (mc);
+        return true;
+    }
     else if (key == KeyPress::deleteKey) //delete track
     {
         ActionHelper::deleteSelectedTrack (mc);
@@ -81,6 +86,12 @@ void ActionHelper::togglePlay (MainComponent* mc)
         track->togglePlay();
 }
 
+void ActionHelper::rewind (MainComponent* mc)
+{
+    for (auto track : mc->getTracks())
+        track->getProcessor()->rewind();
+}
+
 void ActionHelper::soloSelectedTrack (MainComponent* mc)
 {
     SoloHelper::soloButtonPressed (mc->getTracks());
@@ -91,8 +102,17 @@ void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
     Track* trackToDelete = nullptr;
     for (int i = 0; i < mc->getTracks().size(); i++)
+    {
         if (mc->getTracks()[i]->getIsSelected())
+        {
             trackToDelete = mc->getTracks().removeAndReturn (i);
+
+            mc->getWaveform()->deleteTrack (i);
+
+            for (int j = i; j < mc->getTracks().size(); j++)
+                mc->getTracks()[j]->setIndex (j);
+        }
+    }
 
     if (trackToDelete != nullptr)
         mc->getMaster()->removeTrack (trackToDelete);
@@ -119,7 +139,7 @@ void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 
         mc->addAndMakeVisible (newTrack);
         newTrack->addListener (mc);
-        newTrack->initialise (trackToDuplicate->getX() + 10, trackToDuplicate->getY() + 10);
+        newTrack->initialise (trackToDuplicate->getX() + 10, trackToDuplicate->getY() + 10, mc->getTracks().size() - 1);
 
         mc->getMaster()->addTrack (newTrack);
     }
@@ -130,6 +150,7 @@ void ActionHelper::clearSelectedTrack (MainComponent* mc)
     for (auto track : mc->getTracks())
         track->setSelected (false);
     mc->repaint();
+    mc->getWaveform()->setSelected();
 }
 
 void ActionHelper::changeSelect (MainComponent* mc, bool forward)
@@ -146,6 +167,7 @@ void ActionHelper::changeSelect (MainComponent* mc, bool forward)
 
     ActionHelper::clearSelectedTrack (mc);
     mc->getTracks()[trackToSelect]->setSelected (true);
+    mc->getWaveform()->setSelected (trackToSelect);
 }
 
 void ActionHelper::addRecordingTrack (MainComponent* mc, int x, int y)
@@ -160,7 +182,7 @@ void ActionHelper::addRecordingTrack (MainComponent* mc, int x, int y)
 
     mc->addAndMakeVisible (newTrack);
     newTrack->addListener (mc);
-    newTrack->initialise (x - TrackConstants::width / 2, y - TrackConstants::width / 2);
+    newTrack->initialise (x - TrackConstants::width / 2, y - TrackConstants::width / 2, mc->getTracks().size() - 1);
 
     mc->getMaster()->addTrack (newTrack);
 }

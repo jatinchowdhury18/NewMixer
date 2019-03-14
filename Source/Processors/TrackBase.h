@@ -39,6 +39,7 @@ public:
     
     virtual int64 getLengthSamples() const = 0;
     int64 getStartSample() const { return readerStartSample; }
+    void setStartSample (int64 sample) { readerStartSample = sample; }
     
     class Listener
     {
@@ -49,6 +50,8 @@ public:
     
     void addListener (Listener* listener) { listeners.add (listener); }
     void removeListener (Listener* listener) { listeners.remove (listener); }
+
+    float gain() { return gainProcessor->getGain(); }
 
 protected:
     ListenerList<Listener> listeners;

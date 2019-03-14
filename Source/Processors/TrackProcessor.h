@@ -20,11 +20,12 @@ public:
     void processBlock (AudioBuffer<float> &buffer, MidiBuffer &midiMessages) override;
     
     int64 getLengthSamples() const override { return reader->lengthInSamples; }
-    AudioFormatReader* getReader() const { return reader.get(); }
+    AudioFormatReader* getReader() const { return reader; }
+    AudioFormatManager& getFormatManager() { return formatManager; }
 
 private:
     AudioFormatManager formatManager;
-    std::unique_ptr<AudioFormatReader> reader;
+    AudioFormatReader* reader;
 
     JUCE_LEAK_DETECTOR (TrackProcessor)
 };

@@ -1,5 +1,6 @@
 #include "TrackActionHelper.h"
 #include "InputTrackProcessor.h"
+#include "MainComponent.h"
 
 void TrackActionHelper::rightClickMenu (Track* track)
 {
@@ -208,15 +209,13 @@ void TrackActionHelper::setRelPosition (Track* track, Point<int> pos)
     const auto* parent = track->getParentComponent();
     if (parent != nullptr)
         track->setRelativePosition ((float) pos.x / parent->getWidth(), (float) pos.y / parent->getHeight());
-    else
-        jassertfalse; //No parent??
 }
 
 void TrackActionHelper::setPositionConstrained (Track* track, Point<int> pos)
 {
     const int halfWidth = TrackConstants::width / 2;
     pos.x = jlimit<int> (-halfWidth, track->getParentWidth() - halfWidth, pos.x);
-    pos.y = jlimit<int> (-halfWidth, track->getParentHeight() - halfWidth, pos.y);
+    pos.y = jlimit<int> (-halfWidth, (int) (track->getParentHeight() * MainConstants::heightFactor) - halfWidth, pos.y);
 
     track->setTopLeftPosition (pos);
 }

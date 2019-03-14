@@ -78,8 +78,9 @@ void TrackBase::updateGain (int width)
 
 void TrackBase::updateDelay (int x, int y, int screenWidth, int screenHeight)
 {
+    const auto correctHeight = (float) screenHeight * MainConstants::heightFactor;
     const auto trackX = (float) (x - screenWidth / 2) * roomWidth / (float) screenWidth;
-    const auto trackY = (float) (screenHeight - y) * roomWidth / (float) screenHeight;
+    const auto trackY = (float) (correctHeight - y) * roomWidth / correctHeight;
 
     const auto leftDelay  = sqrtf (powf (trackX - leftEarX, 2)  + powf (trackY, 2)) * 1000.0f / speedOfSound;
     const auto rightDelay = sqrtf (powf (trackX - rightEarX, 2) + powf (trackY, 2)) * 1000.0f / speedOfSound;
@@ -96,7 +97,7 @@ void TrackBase::updatePan (int x, int screenWidth)
 
 void TrackBase::updateDist (int y, int screenHeight)
 {
-    const auto distFactor = (float) y / (float) screenHeight;
+    const auto distFactor = (float) y / ((float) screenHeight * MainConstants::heightFactor);
     distProcessor->setGain (distFactor);
 
     const auto distFreq = (float) (FilterProcessor::farFreq) + powf (distFactor, 2.0f) * (float) (FilterProcessor::maxFreq - FilterProcessor::farFreq);
@@ -114,6 +115,7 @@ class ProcessorTest : public UnitTest
     {
         width = 900,
         height = 600,
+        heightScaled = (int) (height * MainConstants::heightFactor),
     };
 
 public:
@@ -149,10 +151,10 @@ public:
         processor->trackMoved (width, 0, 50, width, height);
         checkProcessors (0.03125f, 9.9228f, 9.6426f, 1.0f, 0.0f, 1000.0f, 1.0f);
 
-        processor->trackMoved (width, height, 50, width, height);
+        processor->trackMoved (width, heightScaled, 50, width, height);
         checkProcessors (0.03125f, 4.6866f, 4.0598f, 1.0f, 1.0f, 22000.0f, 0.0f);
 
-        processor->trackMoved (0, height, 50, width, height);
+        processor->trackMoved (0, heightScaled, 50, width, height);
         checkProcessors (0.03125f, 4.0598f, 4.6866f, 0.0f, 1.0f, 22000.0f, 0.0f);
 
         beginTest ("Pan Processor");
@@ -166,13 +168,13 @@ public:
         checkProcessors (0.03125f, 9.0966f, 8.9447f, 0.75f, 0.0f, 1000.0f, 1.0f);
 
         beginTest ("Dist Processor");
-        processor->trackMoved (width / 2, height / 2, 50, width, height);
+        processor->trackMoved (width / 2, heightScaled / 2, 50, width, height);
         checkProcessors (0.03125f, 4.3844f, 4.3844f, 0.5f, 0.5f, 6250.0f, 0.0625f);
 
-        processor->trackMoved (width / 2, height / 4, 50, width, height);
+        processor->trackMoved (width / 2, heightScaled / 4, 50, width, height);
         checkProcessors (0.03125f, 6.5673f, 6.5673f, 0.5f, 0.25f, 2312.5f, 0.31640625f);
 
-        processor->trackMoved (width / 2, 3 * height / 4, 50, width, height);
+        processor->trackMoved (width / 2, 3 * heightScaled / 4, 50, width, height);
         checkProcessors (0.03125f, 2.2089f, 2.2089f, 0.5f, 0.75f, 12812.5f, 0.00390625f);
     }
 

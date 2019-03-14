@@ -43,7 +43,7 @@ public:
     Track (MemoryInputStream* input, String name, String shortName, Colour colour);
     Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour);
     Track (const Track& track);
-    void initialise (int x, int y);
+    void initialise (int x, int y, int ind);
     ~Track();
 
     TrackBase* getProcessor() const { return processor; }
@@ -101,6 +101,8 @@ public:
 
     void setRelativePosition (float x, float y) { relX = x; relY = y; }
 
+    void setIndex (int ind) { index = ind; }
+
 private:
 #if JUCE_DEBUG
     friend class NameTest;
@@ -128,6 +130,7 @@ private:
 
     bool isSelected = false;
     bool isPlaying = false;
+    int index = 0;
 
     TrackBase* processor;
 
