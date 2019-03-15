@@ -35,7 +35,6 @@ public:
     void shutdown() override
     {
         // Add your application's shutdown code here..
-
         mainWindow = nullptr; // (deletes our window)
     }
 

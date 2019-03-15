@@ -19,7 +19,7 @@ public:
     void deleteTrack (int index);
 
 private:
-    Array<TrackProcessor*> procs;
+    Array<TrackBase*> procs;
     OwnedArray<AudioThumbnailCache> caches;
     OwnedArray<AudioThumbnail> waveforms;
     Array<Colour> colours;
