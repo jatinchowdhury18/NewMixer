@@ -53,10 +53,13 @@ public:
 
     float gain() { return gainProcessor->getGain(); }
 
+    void toggleLoop() { looping = ! looping; }
+
 protected:
     ListenerList<Listener> listeners;
     
     int64 readerStartSample = 0;
+    bool looping = false;
     
 private:
 #if JUCE_DEBUG
