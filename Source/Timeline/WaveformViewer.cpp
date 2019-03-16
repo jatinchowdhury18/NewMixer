@@ -12,14 +12,14 @@ WaveformViewer::WaveformViewer (OwnedArray<Track>& tracks)
         procs.add (proc);
     
         caches.add (new AudioThumbnailCache (5));
-        waveforms.add (new AudioThumbnail (512, proc->getFormatManager(), *caches.getLast()));
+        waveforms.add (new AudioThumbnail (4096, proc->getFormatManager(), *caches.getLast()));
 
         waveforms.getLast()->setReader (proc->getReader(), 0x2345);
 
         colours.add (track->getColour());
     }
 
-    playhead.reset (new Playhead (procs.getFirst()));
+    playhead.reset (new Playhead (procs));
 
     addAndMakeVisible (playhead.get());
 

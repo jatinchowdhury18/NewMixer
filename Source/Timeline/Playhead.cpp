@@ -1,6 +1,6 @@
 #include "Playhead.h"
 
-Playhead::Playhead (TrackBase* trackProc) : proc (trackProc)
+Playhead::Playhead (Array<TrackBase*>& trackProcs) : procs (trackProcs)
 {
     startTimer (10);
 }
@@ -17,7 +17,7 @@ void Playhead::paint (Graphics& g)
     auto curPos = (float) pos;
     if (! mouseIsDragging)
     {
-        auto posFraction = (float) proc->getStartSample() / (float) proc->getLengthSamples();
+        auto posFraction = (float) procs[0]->getStartSample() / (float) procs[0]->getLengthSamples();
         curPos = (float) (posFraction * getWidth() + getX());
         pos = roundToInt (curPos);
     }
@@ -48,7 +48,8 @@ void Playhead::mouseUp (const MouseEvent& e)
 
     pos = e.x;
     auto posFraction = (float) pos / getBounds().getWidth();
-    auto trackPosition = (int64) (posFraction * proc->getLengthSamples());
+    auto trackPosition = (int64) (posFraction * procs[0]->getLengthSamples());
 
-    proc->setStartSample (trackPosition);
+    for (auto proc : procs)
+        proc->setStartSample (trackPosition);
 }

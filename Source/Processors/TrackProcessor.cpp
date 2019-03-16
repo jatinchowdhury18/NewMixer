@@ -34,6 +34,9 @@ TrackProcessor::TrackProcessor (const TrackProcessor& processor) : TrackBase (St
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
+    if (reader->lengthInSamples < 0)
+        return; //@TODO: this should not be happening, ever.
+
     const auto numSamples = buffer.getNumSamples();
     if (readerStartSample + numSamples <= reader->lengthInSamples)
     {
@@ -44,10 +47,20 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     {
         auto samplesUnder = reader->lengthInSamples - readerStartSample;
         reader->read (&buffer, 0, (int) samplesUnder, readerStartSample, true, true);
-        reader->read (&buffer, (int) samplesUnder, numSamples - (int) samplesUnder, 0, true, true);
-        readerStartSample = numSamples - samplesUnder;
 
-        listeners.call (&TrackBase::Listener::newLoop);
+        if (looping)
+        {
+            reader->read (&buffer, (int) samplesUnder, numSamples - (int) samplesUnder, 0, true, true);
+            readerStartSample = numSamples - samplesUnder;
+
+            listeners.call (&TrackBase::Listener::newLoop);
+        }
+        else
+        {
+            buffer.applyGainRamp (0, (int) samplesUnder, 1.0f, 0.0f);
+            buffer.applyGain ((int) samplesUnder, numSamples - (int) samplesUnder, 0.0f);
+            readerStartSample = reader->lengthInSamples;
+        }
     }
 
     TrackBase::processBlock (buffer, midiMessages);

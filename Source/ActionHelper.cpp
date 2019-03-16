@@ -59,14 +59,19 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
         ActionHelper::changeSelect (mc, true);
         return true;
     }
-    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::shiftModifier, juce_wchar (NULL)))
+    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::shiftModifier, juce_wchar (NULL))) //reverse select
     {
         ActionHelper::changeSelect (mc, false);
         return true;
     }
-    else if (key == KeyPress::createFromDescription ("CMD + N"))
+    else if (key == KeyPress::createFromDescription ("CMD + N")) //New track
     {
         ActionHelper::addRecordingTrack (mc, mc->width / 2, mc->height / 2);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + L")) //loop mode
+    {
+        ActionHelper::toggleLoop (mc);
         return true;
     }
 
@@ -84,6 +89,12 @@ void ActionHelper::togglePlay (MainComponent* mc)
     mc->getMaster()->togglePlay();
     for (auto track : mc->getTracks())
         track->togglePlay();
+}
+
+void ActionHelper::toggleLoop (MainComponent* mc)
+{
+    for (auto track : mc->getTracks())
+        track->getProcessor()->toggleLoop();
 }
 
 void ActionHelper::rewind (MainComponent* mc)

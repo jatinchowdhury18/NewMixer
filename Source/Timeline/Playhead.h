@@ -7,7 +7,7 @@ class Playhead : public Component,
                  private Timer
 {
 public:
-    Playhead (TrackBase* trackProc);
+    Playhead (Array<TrackBase*>& trackProcs);
 
     void timerCallback() override;
 
@@ -18,7 +18,7 @@ public:
     void mouseUp (const MouseEvent& event) override;
 
 private:
-    TrackBase* proc;
+    Array<TrackBase*> procs;
 
     int64 pos;
 
