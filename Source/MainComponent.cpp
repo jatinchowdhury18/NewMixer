@@ -45,21 +45,6 @@ void MainComponent::initSettings()
 
 void MainComponent::addTracks (String stemsToUse)
 {
-    //@TODO: Figure out a more dynamic way to load files from Stems folder
-    /*
-    const File rootDir = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
-    const File stemsFolder = File (rootDir.getFullPathName() + "\\Stems\\" + stemsToUse);
-
-    Array<File> stems = stemsFolder.findChildFiles (File::TypesOfFileToFind::findFiles, false);
-    const int xOffset = width / stems.size();
-    for (auto file : stems)
-    {
-        int n = tracks.size();
-        int xPos = (xOffset / 2) - (Track::defaultWidth / 2) + xOffset * n;
-        tracks.add (new Track (file, file.getFileNameWithoutExtension(), xPos, 500, trackColours.getColour (n)));
-    }
-    */
-
     if (stemsToUse == "Bridge")
         bridgeTracks();
     else if (stemsToUse == "Chorus")

@@ -1,6 +1,13 @@
 #include "WaveformViewer.h"
 #include "Track.h"
 
+enum
+{
+    cacheSize = 5,
+    thumbSamples = 1024,
+    hash = 0x2345,
+};
+
 WaveformViewer::WaveformViewer (OwnedArray<Track>& tracks)
 {
     for (auto track : tracks)
@@ -11,10 +18,10 @@ WaveformViewer::WaveformViewer (OwnedArray<Track>& tracks)
 
         procs.add (proc);
     
-        caches.add (new AudioThumbnailCache (5));
-        waveforms.add (new AudioThumbnail (4096, proc->getFormatManager(), *caches.getLast()));
+        caches.add (new AudioThumbnailCache (cacheSize));
+        waveforms.add (new AudioThumbnail (thumbSamples, proc->getFormatManager(), *caches.getLast()));
 
-        waveforms.getLast()->setReader (proc->getReader(), 0x2345);
+        waveforms.getLast()->setReader (proc->getReader(), hash);
 
         colours.add (track->getColour());
     }
@@ -64,6 +71,24 @@ void WaveformViewer::resized()
     playhead->setBounds (bounds);
 }
 
+void WaveformViewer::addTrack (Track* track)
+{
+    auto proc = dynamic_cast<TrackProcessor*> (track->getProcessor());
+    if (proc == nullptr)
+        return; //@TODO: figure something out for input tracks
+
+    procs.add (proc);
+
+    caches.add (new AudioThumbnailCache (cacheSize));
+    waveforms.add (new AudioThumbnail (thumbSamples, proc->getFormatManager(), *caches.getLast()));
+
+    waveforms.getLast()->setReader (proc->getReader(), hash);
+
+    playhead->addProc (proc);
+
+    colours.add (track->getColour());
+}
+
 void WaveformViewer::deleteTrack (int index)
 {
     if (selectedTrack < 0)
@@ -80,4 +105,6 @@ void WaveformViewer::deleteTrack (int index)
     caches.remove (index);
     waveforms.remove (index);
     colours.remove (index);
+
+    playhead->deleteProc (index);
 }

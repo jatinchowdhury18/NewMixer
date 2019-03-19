@@ -16,6 +16,7 @@ public:
 
     void setSelected (int selectedTrackIndex = -1) { selectedTrack = selectedTrackIndex; }
 
+    void addTrack (Track* track);
     void deleteTrack (int index);
 
 private:

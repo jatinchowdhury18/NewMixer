@@ -17,6 +17,9 @@ public:
     void mouseDrag (const MouseEvent& event) override;
     void mouseUp (const MouseEvent& event) override;
 
+    void addProc (TrackBase* newProc) { procs.add(newProc); }
+    void deleteProc (int index) { procs.remove (index); }
+
 private:
     Array<TrackBase*> procs;
 
