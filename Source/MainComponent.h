@@ -35,10 +35,11 @@ public:
     enum Cmds
     {
         newRecordTrack = 0x2346,
+        newFileTrack,
     };
 
     //==============================================================================
-    MainComponent (String mode = "Bridge");
+    MainComponent (String mode = {});
     ~MainComponent();
 
     //==============================================================================

@@ -45,6 +45,7 @@ public:
     Track (const Track& track);
     void initialise (int x, int y, int ind);
     ~Track();
+    void uninitialise();
 
     TrackBase* getProcessor() const { return processor; }
 
@@ -65,7 +66,7 @@ public:
     void newLoop() override;
 
     void trackRename();
-    void trackNameChanged (String newName, String newShortName) override;
+    void trackNameChanged (String newName, String newShortName = {}) override;
 
     TrackColours& getColours() { return colours; }
     Colour getColour() const { return trackColour; }

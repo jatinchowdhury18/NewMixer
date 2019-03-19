@@ -78,6 +78,13 @@ Track::~Track()
     processor->removeListener (this);
 }
 
+void Track::uninitialise()
+{
+    delete dynamic_cast<TrackProcessor*> (processor)->getReader();
+    dynamic_cast<TrackProcessor*> (processor)->getFormatManager().clearFormats();
+    delete processor;
+}
+
 void Track::timerCallback()
 {
     if (autoHelper->isRecording())

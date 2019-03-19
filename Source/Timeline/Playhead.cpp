@@ -17,7 +17,7 @@ void Playhead::paint (Graphics& g)
     auto curPos = (float) pos;
     if (! mouseIsDragging)
     {
-        auto posFraction = (float) procs[0]->getStartSample() / (float) procs[0]->getLengthSamples();
+        auto posFraction = procs.isEmpty() ? 0.0f : (float) procs[0]->getStartSample() / (float) procs[0]->getLengthSamples();
         curPos = (float) (posFraction * getWidth() + getX());
         pos = roundToInt (curPos);
     }
