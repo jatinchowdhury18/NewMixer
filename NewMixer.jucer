@@ -5,6 +5,9 @@
               companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer"
               headerPath="../../JUCE/ASIOSDK2.3.2/common/&#10;../../Source/&#10;../../Source/Tracks/&#10;../../Source/Processors/&#10;../../Source/GUI Extras/">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
+    <GROUP id="{55BD9B08-0352-44B4-D2D8-8FBAA2107695}" name="Assets">
+      <FILE id="KQiqcd" name="logo_256.png" compile="0" resource="1" file="Assets/logo_256.png"/>
+    </GROUP>
     <GROUP id="{4B66F25F-5A5F-AE8E-A3A4-8B7EAC0F8506}" name="Stems">
       <GROUP id="{F180A70B-FA56-1A51-53CC-34043B3BA250}" name="Chorus">
         <FILE id="q6KPaB" name="Chorus_Bass.wav" compile="0" resource="1" file="Stems/Chorus/Chorus_Bass.wav"/>

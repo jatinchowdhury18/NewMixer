@@ -107,6 +107,10 @@ public:
            #endif
 
             setVisible (true);
+            
+            Image icon = ImageCache::getFromMemory (BinaryData::logo_256_png, BinaryData::logo_256_pngSize);
+            setIcon (icon);
+            getPeer()->setIcon (icon);
         }
 
         void closeButtonPressed() override
