@@ -94,7 +94,7 @@ public:
                                                     DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            if (mode == "Test" || mode == "Bridge" || mode == "Chorus")
+            if (mode == "Test" || mode == "Bridge")
                 setContentOwned (new MainComponent (mode), true);
             else
                 setContentOwned (new MainComponent(), true);

@@ -64,7 +64,6 @@ private:
     void initSettings();
     void addTracks (String stemsToUse);
     void bridgeTracks();
-    void chorusTracks();
     void testTracks();
     void setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName);
 
