@@ -1,4 +1,5 @@
 #include "Playhead.h"
+#include "Track.h"
 
 Playhead::Playhead (Array<TrackBase*>& trackProcs) : procs (trackProcs)
 {
@@ -40,13 +41,21 @@ void Playhead::mouseDrag (const MouseEvent& e)
     pos = e.x;
 
     setMouseCursor (MouseCursor::LeftRightResizeCursor);
+
+    pos = jmax (e.x, 0);
+    auto posFraction = (float) pos / getBounds().getWidth();
+    auto trackPosition = (int64) (posFraction * procs[0]->getLengthSamples());
+
+    listeners.call (&Playhead::Listener::playheadMoving, trackPosition);
 }
 
 void Playhead::mouseUp (const MouseEvent& e)
 {
     mouseIsDragging = false;
 
-    pos = e.x;
+    listeners.call (&Playhead::Listener::playheadMoving, -1);
+
+    pos = jmax (e.x, 0);
     auto posFraction = (float) pos / getBounds().getWidth();
     auto trackPosition = (int64) (posFraction * procs[0]->getLengthSamples());
 

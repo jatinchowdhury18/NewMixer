@@ -6,6 +6,7 @@
 #include "TrackHelpers/AutomationHelper.h"
 #include "TrackRenameWindow.h"
 #include "TrackMeter.h"
+#include "Timeline/Playhead.h"
 
 namespace TrackConstants
 {
@@ -23,6 +24,7 @@ namespace TrackConstants
 
 class Track : public Component,
               public SettableTooltipClient,
+              public Playhead::Listener,
               private Timer,
               private TrackBase::Listener,
               private TrackRenameComponent::Listener
@@ -64,6 +66,10 @@ public:
 
     void trackMoved();
     void newLoop() override;
+    void endReached() override;
+
+    void playheadMoving (int64 posSamples) override { playheadPos = posSamples; }
+    int64 getPlayheadPos() { return playheadPos; }
 
     void trackRename();
     void trackNameChanged (String newName, String newShortName = {}) override;
@@ -128,6 +134,7 @@ private:
     float diameter = TrackConstants::defaultDiameter;
     bool isDragging = false;
     int lastDragLocation = 0;
+    int64 playheadPos = -1;
 
     bool isSelected = false;
     bool isPlaying = false;

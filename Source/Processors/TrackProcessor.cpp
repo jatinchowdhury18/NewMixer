@@ -60,6 +60,8 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
             buffer.applyGainRamp (0, (int) samplesUnder, 1.0f, 0.0f);
             buffer.applyGain ((int) samplesUnder, numSamples - (int) samplesUnder, 0.0f);
             readerStartSample = reader->lengthInSamples;
+
+            listeners.call (&TrackBase::Listener::endReached);
         }
     }
 

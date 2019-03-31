@@ -20,7 +20,19 @@ public:
     void addProc (TrackBase* newProc) { procs.add(newProc); }
     void deleteProc (int index) { procs.remove (index); }
 
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void playheadMoving (int64 /*posSamples*/) {}
+    };
+
+    void addListener (Listener* listener) { listeners.add (listener); }
+    void removeListener (Listener* listener) { listeners.remove (listener); }
+
 private:
+    ListenerList<Listener> listeners;
+
     Array<TrackBase*> procs;
 
     int64 pos;

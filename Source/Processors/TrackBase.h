@@ -46,6 +46,7 @@ public:
     public:
         virtual ~Listener() {}
         virtual void newLoop() {}
+        virtual void endReached() {}
     };
     
     void addListener (Listener* listener) { listeners.add (listener); }

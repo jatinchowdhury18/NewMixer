@@ -11,10 +11,27 @@ public:
         timerInterval = 10,
     };
 
+    struct AutoPoint
+    {
+        AutoPoint() {}
+        AutoPoint (float x, float y, float diameter, int64 sample) :
+            x (x),
+            y (y),
+            diameter (diameter),
+            sample (sample)
+        {}
+
+        float x = 0;
+        float y = 0;
+        float diameter = 0;
+        int64 sample = 0;
+    };
+
     AutoHelper() {}
 
-    void addAutoPoint (int x, int y, float diameter);
-    void getPoint (int& x, int& y, float& diameter);
+    void addAutoPoint (float x, float y, float diameter, int64 sample);
+    void getPoint (float& x, float& y, float& diameter, int64 sample);
+    OwnedArray<AutoPoint>& getPoints() { return points; }
 
     void setRecordingStatus();
     void throwAway();
@@ -26,20 +43,6 @@ public:
     bool armed() { return armedForRecording; }
 
 private:
-    struct AutoPoint
-    {
-        AutoPoint() {}
-        AutoPoint (int x, int y, float diameter) :
-            x (x),
-            y (y),
-            diameter (diameter)
-        {}
-
-        int x = 0;
-        int y = 0;
-        float diameter = 0;
-    };
-
     OwnedArray<AutoPoint> points;
     int curPoint = 0;
     int numPoints = 0;

@@ -1,23 +1,35 @@
 #include "AutomationHelper.h"
 
-void AutoHelper::addAutoPoint (int x, int y, float diameter)
+void AutoHelper::addAutoPoint (float x, float y, float diameter, int64 sample)
 {
-    points.add (new AutoPoint (x, y, diameter));
+    points.add (new AutoPoint (x, y, diameter, sample));
     numPoints++;
 }
 
-void AutoHelper::getPoint (int& x, int& y, float& diameter)
+void AutoHelper::getPoint (float& x, float& y, float& diameter, int64 curSample)
 {
     if (numPoints <= 0)
         return;
 
-    x = points[curPoint]->x;
-    y = points[curPoint]->y;
-    diameter = points[curPoint]->diameter;
+    int newPoint = curPoint;
+    for (int i = 0; i < numPoints; i++)
+    {
+        int lastPoint = newPoint;
+        newPoint++;
 
-    curPoint++;
-    if (curPoint >= numPoints)
-        curPoint = 0;
+        if (newPoint >= numPoints)
+            newPoint %= numPoints;
+
+        if (points[lastPoint]->sample <= curSample && points[newPoint]->sample >= curSample)
+        {
+            x = points[curPoint]->x;
+            y = points[curPoint]->y;
+            diameter = points[curPoint]->diameter;
+
+            curPoint = newPoint;
+            break;
+        }
+    }
 }
 
 void AutoHelper::setRecordingStatus()
@@ -42,6 +54,8 @@ void AutoHelper::setRecordingStatus()
 void AutoHelper::throwAway()
 {
     points.clear();
+    numPoints = 0;
+    curPoint = 0;
 
     if (armedForRecording)
         armedForRecording = false;

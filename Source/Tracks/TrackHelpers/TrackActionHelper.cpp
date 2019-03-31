@@ -59,6 +59,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
     case TrackCmds::deleteAutomation:
         track->getAutoHelper()->throwAway();
         track->repaint();
+        track->getParentComponent()->repaint();
         return;
 
     case NumLoops::One:

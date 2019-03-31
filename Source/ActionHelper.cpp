@@ -123,8 +123,9 @@ void ActionHelper::deleteSelectedTrack (MainComponent* mc)
         if (mc->getTracks()[i]->getIsSelected())
         {
             trackToDelete = mc->getTracks().removeAndReturn (i);
+            mc->getAutoPaths().remove (i);
 
-            mc->getWaveform()->deleteTrack (i);
+            mc->getWaveform()->deleteTrack (trackToDelete, i);
 
             for (int j = i; j < mc->getTracks().size(); j++)
                 mc->getTracks()[j]->setIndex (j);
@@ -134,6 +135,8 @@ void ActionHelper::deleteSelectedTrack (MainComponent* mc)
     if (trackToDelete != nullptr)
         mc->getMaster()->removeTrack (trackToDelete);
     delete trackToDelete;
+
+    mc->repaint();
 }
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
@@ -166,6 +169,10 @@ void ActionHelper::clearSelectedTrack (MainComponent* mc)
 {
     for (auto track : mc->getTracks())
         track->setSelected (false);
+
+    for (auto path : mc->getAutoPaths())
+        path->setVisible (false);
+
     mc->repaint();
     mc->getWaveform()->setSelected();
 }
@@ -185,6 +192,7 @@ void ActionHelper::changeSelect (MainComponent* mc, bool forward)
     ActionHelper::clearSelectedTrack (mc);
     mc->getTracks()[trackToSelect]->setSelected (true);
     mc->getWaveform()->setSelected (trackToSelect);
+    mc->getAutoPaths()[trackToSelect]->setVisible (true);
 }
 
 void ActionHelper::addFileTrack (MainComponent* mc, int x, int y)
@@ -225,7 +233,6 @@ void ActionHelper::addFileTrack (MainComponent* mc, int x, int y)
                 + (i * TrackConstants::defaultDiameter) + TrackConstants::defaultDiameter / 2);
 
             addTrack (newTrack, mc, thisX, y);
-            
         }
     }
 }
@@ -252,6 +259,11 @@ void ActionHelper::addTrack (Track* track, MainComponent* mc, int x, int y)
 
     mc->getMaster()->addTrack (track);
     mc->getWaveform()->addTrack (track);
+
+    mc->getAutoPaths().add (new AutomationPath (track));
+    mc->addAndMakeVisible (mc->getAutoPaths().getLast());
+    mc->getAutoPaths().getLast()->setVisible (false);
+    mc->getAutoPaths().getLast()->setVisible (false);
 }
 
 bool ActionHelper::validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc)
