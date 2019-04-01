@@ -1,12 +1,17 @@
 #include "ActionHelper.h"
 #include "Tracks/TrackHelpers/SoloHelper.h"
 #include "TrackHelpers/TrackActionHelper.h"
+#include "SessionManager.h"
 
 void ActionHelper::rightClickMenu (MainComponent* mc, const MouseEvent& e)
 {
     PopupMenu m;
 
-    m.addItem (Cmds::newFileTrack, String ("New Track"));
+    m.addItem (Cmds::newFileTrack, String ("New Track [CMD + N]"));
+    m.addItem (Cmds::newSession, String ("New Session [CMD + SHIFT + N]"));
+    m.addItem (Cmds::openSession, String ("Open Session [CMD + O]"));
+    m.addItem (Cmds::saveSession, String ("Save Session [CMD +S]"));
+    m.addItem (Cmds::saveSessionAs, String ("Save Session As [CMD + SHIFT + S]"));
     //m.addItem (Cmds::newRecordTrack, String ("New Recording Track"));
 
     m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, mc, Point<int> (e.x, e.y)));
@@ -17,6 +22,22 @@ void ActionHelper::rightClickCallback (int result, MainComponent* mc, Point<int>
     switch (result)
     {
     case 0: //Nothing selected
+        return;
+
+    case Cmds::newSession:
+        SessionManager::newSession (mc);
+        return;
+
+    case Cmds::openSession:
+        SessionManager::openSession (mc);
+        return;
+
+    case Cmds::saveSession:
+        SessionManager::saveSession (mc);
+        return;
+
+    case Cmds::saveSessionAs:
+        SessionManager::saveSessionAs (mc);
         return;
 
     case Cmds::newFileTrack:
@@ -73,6 +94,26 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
     {
         ActionHelper::addFileTrack (mc, mc->getWidth() / 2, mc->getHeight() / 2);
         //ActionHelper::addRecordingTrack (mc, mc->width / 2, mc->height / 2);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + SHIFT + N")) //New Session
+    {
+        SessionManager::newSession (mc);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + O")) //Open Session
+    {
+        SessionManager::openSession (mc);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + S")) //Save Session
+    {
+        SessionManager::saveSession (mc);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + SHIFT + S")) //Save session as
+    {
+        SessionManager::saveSessionAs (mc);
         return true;
     }
     else if (key == KeyPress::createFromDescription ("CMD + L")) //loop mode
@@ -198,7 +239,7 @@ void ActionHelper::addFileTrack (MainComponent* mc, int x, int y)
 
         for (int i = 0; i < numFiles; i++)
         {
-            auto* newTrack = new Track (files.getReference(i), {}, {}, mc->getNextColour());
+            auto* newTrack = new Track (files.getReference (i), {}, {}, mc->getNextColour());
 
             //check file is same length as others
             if (mc->getTracks().size() >= 1)

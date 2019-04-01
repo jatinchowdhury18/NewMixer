@@ -39,6 +39,7 @@ public:
     void rewind() {curPoint = 0; }
 
     bool isRecording() { return recording; }
+    void setRecorded (bool recorded) { automationRecorded = recorded; }
     bool isRecorded() { return automationRecorded; }
     bool armed() { return armedForRecording; }
 

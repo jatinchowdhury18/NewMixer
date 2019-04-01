@@ -24,6 +24,7 @@ public:
     AudioFormatManager& getFormatManager() { return formatManager; }
 
     File getFile() const { return file; }
+    void setFile (File& newFile);
 
 private:
     File file;

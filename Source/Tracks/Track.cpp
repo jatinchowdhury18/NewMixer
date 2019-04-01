@@ -39,8 +39,8 @@ Track::Track (const Track& track) :
     name (track.getName()),
     shortName (track.getShortName()),
     trackColour (track.getColour()),
-    isPlaying (track.getIsPlaying()),
-    diameter (track.diameter)
+    diameter (track.diameter),
+    isPlaying (track.getIsPlaying())
 {
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track.getProcessor());
     if (inputProcessor == nullptr) //File track
@@ -250,6 +250,15 @@ void Track::togglePlay()
 
     if (isPlaying || autoHelper->isRecording())
         autoHelper->setRecordingStatus();
+}
+
+String Track::getFilePath() const
+{
+    const auto proc = dynamic_cast<TrackProcessor*> (processor);
+    if (proc == nullptr)
+        return {};
+
+    return proc->getFile().getFullPathName();
 }
 
 #if JUCE_DEBUG

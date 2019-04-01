@@ -29,8 +29,13 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
   Executable binary files can be found in the "Bin" subfolder. Instructions for building from scratch can be found [here](#Building).
 
 ## Getting Started: Mixing
+### Creating and opening sessions
+  - To create a new session, right-click and select "New Session"
+  - To open an existing session, right-click and select "Open Session"
+    - Select a ".chow" file from your computer to open
+
 ### Add tracks:
-  - Right-click, and select "New Track" (or use "CTRL + N")
+  - Right-click and select "New Track"
   - Select wav audio files from your file explorer
   - N.B: All files in a session must be exactly the same length
   
@@ -47,6 +52,11 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
   - When a track is armed, a pink circle will appear around it, when it starts recording automation, the circle will turn red
   - Automation will automatically stop recording at the end of the song, or when the song is paused
   - To delete recorded automation, press "SHIFT + DEL"
+
+### Saving sessions
+  - To save your session, right-click and select "Save Session"
+  - If this is your first time saving your session, you will be asked to name your session and choose a save location.
+    - The files for your tracks will be copied into a "Stems" folder
 
 <!-- ### Recording
 - To create a new input track, right-click and select "New Track," or use "CTRL + N"

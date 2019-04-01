@@ -1,6 +1,13 @@
 #include "AutomationPath.h"
 #include "MainComponent.h"
 
+namespace
+{
+    constexpr float pathThickness = 2.0f;
+    constexpr float dashes[] = { 5.0f, 10.0f };
+    constexpr float center = (float) TrackConstants::width / 2.0f;
+}
+
 AutomationPath::AutomationPath (Track* track) :
     track (track)
 {
@@ -18,13 +25,10 @@ void AutomationPath::paint (Graphics& g)
     const auto* parent = getParentComponent();
     
     g.setColour (track->getColour());
-    const auto center = (float) TrackConstants::width / 2.0f;
     
     auto point1 = ah->getPoints()[0];
     auto lastX = (float) (point1->x * parent->getWidth()) + center;
     auto lastY = (float) (point1->y * parent->getHeight()) + center;
-
-    float dashes[] = { 5.0f, 10.0f };
 
     for (int i = 1; i < ah->getPoints().size(); i++)
     {
@@ -35,7 +39,7 @@ void AutomationPath::paint (Graphics& g)
         //const auto thick = 5.0f * (point->diameter / TrackConstants::maxDiameter);
 
         Line <float> line (lastX, lastY, x, y);
-        g.drawDashedLine (line, dashes, 2, 2.5);
+        g.drawDashedLine (line, dashes, 2, pathThickness);
 
         lastX = x;
         lastY = y;
