@@ -1,7 +1,10 @@
-# NewMixer 
+# NewMixer
 [![Build Status](https://travis-ci.com/jatinchowdhury18/NewMixer.svg?branch=master)](https://travis-ci.com/jatinchowdhury18/NewMixer)
 [![Download Latest](https://img.shields.io/badge/download-latest-blue.svg)](https://github.com/jatinchowdhury18/NewMixer/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/jatinchowdhury18/newmixer/total.svg)](https://github.com/jatinchowdhury18/NewMixer/releases/latest)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/975518c11ead481ea60d9f8f04d7f0ac)](https://www.codacy.com/app/jatinchowdhury18/NewMixer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jatinchowdhury18/NewMixer&amp;utm_campaign=Badge_Grade)
+
+![Pic](https://raw.githubusercontent.com/jatinchowdhury18/NewMixer/master/screenshot.PNG)
 
 An audio mixing tool that allows the user to visualize audio sources by their location in space rather than as channels on a mixing board.
 
@@ -25,8 +28,13 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
   ```
   Executable binary files can be found in the "Bin" subfolder. Instructions for building from scratch can be found [here](#Building).
 
-## Getting Started
-### Mixing
+## Getting Started: Mixing
+### Add tracks:
+  - Right-click, and select "New Track" (or use "CTRL + N")
+  - Select wav audio files from your file explorer
+  - N.B: All files in a session must be exactly the same length
+  
+### Mixing Tracks
   - Use the space bar to play/pause (All tracks are muted initially)
   - Each circle represents a track, hover your mouse to see the track name, click to select
     - Move the track around the virtual space by dragging or using the arrow keys
@@ -34,9 +42,15 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
     - Press "m" to mute/unmute, "s" to solo/unsolo
     - For more actions and keyboard shortcuts, right-click the track
 
-### Recording
+### Automation
+  - To record automation for a track, press "a"
+  - When a track is armed, a pink circle will appear around it, when it starts recording automation, the circle will turn red
+  - Automation will automatically stop recording at the end of the song, or when the song is paused
+  - To delete recorded automation, press "SHIFT + DEL"
+
+<!-- ### Recording
 - To create a new input track, right-click and select "New Track," or use "CTRL + N"
-- Press "r" to record a single loop, "SHIFT + R" to free record, or use right-click menu
+- Press "r" to record a single loop, "SHIFT + R" to free record, or use right-click menu -->
 
 ## Developer Instructions
 ### Building
