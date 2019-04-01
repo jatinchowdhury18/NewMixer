@@ -84,12 +84,13 @@ void WaveformViewer::addTrack (Track* track)
 
     waveforms.getLast()->setReader (proc->getReader(), hash);
 
+    playhead->addListener (track);
     playhead->addProc (proc);
 
     colours.add (track->getColour());
 }
 
-void WaveformViewer::deleteTrack (int index)
+void WaveformViewer::deleteTrack (Track* track, int index)
 {
     if (selectedTrack < 0)
         return;
@@ -106,5 +107,6 @@ void WaveformViewer::deleteTrack (int index)
     waveforms.remove (index);
     colours.remove (index);
 
+    playhead->removeListener (track);
     playhead->deleteProc (index);
 }

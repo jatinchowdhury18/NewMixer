@@ -99,6 +99,10 @@
           <FILE id="GrvQdE" name="PaintHelper.h" compile="0" resource="0" file="Source/Tracks/TrackHelpers/PaintHelper.h"/>
           <FILE id="uF7wFW" name="SoloHelper.h" compile="0" resource="0" file="Source/Tracks/TrackHelpers/SoloHelper.h"/>
         </GROUP>
+        <FILE id="vBCkyB" name="AutomationPath.cpp" compile="1" resource="0"
+              file="Source/Tracks/AutomationPath.cpp"/>
+        <FILE id="kwGGr6" name="AutomationPath.h" compile="0" resource="0"
+              file="Source/Tracks/AutomationPath.h"/>
         <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
         <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
         <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>

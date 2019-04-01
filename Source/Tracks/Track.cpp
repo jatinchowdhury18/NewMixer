@@ -88,14 +88,17 @@ void Track::uninitialise()
 void Track::timerCallback()
 {
     if (autoHelper->isRecording())
-        autoHelper->addAutoPoint (getX(), getY(), diameter);
-    else if (isPlaying && autoHelper->isRecorded())
+        autoHelper->addAutoPoint (relX, relY, diameter, processor->getStartSample());
+    else if (autoHelper->isRecorded())
     {
-        int x = getX();
-        int y = getY();
-
-        autoHelper->getPoint (x, y, diameter);
-        setTopLeftPosition (x, y);
+        if (playheadPos >= 0)
+            autoHelper->getPoint (relX, relY, diameter, playheadPos);
+        else
+            autoHelper->getPoint (relX, relY, diameter, processor->getStartSample());
+        
+        const auto* parent = getParentComponent();
+        if (parent != nullptr)
+            setTopLeftPosition (Point<int> ((int) (relX * parent->getWidth()), (int) (relY * parent->getHeight())));
 
         trackMoved();
     }
@@ -109,6 +112,14 @@ void Track::newLoop()
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (processor);
     if (inputProcessor != nullptr)
         inputProcessor->setRecordingStatus();
+
+    MessageManagerLock mml;
+    repaint();
+}
+
+void Track::endReached()
+{
+    autoHelper->setRecordingStatus();
 
     MessageManagerLock mml;
     repaint();
@@ -232,12 +243,8 @@ void Track::togglePlay()
             input->throwAway();
     }
 
-    if (isPlaying)
+    if (isPlaying || autoHelper->isRecording())
         autoHelper->setRecordingStatus();
-    else if (autoHelper->isRecording())
-        autoHelper->throwAway();
-    else
-        autoHelper->rewind();
 }
 
 #if JUCE_DEBUG

@@ -49,6 +49,17 @@ void MainComponent::addTracks (String stemsToUse)
         bridgeTracks();
     else if (stemsToUse == "Test")
         testTracks();
+
+    for (auto* track : tracks)
+    {
+        addAndMakeVisible (track);
+        track->addListener (this);
+        track->resized();
+
+        autoPaths.add (new AutomationPath (track));
+        addAndMakeVisible (autoPaths.getLast());
+        autoPaths.getLast()->toBehind (tracks[0]);
+    }
 }
 
 void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName)
@@ -95,6 +106,9 @@ void MainComponent::paint (Graphics& g)
     g.setColour (Colours::white);
     const auto yLine = (float) getHeight() * MainConstants::heightFactor;
     g.drawLine (0.0f, yLine, (float) getWidth(), yLine);
+    
+    for (auto* autoPath : autoPaths)
+        autoPath->repaint();
 }
 
 void MainComponent::resized()
@@ -104,9 +118,8 @@ void MainComponent::resized()
                               (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
 
     if (waveformView != nullptr)
-        waveformView->setBounds (0, (int) (getHeight() * MainConstants::heightFactor), getWidth(), (int) (getHeight() * (1.0f - MainConstants::heightFactor)));
-    //    waveform->setBounds (0, (int) (getHeight() * MainConstants::heightFactor),
-    //                         getWidth(), (int) (getHeight() * (1.0f - MainConstants::heightFactor)));
+        waveformView->setBounds (0, (int) (getHeight() * MainConstants::heightFactor),
+                                 getWidth(), (int) (getHeight() * (1.0f - MainConstants::heightFactor)));
 
     for (auto track : tracks)
         track->resized();
@@ -116,9 +129,14 @@ void MainComponent::mouseDown (const MouseEvent& e)
 {
     ActionHelper::clearSelectedTrack (this);
 
-    for (auto track : tracks)
-        if (track->hitTest (e.x, e.y))
+    for (int i = 0; i < tracks.size(); i++)
+    {
+        if (tracks[i]->hitTest (e.x, e.y))
+        {
+            autoPaths[i]->setVisible (true);
             return;
+        }
+    }
 
     if (e.mods.isPopupMenu())
         ActionHelper::rightClickMenu (this, e);
@@ -179,7 +197,7 @@ public:
         } 
     }
 };
-
+//@TODO: Fix automation tests
 class AutomationTest : public UnitTest
 {
 public:
@@ -193,32 +211,40 @@ public:
         return (r.nextInt() % 1000) - 200;
     }
 
-    void setAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
+    float randFloat()
+    {
+        Random r;
+        r.setSeedRandomly();
+
+        return (r.nextFloat());
+    }
+
+    void setAutoPoints (OwnedArray<Track>& tracks, Array<float>* x, Array<float>* y, Array<float>* diameter)
     {
         beginTest ("Setting test automation points");
         for (int i = 0; i < 5000; i++)
         {
             for (int t = 0; t < numTestTracks; t++)
             {
-                x[t].add (randInt());
-                y[t].add (randInt());
+                x[t].add (randFloat());
+                y[t].add (randFloat());
                 diameter[t].add ((float) randInt());
-                tracks[t]->getAutoHelper()->addAutoPoint (x[t].getLast(), y[t].getLast(), diameter[t].getLast());
+                tracks[t]->getAutoHelper()->addAutoPoint (x[t].getLast(), y[t].getLast(), diameter[t].getLast(), i);
             }
         }
     }
 
-    void checkAutoPoints (OwnedArray<Track>& tracks, Array<int>* x, Array<int>* y, Array<float>* diameter)
+    void checkAutoPoints (OwnedArray<Track>& tracks, Array<float>* x, Array<float>* y, Array<float>* diameter)
     {
         beginTest ("Checking test automation points");
         for (int i = 0; i < 5000; i++)
         {
             for (int t = 0; t < numTestTracks; t++)
             {
-                int xTest = 0;
-                int yTest = 0;
+                float xTest = 0;
+                float yTest = 0;
                 float dTest = 0;
-                tracks[t]->getAutoHelper()->getPoint (xTest, yTest, dTest);
+                tracks[t]->getAutoHelper()->getPoint (xTest, yTest, dTest, i);
 
                 expect (xTest == x[t][i], "Track x position incorrect: " + String (xTest));
                 expect (yTest == y[t][i], "Track y position incorrect: " + String (yTest));
@@ -231,8 +257,8 @@ public:
     {
         MainComponent main;
 
-        Array<int> x[numTestTracks];
-        Array<int> y[numTestTracks];
+        Array<float> x[numTestTracks];
+        Array<float> y[numTestTracks];
         Array<float> diameter[numTestTracks];
 
         for (int i = 0; i < numTestTracks; i++)

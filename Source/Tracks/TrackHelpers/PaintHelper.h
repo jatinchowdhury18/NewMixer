@@ -48,6 +48,10 @@ public:
 
         float loopFraction = (float) track->getProcessor()->getStartSample() / (float) track->getProcessor()->getLengthSamples();
 
+        const auto playheadPos = track->getPlayheadPos();
+        if (playheadPos >= 0)
+            loopFraction = (float) playheadPos / (float) track->getProcessor()->getLengthSamples();
+
         Path p;
         p.addPieSegment (pos, pos, track->getDiameter(), track->getDiameter(),
                          0.0f, loopFraction * MathConstants<float>::twoPi, 0.88f);

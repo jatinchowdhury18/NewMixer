@@ -6,6 +6,7 @@
 #include "Colours.h"
 #include "Settings.h"
 #include "Timeline/WaveformViewer.h"
+#include "AutomationPath.h"
 
 //==============================================================================
 /*
@@ -50,6 +51,7 @@ public:
     bool keyPressed (const KeyPress& key) override;
 
     OwnedArray<Track>& getTracks() { return tracks; }
+    OwnedArray<AutomationPath>& getAutoPaths() { return autoPaths; }
     MasterTrack* getMaster() { return master.get(); }
     Colour getNextColour() { return trackColours.getColour (tracks.size()); }
     WaveformViewer* getWaveform() { return waveformView.get(); }
@@ -74,6 +76,7 @@ private:
     //==============================================================================
     std::unique_ptr<MasterTrack> master;
     OwnedArray<Track> tracks;
+    OwnedArray<AutomationPath> autoPaths;
 
     std::unique_ptr<WaveformViewer> waveformView;
 
