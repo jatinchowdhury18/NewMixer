@@ -147,6 +147,7 @@ bool MainComponent::keyPressed (const KeyPress& key)
 enum
 {
     numTestTracks = 15,
+    numTestAutoPoints = 5000,
 };
 
 class PlayTest : public UnitTest
@@ -217,7 +218,7 @@ public:
     void setAutoPoints (OwnedArray<Track>& tracks, Array<float>* x, Array<float>* y, Array<float>* diameter)
     {
         beginTest ("Setting test automation points");
-        for (int i = 0; i < 5000; i++)
+        for (int i = 0; i < numTestAutoPoints; i++)
         {
             for (int t = 0; t < numTestTracks; t++)
             {
@@ -232,7 +233,7 @@ public:
     void checkAutoPoints (OwnedArray<Track>& tracks, Array<float>* x, Array<float>* y, Array<float>* diameter)
     {
         beginTest ("Checking test automation points");
-        for (int i = 0; i < 5000; i++)
+        for (int i = 0; i < numTestAutoPoints; i++)
         {
             for (int t = 0; t < numTestTracks; t++)
             {

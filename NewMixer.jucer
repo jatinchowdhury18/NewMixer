@@ -27,6 +27,10 @@
       </GROUP>
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
+      <FILE id="BlMfn4" name="SessionManager.cpp" compile="1" resource="0"
+            file="Source/SessionManager.cpp"/>
+      <FILE id="fuCz6z" name="SessionManager.h" compile="0" resource="0"
+            file="Source/SessionManager.h"/>
       <GROUP id="{0E5CFD79-976A-F180-1D3F-50D60AAF4405}" name="Timeline">
         <FILE id="zoscis" name="Marker.cpp" compile="1" resource="0" file="Source/Timeline/Marker.cpp"/>
         <FILE id="uWj5C7" name="Marker.h" compile="0" resource="0" file="Source/Timeline/Marker.h"/>

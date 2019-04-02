@@ -1,0 +1,240 @@
+#include "SessionManager.h"
+#include "TrackProcessor.h"
+#include "ActionHelper.h"
+
+void SessionManager::newSession (MainComponent* mc)
+{
+    auto session = mc->getSessionFile();
+    if (! session.exists())
+    {
+        if (! mc->getTracks().isEmpty())
+        {
+            int areYouSure = NativeMessageBox::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon, String ("Unsaved Session"),
+                String ("This session has not yet been saved. This action will cause you work to be lost. Are you sure you want to do this?"));
+
+            switch (areYouSure)
+            {
+            case 0: //cancel
+                return;
+            case 1: //ok
+                break;
+            }
+        }
+    }
+    else
+    {
+        saveSession (mc);
+    }
+    clearTracks (mc, mc->getTracks());
+
+    mc->setSessionFile (File());
+}
+
+void SessionManager::clearTracks (MainComponent* mc, OwnedArray<Track>& tracks)
+{
+    while (! tracks.isEmpty())
+    {
+        ActionHelper::changeSelect (mc, true);
+        ActionHelper::deleteSelectedTrack (mc);
+    }
+}
+
+void SessionManager::openSession (MainComponent* mc)
+{
+    newSession (mc);
+
+    FileChooser nativeFileChooser (String ("Open Session"), {}, "*.chow", true);
+
+    if (nativeFileChooser.browseForFileToOpen())
+    {
+        auto sessionFile = nativeFileChooser.getResult();
+        
+        std::unique_ptr<XmlElement> sessionXml (parseXML (sessionFile));//(XmlDocument::parse (sessionFile));
+        if (sessionXml.get() != nullptr)
+        {
+            XmlElement* tracksXml = sessionXml->getChildByName ("Tracks");
+            if (tracksXml != nullptr)
+            {
+                XmlElement* trackXml (tracksXml->getFirstChildElement());
+                while (trackXml != nullptr)
+                {
+                    parseTrackXml (mc, trackXml);
+                    trackXml = trackXml->getNextElement();
+                }
+            }
+
+            mc->setSessionFile (sessionFile.getParentDirectory());
+        }
+    }
+}
+
+void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
+{
+    File trackFile (trackXml->getStringAttribute ("filePath"));
+    String trackName (trackXml->getTagName());
+    String trackShortName (trackXml->getStringAttribute ("shortName"));
+    Colour trackColour = Colour::fromString (trackXml->getStringAttribute ("colour"));
+    auto* newTrack = new Track (trackFile, trackName, trackShortName, trackColour);
+
+    auto trackX = (int) (trackXml->getDoubleAttribute ("xPos") * mc->getWidth()) + TrackConstants::width / 2;
+    auto trackY = (int) (trackXml->getDoubleAttribute ("yPos") * mc->getHeight()) + TrackConstants::width / 2;
+    auto diameter = (float) trackXml->getDoubleAttribute ("diameter");
+    newTrack->setDiameter (diameter);
+
+    ActionHelper::addTrack (newTrack, mc, trackX, trackY);
+
+    XmlElement* automationXml (trackXml->getChildByName ("Automation"));
+    if (automationXml != nullptr)
+    {
+        newTrack->getAutoHelper()->setRecorded (true);
+
+        XmlElement* pointXml (automationXml->getFirstChildElement());
+        while (pointXml != nullptr)
+        {
+            parseAutomationXml (newTrack, pointXml);
+            pointXml = pointXml->getNextElement();
+        }
+    }
+}
+
+void SessionManager::parseAutomationXml (Track* newTrack, XmlElement* pointXml)
+{
+    auto pointX = (float) pointXml->getDoubleAttribute ("xPos");
+    auto pointY = (float) pointXml->getDoubleAttribute ("yPos");
+    auto pointDiameter = (float) pointXml->getDoubleAttribute ("diameter");
+    auto sample = (int64) pointXml->getIntAttribute ("sampleTime");
+
+    newTrack->getAutoHelper()->addAutoPoint (pointX, pointY, pointDiameter, sample);
+}
+
+void SessionManager::saveSession (MainComponent* mc)
+{
+    auto session = mc->getSessionFile();
+    if (! session.exists())
+    {
+        saveSessionAs (mc);
+        return;
+    }
+    File stemsFolder = session.getChildFile ("Stems");
+    
+    std::unique_ptr<XmlElement> xml (new XmlElement ("NewMixerSession"));
+    xml->setAttribute ("SessionName", session.getFileName());
+
+    std::unique_ptr<XmlElement> xmlTracks (new XmlElement ("Tracks"));
+    auto& tracks = mc->getTracks();
+    copyTrackFiles (mc, tracks, stemsFolder);
+    saveTracksToXml (tracks, xmlTracks.get());
+    xml->addChildElement (xmlTracks.release());
+
+    File saveFile (session.getFullPathName() + "\\" + session.getFileName() + ".chow");
+    xml->writeToFile (saveFile, {});
+}
+
+void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& tracks, const File stemsFolder)
+{
+    Array<Track*> copyTracks;
+    Array<int> x;
+    Array<int> y;
+
+    for (const auto track : tracks)
+    {
+        File trackFile (track->getFilePath());
+        if (trackFile.getParentDirectory() != stemsFolder)
+        {
+            File copyTrackFile = stemsFolder.getNonexistentChildFile (trackFile.getFileNameWithoutExtension(), trackFile.getFileExtension());
+            trackFile.copyFileTo (copyTrackFile);
+
+            String trackName (track->getName());
+            String trackShortName (track->getShortName());
+            Colour trackColour = track->getColour();
+            auto* newTrack = new Track (trackFile, trackName, trackShortName, trackColour);
+
+            auto trackX = track->getBoundsInParent().getX() + TrackConstants::width / 2;
+            auto trackY = track->getBoundsInParent().getY() + TrackConstants::width / 2;
+            auto diameter = track->getDiameter();
+            newTrack->setDiameter (diameter);
+
+            auto& autoPoints = track->getAutoHelper()->getPoints();
+            for (auto point : autoPoints)
+                newTrack->getAutoHelper()->addAutoPoint (point->x, point->y, point->diameter, point->sample);
+
+            copyTracks.add (newTrack);
+            x.add (trackX);
+            y.add (trackY);
+        }
+        else
+        {
+            copyTracks.add (track);
+            x.add (track->getBoundsInParent().getX() + TrackConstants::width / 2);
+            y.add (track->getBoundsInParent().getY() + TrackConstants::width / 2);
+        }
+    }
+    clearTracks(mc, tracks);
+
+    for (int i = 0; i < copyTracks.size(); i++)
+        ActionHelper::addTrack (copyTracks[i], mc, x[i], y[i]);
+}
+
+void SessionManager::saveTracksToXml (const OwnedArray<Track>& tracks, XmlElement* xmlTracks)
+{
+    for (auto track : tracks)
+    {
+        std::unique_ptr<XmlElement> xmlTrack (new XmlElement (track->getName()));
+        
+        xmlTrack->setAttribute ("xPos", track->getRelX());
+        xmlTrack->setAttribute ("yPos", track->getRelY());
+        xmlTrack->setAttribute ("diameter", track->getDiameter());
+
+        xmlTrack->setAttribute ("shortName", track->getShortName());
+        xmlTrack->setAttribute ("filePath", track->getFilePath());
+        xmlTrack->setAttribute ("colour", track->getColour().toString());
+
+        saveAutomationToXml (track, xmlTrack.get());
+
+        xmlTracks->addChildElement (xmlTrack.release());
+    }
+}
+
+void SessionManager::saveAutomationToXml (Track* track, XmlElement* xmlTrack)
+{
+    const auto trackAutomation = track->getAutoHelper();
+    if (trackAutomation->isRecorded())
+    {
+        std::unique_ptr<XmlElement> xmlAutomation (new XmlElement ("Automation"));
+
+        for (const auto point : trackAutomation->getPoints())
+        {
+            std::unique_ptr<XmlElement> xmlAutomationPoint (new XmlElement ("Point"));
+
+            xmlAutomationPoint->setAttribute ("xPos", point->x);
+            xmlAutomationPoint->setAttribute ("yPos", point->y);
+            xmlAutomationPoint->setAttribute ("diameter", point->diameter);
+            xmlAutomationPoint->setAttribute ("sampleTime", (int) point->sample);
+
+            xmlAutomation->addChildElement (xmlAutomationPoint.release());
+        }
+
+        xmlTrack->addChildElement (xmlAutomation.release());
+    }
+}
+
+void SessionManager::saveSessionAs (MainComponent* mc)
+{
+    FileChooser nativeFileSaver (String ("Save Session As"), {}, {}, true);
+
+    if (nativeFileSaver.browseForFileToSave (true))
+    {
+        auto sessionFolder = nativeFileSaver.getResult().withFileExtension ({});
+
+        if (! sessionFolder.exists())
+        {
+            sessionFolder.createDirectory();
+
+            File stemsFolder (sessionFolder.getFullPathName() + "\\Stems");
+            stemsFolder.createDirectory();
+
+            mc->setSessionFile (sessionFolder);
+            saveSession (mc);
+        }
+    }
+}

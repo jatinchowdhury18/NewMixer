@@ -93,6 +93,8 @@ public:
 
     bool getIsPlaying() const { return isPlaying; }
 
+    String getFilePath() const;
+
     class Listener
     {
     public:
@@ -109,6 +111,8 @@ public:
     void soloSelectedTrack() { listeners.call (&Track::Listener::soloSelectedTrack); }
 
     void setRelativePosition (float x, float y) { relX = x; relY = y; }
+    float getRelX() const { return relX; }
+    float getRelY() const { return relY; }
 
     void setIndex (int ind) { index = ind; }
 

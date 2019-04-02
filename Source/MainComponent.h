@@ -35,7 +35,11 @@ public:
 
     enum Cmds
     {
-        newRecordTrack = 0x2346,
+        newSession = 0x2346,
+        openSession,
+        saveSession,
+        saveSessionAs,
+        newRecordTrack,
         newFileTrack,
     };
 
@@ -55,6 +59,9 @@ public:
     MasterTrack* getMaster() { return master.get(); }
     Colour getNextColour() { return trackColours.getColour (tracks.size()); }
     WaveformViewer* getWaveform() { return waveformView.get(); }
+
+    File getSessionFile() const { return sessionDirectory; }
+    void setSessionFile (File session) { sessionDirectory = session; }
 
 private:
 #if JUCE_DEBUG
@@ -85,6 +92,8 @@ private:
 
     TextButton settingsButton;
     std::unique_ptr<SettingsWindow> settingsWindow;
+
+    File sessionDirectory;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

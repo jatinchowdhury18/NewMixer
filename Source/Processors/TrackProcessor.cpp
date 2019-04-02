@@ -41,6 +41,14 @@ TrackProcessor::TrackProcessor (const TrackProcessor& processor) : TrackBase (St
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }
 
+void TrackProcessor::setFile (File& newFile)
+{
+    file = newFile;
+
+    delete reader;
+    reader = formatManager.createReaderFor (file.createInputStream());
+}
+
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
     if (reader->lengthInSamples < 0)
