@@ -7,6 +7,7 @@
 #include "TrackRenameWindow.h"
 #include "TrackMeter.h"
 #include "Timeline/Playhead.h"
+#include "AutomationPath.h"
 
 namespace TrackConstants
 {
@@ -22,6 +23,7 @@ namespace TrackConstants
     };
 }
 
+class AutomationPath;
 class Track : public Component,
               public SettableTooltipClient,
               public Playhead::Listener,
@@ -110,6 +112,8 @@ public:
 
     void setIndex (int ind) { index = ind; }
 
+    void setAutoPath (AutomationPath* ap) { autoPath = ap; }
+
 private:
 #if JUCE_DEBUG
     friend class NameTest;
@@ -144,6 +148,8 @@ private:
 
     std::unique_ptr<TrackMeter> meter;
     std::unique_ptr<AutoHelper> autoHelper;
+
+    AutomationPath* autoPath;
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
 

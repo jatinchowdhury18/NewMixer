@@ -130,13 +130,8 @@ void MainComponent::mouseDown (const MouseEvent& e)
     ActionHelper::clearSelectedTrack (this);
 
     for (int i = 0; i < tracks.size(); i++)
-    {
         if (tracks[i]->hitTest (e.x, e.y))
-        {
-            autoPaths[i]->setVisible (true);
             return;
-        }
-    }
 
     if (e.mods.isPopupMenu())
         ActionHelper::rightClickMenu (this, e);

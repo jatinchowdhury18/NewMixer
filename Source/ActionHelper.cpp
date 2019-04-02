@@ -152,17 +152,9 @@ void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
     }
 
     if (trackToDuplicate != nullptr)
-    {
-        mc->getTracks().add (new Track (*trackToDuplicate));
-        
-        auto* newTrack = mc->getTracks().getLast();
-
-        mc->addAndMakeVisible (newTrack);
-        newTrack->addListener (mc);
-        newTrack->initialise (trackToDuplicate->getX() + 10, trackToDuplicate->getY() + 10, mc->getTracks().size() - 1);
-
-        mc->getMaster()->addTrack (newTrack);
-    }
+        addTrack (new Track (*trackToDuplicate), mc, 
+            trackToDuplicate->getX() + TrackConstants::width * 3 / 4,
+            trackToDuplicate->getY() + TrackConstants::width * 3 / 4);
 }
 
 void ActionHelper::clearSelectedTrack (MainComponent* mc)
@@ -261,9 +253,10 @@ void ActionHelper::addTrack (Track* track, MainComponent* mc, int x, int y)
     mc->getWaveform()->addTrack (track);
 
     mc->getAutoPaths().add (new AutomationPath (track));
-    mc->addAndMakeVisible (mc->getAutoPaths().getLast());
-    mc->getAutoPaths().getLast()->setVisible (false);
-    mc->getAutoPaths().getLast()->setVisible (false);
+    auto autoPath = mc->getAutoPaths().getLast();
+    mc->addAndMakeVisible (autoPath);
+    autoPath->setVisible (false);
+    track->setAutoPath (autoPath);
 }
 
 bool ActionHelper::validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc)
