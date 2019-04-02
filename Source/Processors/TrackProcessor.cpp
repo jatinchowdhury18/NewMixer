@@ -1,6 +1,8 @@
 #include "TrackProcessor.h"
 
-TrackProcessor::TrackProcessor (File& file, int64 startSample) : TrackBase (String ("Track Processor"))
+TrackProcessor::TrackProcessor (File& file, int64 startSample) :
+    TrackBase (String ("Track Processor")),
+    file (file)
 {
     readerStartSample = startSample;
 
@@ -26,8 +28,15 @@ TrackProcessor::TrackProcessor (const TrackProcessor& processor) : TrackBase (St
 
     formatManager.registerBasicFormats();
     auto* oldMis = dynamic_cast<MemoryInputStream*> (processor.getReader()->input);
-    MemoryInputStream* mis = new MemoryInputStream (oldMis->getData(), oldMis->getDataSize(), false);
-    reader = formatManager.createReaderFor (mis);
+    if (oldMis != nullptr)
+    {
+        MemoryInputStream* mis = new MemoryInputStream (oldMis->getData(), oldMis->getDataSize(), false);
+        reader = formatManager.createReaderFor (mis);
+    }
+
+    file = processor.file;
+    if (file.exists())
+        reader = formatManager.createReaderFor (file.createInputStream());
 
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }

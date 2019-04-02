@@ -39,7 +39,8 @@ Track::Track (const Track& track) :
     name (track.getName()),
     shortName (track.getShortName()),
     trackColour (track.getColour()),
-    isPlaying (track.getIsPlaying())
+    isPlaying (track.getIsPlaying()),
+    diameter (track.diameter)
 {
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track.getProcessor());
     if (inputProcessor == nullptr) //File track
@@ -144,6 +145,7 @@ void Track::trackNameChanged (String newName, String newShortName)
             shortName = name.substring (0, jmin<int> (4, name.length()));
     }
 
+    setTooltip (name);
     repaint();
 
     if (renameWindow.get() != nullptr)
@@ -197,6 +199,9 @@ void Track::mouseDown (const MouseEvent& e)
     repaint();
 
     dynamic_cast<MainComponent*> (getParentComponent())->getWaveform()->setSelected (index);
+    
+    if (autoPath != nullptr)
+        autoPath->setVisible (true);
 
     if (e.mods.isPopupMenu())
         TrackActionHelper::rightClickMenu (this);

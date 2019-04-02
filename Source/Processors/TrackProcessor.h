@@ -23,7 +23,11 @@ public:
     AudioFormatReader* getReader() const { return reader; }
     AudioFormatManager& getFormatManager() { return formatManager; }
 
+    File getFile() const { return file; }
+
 private:
+    File file;
+
     AudioFormatManager formatManager;
     AudioFormatReader* reader;
 
