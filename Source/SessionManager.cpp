@@ -71,7 +71,7 @@ void SessionManager::openSession (MainComponent* mc)
 void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
 {
     File trackFile (trackXml->getStringAttribute ("filePath"));
-    String trackName (trackXml->getTagName());
+    String trackName (trackXml->getStringAttribute ("name"));
     String trackShortName (trackXml->getStringAttribute ("shortName"));
     Colour trackColour = Colour::fromString (trackXml->getStringAttribute ("colour"));
     auto* newTrack = new Track (trackFile, trackName, trackShortName, trackColour);
@@ -147,13 +147,14 @@ void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& track
             String trackName (track->getName());
             String trackShortName (track->getShortName());
             Colour trackColour = track->getColour();
-            auto* newTrack = new Track (trackFile, trackName, trackShortName, trackColour);
+            auto* newTrack = new Track (copyTrackFile, trackName, trackShortName, trackColour);
 
             auto trackX = track->getBoundsInParent().getX() + TrackConstants::width / 2;
             auto trackY = track->getBoundsInParent().getY() + TrackConstants::width / 2;
             auto diameter = track->getDiameter();
             newTrack->setDiameter (diameter);
 
+            newTrack->getAutoHelper()->setRecorded (track->getAutoHelper()->isRecorded());
             auto& autoPoints = track->getAutoHelper()->getPoints();
             for (auto point : autoPoints)
                 newTrack->getAutoHelper()->addAutoPoint (point->x, point->y, point->diameter, point->sample);
@@ -164,7 +165,7 @@ void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& track
         }
         else
         {
-            copyTracks.add (track);
+            copyTracks.add (new Track (*track));
             x.add (track->getBoundsInParent().getX() + TrackConstants::width / 2);
             y.add (track->getBoundsInParent().getY() + TrackConstants::width / 2);
         }
@@ -179,12 +180,13 @@ void SessionManager::saveTracksToXml (const OwnedArray<Track>& tracks, XmlElemen
 {
     for (auto track : tracks)
     {
-        std::unique_ptr<XmlElement> xmlTrack (new XmlElement (track->getName()));
+        std::unique_ptr<XmlElement> xmlTrack (new XmlElement ("Track"));
         
         xmlTrack->setAttribute ("xPos", track->getRelX());
         xmlTrack->setAttribute ("yPos", track->getRelY());
         xmlTrack->setAttribute ("diameter", track->getDiameter());
 
+        xmlTrack->setAttribute ("name", track->getName());
         xmlTrack->setAttribute ("shortName", track->getShortName());
         xmlTrack->setAttribute ("filePath", track->getFilePath());
         xmlTrack->setAttribute ("colour", track->getColour().toString());

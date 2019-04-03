@@ -12,6 +12,8 @@ Track::Track (File& file, String name, String shortName, Colour colour) :
     shortName (shortName),
     trackColour (colour)
 {
+    autoHelper.reset (new AutoHelper);
+
     processor = new TrackProcessor (file);
     processor->addListener (this);
 }
@@ -21,6 +23,8 @@ Track::Track (MemoryInputStream* input, String name, String shortName, Colour co
     shortName (shortName),
     trackColour (colour)
 {
+    autoHelper.reset (new AutoHelper);
+
     processor = new TrackProcessor (input);
     processor->addListener (this);
 }
@@ -31,6 +35,8 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     trackColour (colour),
     isPlaying (playing)
 {
+    autoHelper.reset (new AutoHelper);
+
     processor = new InputTrackProcessor (sampleLength, startSample);
     processor->addListener (this);
 }
@@ -42,6 +48,12 @@ Track::Track (const Track& track) :
     diameter (track.diameter),
     isPlaying (track.getIsPlaying())
 {
+    autoHelper.reset (new AutoHelper);
+    autoHelper->setRecorded (track.autoHelper->isRecorded());
+    auto& autoPoints = track.autoHelper->getPoints();
+    for (auto point : autoPoints)
+        autoHelper->addAutoPoint (point->x, point->y, point->diameter, point->sample);
+
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track.getProcessor());
     if (inputProcessor == nullptr) //File track
         processor = new TrackProcessor (*dynamic_cast<TrackProcessor*> (track.getProcessor()));
@@ -54,8 +66,6 @@ Track::Track (const Track& track) :
 void Track::initialise (int x, int y, int ind)
 {
     index = ind;
-
-    autoHelper.reset (new AutoHelper);
 
     meter.reset (new TrackMeter (this));
     addAndMakeVisible (meter.get());

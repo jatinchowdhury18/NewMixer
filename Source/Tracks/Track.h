@@ -102,6 +102,7 @@ public:
         virtual void deleteSelectedTrack() {}
         virtual void duplicateSelectedTrack() {}
         virtual void soloSelectedTrack() {}
+        virtual void trackColourChanged (Track* /*track*/, int /*index*/) {}
     };
 
     void addListener (Listener* listener) { listeners.add (listener); }
@@ -109,6 +110,7 @@ public:
     void deleteSelectedTrack() { listeners.call (&Track::Listener::deleteSelectedTrack); }
     void duplicateSelectedTrack() { listeners.call (&Track::Listener::duplicateSelectedTrack); }
     void soloSelectedTrack() { listeners.call (&Track::Listener::soloSelectedTrack); }
+    void trackColourChanged() { listeners.call (&Track::Listener::trackColourChanged, this, index); }
 
     void setRelativePosition (float x, float y) { relX = x; relY = y; }
     float getRelX() const { return relX; }

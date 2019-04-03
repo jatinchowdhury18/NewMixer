@@ -5,7 +5,8 @@
 #include "Processors/TrackProcessor.h"
 #include "Track.h"
 
-class WaveformViewer : public Component
+class WaveformViewer : public Component,
+                       private Track::Listener
 {
 public:
     WaveformViewer (OwnedArray<Track>& tracks);
@@ -18,6 +19,7 @@ public:
 
     void addTrack (Track* track);
     void deleteTrack (Track* track, int index);
+    void trackColourChanged (Track* track, int index) override;
 
 private:
     Array<TrackBase*> procs;
