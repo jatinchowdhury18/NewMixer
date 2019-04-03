@@ -24,6 +24,7 @@ WaveformViewer::WaveformViewer (OwnedArray<Track>& tracks)
         waveforms.getLast()->setReader (proc->getReader(), hash);
 
         colours.add (track->getColour());
+        track->addListener (this);
     }
 
     playhead.reset (new Playhead (procs));
@@ -88,6 +89,7 @@ void WaveformViewer::addTrack (Track* track)
     playhead->addProc (proc);
 
     colours.add (track->getColour());
+    track->addListener (this);
 }
 
 void WaveformViewer::deleteTrack (Track* track, int index)
@@ -106,7 +108,13 @@ void WaveformViewer::deleteTrack (Track* track, int index)
     caches.remove (index);
     waveforms.remove (index);
     colours.remove (index);
+    track->removeListener (this);
 
     playhead->removeListener (track);
     playhead->deleteProc (index);
+}
+
+void WaveformViewer::trackColourChanged (Track* track, int index)
+{
+    colours.set (index, track->getColour());
 }
