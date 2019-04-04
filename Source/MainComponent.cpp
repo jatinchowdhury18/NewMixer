@@ -26,7 +26,7 @@ MainComponent::MainComponent (String mode)
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
     initSettings();
 
-#if JUCE_ANDROID
+#if JUCE_IOS || JUCE_ANDROID
     initPlayButton();
 #endif
 }
@@ -138,9 +138,10 @@ void MainComponent::resized()
     for (auto track : tracks)
         track->resized();
 
-#if JUCE_ANDROID
-    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(), buttonWidth, buttonHeight);
-#endif
+#if JUCE_IOS || JUCE_ANDROID
+    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(), buttonWidth, buttonHeight);	    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(),
+                          (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
+#endif	#endif
 }
 
 void MainComponent::mouseDown (const MouseEvent& e)
@@ -155,7 +156,7 @@ void MainComponent::mouseDown (const MouseEvent& e)
         ActionHelper::rightClickMenu (this, e);
 }
 
-#if JUCE_ANDROID
+#if JUCE_IOS || JUCE_ANDROID
 void MainComponent::mouseDoubleClick (const MouseEvent& e)
 {
     ActionHelper::rightClickMenu (this, e);
