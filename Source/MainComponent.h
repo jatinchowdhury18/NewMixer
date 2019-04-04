@@ -96,7 +96,7 @@ private:
     std::unique_ptr<SettingsWindow> settingsWindow;
 
     File sessionDirectory;
-#if JUCE_ANDROID
+#if JUCE_IOS || JUCE_ANDROID
     void mouseDoubleClick (const MouseEvent& e) override;
 
     TextButton playButton;
