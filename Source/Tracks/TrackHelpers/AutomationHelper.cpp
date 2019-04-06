@@ -2,6 +2,14 @@
 
 void AutoHelper::addAutoPoint (float x, float y, float diameter, int64 sample)
 {
+    const auto lastPoint = points.getLast();
+
+    if (lastPoint != nullptr)
+    {
+        if (lastPoint->x == x && lastPoint->y == y && lastPoint->diameter)
+            return;
+    }
+
     points.add (new AutoPoint (x, y, diameter, sample));
     numPoints++;
 }
@@ -46,7 +54,12 @@ void AutoHelper::setRecordingStatus()
     if (recording)
     {
         recording = false;
-        automationRecorded = true;
+
+        if (numPoints > 1)
+            automationRecorded = true;
+        else
+            throwAway();
+
         return;
     }
 }
