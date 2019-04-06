@@ -47,6 +47,7 @@ void MainComponent::initSettings()
     addAndMakeVisible (settingsButton);
 }
 
+#if JUCE_IOS || JUCE_ANDROID
 void MainComponent::initPlayButton()
 {
     playButton.setButtonText ("Play/Pause");
@@ -56,6 +57,7 @@ void MainComponent::initPlayButton()
     playButton.onClick = [this] () { ActionHelper::togglePlay (this); };
     addAndMakeVisible (playButton);
 }
+#endif
 
 void MainComponent::addTracks (String stemsToUse)
 {
@@ -139,9 +141,9 @@ void MainComponent::resized()
         track->resized();
 
 #if JUCE_IOS || JUCE_ANDROID
-    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(), buttonWidth, buttonHeight);	    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(),
+    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(),
                           (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
-#endif	#endif
+#endif
 }
 
 void MainComponent::mouseDown (const MouseEvent& e)
