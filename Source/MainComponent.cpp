@@ -152,5 +152,5 @@ bool MainComponent::keyPressed (const KeyPress& key)
 static PlayTest playTest;
 static AutomationTest autoTest;
 static AddRemoveTracksTest arTracksTest;
-static SavingTest savingTest;
+//static SavingTest savingTest;
 #endif
