@@ -7,9 +7,9 @@ class SessionManager
 {
 public:
     static void newSession (MainComponent* mc);
-    static void openSession (MainComponent* mc);
+    static void openSession (MainComponent* mc, const File* sessionFile = nullptr);
     static void saveSession (MainComponent* mc);
-    static void saveSessionAs (MainComponent* mc);
+    static void saveSessionAs (MainComponent* mc, File* sessionFolder = nullptr);
 
 private:
     static void clearTracks (MainComponent* mc, OwnedArray<Track>& tracks);

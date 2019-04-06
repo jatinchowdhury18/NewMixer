@@ -13,7 +13,6 @@
     This component lives inside our window, and this is where you should put all
     your controls and content.
 */
-
 namespace MainConstants
 {
     constexpr float heightFactor = 0.8f;
@@ -64,7 +63,13 @@ public:
     void setSessionFile (File session) { sessionDirectory = session; }
 
 private:
-#if JUCE_DEBUG
+#if JUCE_DEBUG //Declarations for unit tests
+    enum
+    {
+        numTestTracks = 15,
+        numTestAutoPoints = 5000,
+    };
+
     friend class PlayTest;
     friend class AutomationTest;
     friend class AddRemoveTracksTest;

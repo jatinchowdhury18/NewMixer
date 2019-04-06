@@ -39,32 +39,37 @@ void SessionManager::clearTracks (MainComponent* mc, OwnedArray<Track>& tracks)
     }
 }
 
-void SessionManager::openSession (MainComponent* mc)
+void SessionManager::openSession (MainComponent* mc, const File* sessionFile)
 {
     newSession (mc);
 
-    FileChooser nativeFileChooser (String ("Open Session"), {}, "*.chow", true);
-
-    if (nativeFileChooser.browseForFileToOpen())
+    if (sessionFile == nullptr)
     {
-        auto sessionFile = nativeFileChooser.getResult();
-        
-        std::unique_ptr<XmlElement> sessionXml (parseXML (sessionFile));//(XmlDocument::parse (sessionFile));
-        if (sessionXml.get() != nullptr)
-        {
-            XmlElement* tracksXml = sessionXml->getChildByName ("Tracks");
-            if (tracksXml != nullptr)
-            {
-                XmlElement* trackXml (tracksXml->getFirstChildElement());
-                while (trackXml != nullptr)
-                {
-                    parseTrackXml (mc, trackXml);
-                    trackXml = trackXml->getNextElement();
-                }
-            }
+        FileChooser nativeFileChooser (String ("Open Session"), {}, "*.chow", true);
 
-            mc->setSessionFile (sessionFile.getParentDirectory());
+        if (nativeFileChooser.browseForFileToOpen())
+        {
+            sessionFile = new File (nativeFileChooser.getResult());
         }
+        else
+            return;
+    }
+        
+    std::unique_ptr<XmlElement> sessionXml (parseXML (*sessionFile));//(XmlDocument::parse (sessionFile));
+    if (sessionXml.get() != nullptr)
+    {
+        XmlElement* tracksXml = sessionXml->getChildByName ("Tracks");
+        if (tracksXml != nullptr)
+        {
+            XmlElement* trackXml (tracksXml->getFirstChildElement());
+            while (trackXml != nullptr)
+            {
+                parseTrackXml (mc, trackXml);
+                trackXml = trackXml->getNextElement();
+            }
+        }
+
+        mc->setSessionFile (sessionFile->getParentDirectory());
     }
 }
 
@@ -80,6 +85,10 @@ void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
     auto trackY = (int) (trackXml->getDoubleAttribute ("yPos") * mc->getHeight()) + TrackConstants::width / 2;
     auto diameter = (float) trackXml->getDoubleAttribute ("diameter");
     newTrack->setDiameter (diameter);
+
+    auto mute = trackXml->getBoolAttribute ("mute");
+    if (! mute)
+        newTrack->toggleMute();
 
     ActionHelper::addTrack (newTrack, mc, trackX, trackY);
 
@@ -154,6 +163,9 @@ void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& track
             auto diameter = track->getDiameter();
             newTrack->setDiameter (diameter);
 
+            if (! track->getProcessor()->getIsMute())
+                newTrack->toggleMute();
+
             newTrack->getAutoHelper()->setRecorded (track->getAutoHelper()->isRecorded());
             auto& autoPoints = track->getAutoHelper()->getPoints();
             for (auto point : autoPoints)
@@ -185,6 +197,7 @@ void SessionManager::saveTracksToXml (const OwnedArray<Track>& tracks, XmlElemen
         xmlTrack->setAttribute ("xPos", track->getRelX());
         xmlTrack->setAttribute ("yPos", track->getRelY());
         xmlTrack->setAttribute ("diameter", track->getDiameter());
+        xmlTrack->setAttribute ("mute", track->getProcessor()->getIsMute());
 
         xmlTrack->setAttribute ("name", track->getName());
         xmlTrack->setAttribute ("shortName", track->getShortName());
@@ -220,23 +233,30 @@ void SessionManager::saveAutomationToXml (Track* track, XmlElement* xmlTrack)
     }
 }
 
-void SessionManager::saveSessionAs (MainComponent* mc)
+void SessionManager::saveSessionAs (MainComponent* mc, File* sessionFolder)
 {
-    FileChooser nativeFileSaver (String ("Save Session As"), {}, {}, true);
-
-    if (nativeFileSaver.browseForFileToSave (true))
+    if (sessionFolder == nullptr)
     {
-        auto sessionFolder = nativeFileSaver.getResult().withFileExtension ({});
+        FileChooser nativeFileSaver (String ("Save Session As"), {}, {}, true);
 
-        if (! sessionFolder.exists())
+        if (nativeFileSaver.browseForFileToSave (true))
         {
-            sessionFolder.createDirectory();
-
-            File stemsFolder (sessionFolder.getFullPathName() + "\\Stems");
-            stemsFolder.createDirectory();
-
-            mc->setSessionFile (sessionFolder);
-            saveSession (mc);
+            sessionFolder = new File (nativeFileSaver.getResult().withFileExtension ({}));
         }
+        else
+            return;
     }
+
+    if (! sessionFolder->exists())
+    {
+        sessionFolder->createDirectory();
+
+        File stemsFolder (sessionFolder->getFullPathName() + "\\Stems");
+        stemsFolder.createDirectory();
+
+        mc->setSessionFile (*sessionFolder);
+        saveSession (mc);
+    }
+
+    //delete sessionFolder;
 }
