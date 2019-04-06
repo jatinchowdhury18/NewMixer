@@ -61,6 +61,9 @@ Track::Track (const Track& track) :
         processor = new InputTrackProcessor (*inputProcessor);
 
     processor->addListener (this);
+
+    if (! track.getProcessor()->getIsMute())
+        toggleMute();
 }
 
 void Track::initialise (int x, int y, int ind)
@@ -279,108 +282,8 @@ String Track::getFilePath() const
 }
 
 #if JUCE_DEBUG
-class MoveTest : public UnitTest
-{
-public:
-    MoveTest() : UnitTest ("Move Tracks") {}
-
-    int randInt()
-    {
-        Random r;
-        r.setSeedRandomly();
-
-        return (r.nextInt() % 1000) - 200;
-    }
-
-    void checkPosition()
-    {
-        Point<int> center = Point<int> (track->getX() + width / 2, track->getY() + width / 2);
-
-        expect (0 <= center.x && center.x <= track->getParentWidth(),
-                "X coordinate out of range: " + String (center.x));
-
-        expect (0 <= center.y && center.y <= track->getParentHeight(),
-            "Y coordinate out of range: " + String (center.x));
-
-        expect (minDiameter <= track->getDiameter() && track->getDiameter() <= maxDiameter,
-                "Track diameter out of range: " + String (track->getDiameter()));
-    }
-
-    void runTest() override
-    {
-        beginTest ("Move");
-        
-        for (int i = 0; i < 5000; i++)
-        {
-            TrackActionHelper::setPositionConstrained (track, Point<int> (randInt(), randInt()));
-            TrackActionHelper::setSizeConstrained (track, track->getDiameter(), (float) randInt());
-
-            checkPosition();
-        }
-    }
-
-    void initialise() override
-    {
-        track = new Track (100, 0, false, "Test", "Tst", Colours::white);
-        track->initialise (100, 100, 0);
-    }
-
-    void shutdown() override 
-    {
-        delete track->getProcessor(); 
-        delete track;
-    }
-
-private:
-    Track* track;
-};
-
-class NameTest : public UnitTest
-{
-public:
-    NameTest() : UnitTest ("Name Tracks") {}
-
-    void checkNames (String expName, String expShort)
-    {
-        expect (expName == track->name, "Track name incorrect: " + track->name
-                                               + ", expected: " + expName);
-        expect (expShort == track->shortName, "Track short name incorrect, got: " + track->shortName
-                                                                + ", expected: " + expShort);
-    }
-
-    void nameTest (String setName, String setShort, String expName, String expShort)
-    {
-        track->trackNameChanged (setName, setShort);
-        checkNames (expName, expShort);
-    }
-
-    void runTest() override
-    {
-        beginTest ("Names");
-
-        nameTest ("", "", "Test", "Tst");
-        nameTest ("", "squaminous", "Test", "Tst");
-        nameTest ("Guitar", "Gtr", "Guitar", "Gtr");
-        nameTest ("Drums", "", "Drums", "Drum");
-        nameTest ("Ttesttttttt", "", "Ttesttttttt", "Ttes");
-        nameTest ("Gtr", "", "Gtr", "Gtr");
-    }
-
-    void initialise() override
-    {
-        track = new Track (100, 0, false, "Test", "Tst", Colours::white);
-        track->initialise (100, 100, 0);
-    }
-
-    void shutdown() override 
-    {
-        delete track->getProcessor(); 
-        delete track;
-    }
-
-private:
-    Track* track;
-};
+#include "UnitTests/TrackNameTest.h"
+#include "UnitTests/TrackMoveTest.h"
 
 static MoveTest moveTest;
 static NameTest nameTest;
