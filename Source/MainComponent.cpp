@@ -25,6 +25,10 @@ MainComponent::MainComponent (String mode)
 
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
     initSettings();
+
+#if JUCE_IOS || JUCE_ANDROID
+    initPlayButton();
+#endif
 }
 
 MainComponent::~MainComponent()
@@ -42,6 +46,18 @@ void MainComponent::initSettings()
     settingsButton.onClick = [this] () { settingsWindow.reset (new SettingsWindow (String ("Settings"), master->getDeviceManager())); };
     addAndMakeVisible (settingsButton);
 }
+
+#if JUCE_IOS || JUCE_ANDROID
+void MainComponent::initPlayButton()
+{
+    playButton.setButtonText ("Play/Pause");
+    playButton.setColour (TextButton::buttonColourId, Colours::transparentBlack);
+    playButton.setColour (TextButton::textColourOffId, Colours::darkred);
+    playButton.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
+    playButton.onClick = [this] () { ActionHelper::togglePlay (this); };
+    addAndMakeVisible (playButton);
+}
+#endif
 
 void MainComponent::addTracks (String stemsToUse)
 {
@@ -123,6 +139,11 @@ void MainComponent::resized()
 
     for (auto track : tracks)
         track->resized();
+
+#if JUCE_IOS || JUCE_ANDROID
+    playButton.setBounds (getLocalBounds().getX(), getLocalBounds().getY(),
+                          (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
+#endif
 }
 
 void MainComponent::mouseDown (const MouseEvent& e)
@@ -136,6 +157,13 @@ void MainComponent::mouseDown (const MouseEvent& e)
     if (e.mods.isPopupMenu())
         ActionHelper::rightClickMenu (this, e);
 }
+
+#if JUCE_IOS || JUCE_ANDROID
+void MainComponent::mouseDoubleClick (const MouseEvent& e)
+{
+    ActionHelper::rightClickMenu (this, e);
+}
+#endif
 
 bool MainComponent::keyPressed (const KeyPress& key)
 {

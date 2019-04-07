@@ -93,15 +93,16 @@ public:
                                                                           .findColour (ResizableWindow::backgroundColourId),
                                                     DocumentWindow::allButtons)
         {
+           #if JUCE_IOS || JUCE_ANDROID
+            setContentOwned (new MainComponent ("Bridge"), true);
+            setFullScreen (true);
+           #else
             setUsingNativeTitleBar (true);
             if (mode == "Test" || mode == "Bridge")
                 setContentOwned (new MainComponent (mode), true);
             else
                 setContentOwned (new MainComponent(), true);
-
-           #if JUCE_IOS || JUCE_ANDROID
-            setFullScreen (true);
-           #else
+            
             setResizable (true, false);
             centreWithSize (getWidth(), getHeight());
            #endif

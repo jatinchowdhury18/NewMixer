@@ -131,6 +131,12 @@ private:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
+#if JUCE_IOS || JUCE_ANDROID
+    void mouseDoubleClick (const MouseEvent& e) override;
+    
+    Array<MouseEvent> touches;
+#endif
+
     ListenerList<Listener> listeners;
 
     float relX = 0.0f;

@@ -76,6 +76,8 @@ private:
 #endif
 
     void initSettings();
+    void initPlayButton();
+
     void addTracks (String stemsToUse);
     void bridgeTracks();
     void testTracks();
@@ -99,6 +101,11 @@ private:
     std::unique_ptr<SettingsWindow> settingsWindow;
 
     File sessionDirectory;
+#if JUCE_IOS || JUCE_ANDROID
+    void mouseDoubleClick (const MouseEvent& e) override;
+
+    TextButton playButton;
+#endif
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

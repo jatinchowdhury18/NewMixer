@@ -90,6 +90,10 @@ void Track::initialise (int x, int y, int ind)
 Track::~Track()
 {
     processor->removeListener (this);
+    
+#if JUCE_IOS || JUCE_ANDROID
+    touches.clear();
+#endif
 }
 
 void Track::uninitialise()
@@ -218,19 +222,39 @@ void Track::mouseDown (const MouseEvent& e)
 
     if (e.mods.isPopupMenu())
         TrackActionHelper::rightClickMenu (this);
+    
+#if JUCE_IOS || JUCE_ANDROID
+    touches.add (e);
+#endif
 }
+
+#if JUCE_IOS || JUCE_ANDROID
+void Track::mouseDoubleClick (const MouseEvent& e)
+{
+    TrackActionHelper::rightClickMenu (this);
+}
+#endif
 
 void Track::mouseDrag (const MouseEvent& e)
 {
-    if (e.mods.isAltDown())  //Change volume
+#if JUCE_IOS || JUCE_ANDROID
+    if (touches.size() > 1)
+    {
+        TrackActionHelper::changeSize (this, e);
+    }
+    else                      // Normal drag
+        TrackActionHelper::changePosition (this, e);
+#else
+    if (e.mods.isAltDown())   //Change volume
         TrackActionHelper::changeSize (this, e);
     else                      // Normal drag
         TrackActionHelper::changePosition (this, e);
-
+#endif
+    
     getParentComponent()->repaint();
 }
 
-void Track::mouseUp (const MouseEvent& /*e*/)
+void Track::mouseUp (const MouseEvent& e)
 {
     if (isDragging)
     {
@@ -239,6 +263,10 @@ void Track::mouseUp (const MouseEvent& /*e*/)
     }
     
     trackMoved();
+    
+#if JUCE_IOS || JUCE_ANDROID
+    touches.clear();
+#endif
 }
 
 bool Track::toggleMute()
