@@ -135,7 +135,7 @@ void SessionManager::saveSession (MainComponent* mc)
     saveTracksToXml (tracks, xmlTracks.get());
     xml->addChildElement (xmlTracks.release());
 
-    File saveFile (session.getFullPathName() + "\\" + session.getFileName() + ".chow");
+    File saveFile (session.getChildFile (session.getFileName() + ".chow"));
     xml->writeToFile (saveFile, {});
 }
 
@@ -250,8 +250,8 @@ void SessionManager::saveSessionAs (MainComponent* mc, File* sessionFolder)
     if (! sessionFolder->exists())
     {
         sessionFolder->createDirectory();
-
-        File stemsFolder (sessionFolder->getFullPathName() + "\\Stems");
+        
+        File stemsFolder (sessionFolder->getChildFile ("Stems"));
         stemsFolder.createDirectory();
 
         mc->setSessionFile (*sessionFolder);

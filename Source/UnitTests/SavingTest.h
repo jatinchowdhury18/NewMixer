@@ -20,20 +20,28 @@ public:
     {
         MainComponent main;
 
-        const auto root = File::getCurrentWorkingDirectory().getParentDirectory().getParentDirectory();
-        const auto stemsFolder = root.getChildFile ("Stems\\Bridge");
+        auto root = File::getCurrentWorkingDirectory();
+        while (root.getFileName() != "NewMixer")
+            root = root.getParentDirectory();
+        
+        const auto stemsFolder = root.getChildFile ("Stems").getChildFile ("Bridge");
         const auto stems = stemsFolder.findChildFiles (File::TypesOfFileToFind::findFiles, false, "*.wav");
 
         for (int i = 0; i < numTestTracks; i++)
         {
-            auto* newTrack = new Track (stems.getReference (i), {}, {}, main.getNextColour());
+            File file (stems[i]);
+            auto* newTrack = new Track (file, {}, {}, main.getNextColour());
             ActionHelper::addTrack (newTrack, &main, 0, 0);
         }
 
         main.getTracks()[indexTrackAutomate]->getAutoHelper()->setRecorded (true);
         main.getTracks()[indexTrackUnmute]->toggleMute();
 
-        auto saveFolder = File (root.getFullPathName() + "\\Testing\\Song").getNonexistentSibling();
+        auto testFolder = root.getChildFile ("Testing");
+        if (! testFolder.exists())
+            testFolder.createDirectory();
+        
+        auto saveFolder = File (testFolder.getChildFile("Song").getNonexistentSibling());
         SessionManager::saveSessionAs (&main, &saveFolder);
 
         testSave (saveFolder, stems);
