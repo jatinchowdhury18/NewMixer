@@ -10,7 +10,8 @@ void SessionManager::newSession (MainComponent* mc)
         if (! mc->getTracks().isEmpty())
         {
             int areYouSure = NativeMessageBox::showOkCancelBox (AlertWindow::AlertIconType::WarningIcon, String ("Unsaved Session"),
-                String ("This session has not yet been saved. This action will cause you work to be lost. Are you sure you want to do this?"));
+                String ("This session has not yet been saved. This action will cause you work to be lost. Are you sure you want to do this?"),
+                nullptr, nullptr);
 
             switch (areYouSure)
             {
@@ -41,6 +42,10 @@ void SessionManager::clearTracks (MainComponent* mc, OwnedArray<Track>& tracks)
 
 void SessionManager::openSession (MainComponent* mc, const File* sessionFile)
 {
+#if JUCE_ANDROID
+    return; //@TODO Figure out file browser for android
+#endif
+
     newSession (mc);
 
     if (sessionFile == nullptr)
@@ -235,6 +240,10 @@ void SessionManager::saveAutomationToXml (Track* track, XmlElement* xmlTrack)
 
 void SessionManager::saveSessionAs (MainComponent* mc, File* sessionFolder)
 {
+#if JUCE_ANDROID
+    return;
+#endif
+
     if (sessionFolder == nullptr)
     {
         FileChooser nativeFileSaver (String ("Save Session As"), {}, {}, true);

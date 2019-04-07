@@ -254,7 +254,7 @@ void Track::mouseDrag (const MouseEvent& e)
     getParentComponent()->repaint();
 }
 
-void Track::mouseUp (const MouseEvent& e)
+void Track::mouseUp (const MouseEvent& /*e*/)
 {
     if (isDragging)
     {

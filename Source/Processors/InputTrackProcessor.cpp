@@ -82,7 +82,7 @@ void InputTrackProcessor::setRecordingStatus()
 {
     if (armed)
     {
-        inputBuffer.setSize (2, (int) (baseLengthSamples * jmax<int64>(loopsToRecord - Free, 1)));
+        inputBuffer.setSize (2, (int) (baseLengthSamples * jmax<int>(loopsToRecord - Free, 1)));
         inputBuffer.clear();
         
         armed = false;

@@ -230,6 +230,10 @@ void ActionHelper::changeSelect (MainComponent* mc, bool forward)
 
 void ActionHelper::addFileTrack (MainComponent* mc, int x, int y)
 {
+#if JUCE_ANDROID
+    return;
+#endif
+
     FileChooser nativeFileChooser (TRANS ("Import Audio Files"), {}, String ("*.wav"), true);
 
     if (nativeFileChooser.browseForMultipleFilesToOpen())

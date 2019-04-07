@@ -20,7 +20,7 @@ void DelayProcessor::setLengthMs (int channel, double lengthMs)
 {
     int newLength = (int) (lengthMs * getSampleRate() / 1000.0);
     newLength = jmin (newLength, bufferSize);
-    dChannels[channel].length.setValue ((float) newLength);
+    dChannels[channel].length.setTargetValue ((float) newLength);
 }
 
 float DelayProcessor::getLengthMS (int channel) const
