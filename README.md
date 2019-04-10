@@ -7,13 +7,15 @@
 ![Pic](https://raw.githubusercontent.com/jatinchowdhury18/NewMixer/master/screenshot.PNG)
 
 An audio mixing tool that allows the user to visualize audio sources by their location in space rather than as channels on a mixing board.
+See a demo video [here](https://youtu.be/_oikZhhMsP4).
 
 This is part of a class project for [Music 256a](https://ccrma.stanford.edu/courses/256a/) at Standford University (CCRMA).
 
 ## Installation
 ### For Users: Download
   - Download the [latest release &rarr;](https://github.com/jatinchowdhury18/NewMixer/releases/latest)
-  - Unzip the file and run NewMixer.exe (Win) or NewMixer.app (Mac)
+  - Windows users can run the installer to set up NewMixer
+  - Mac users can download and run NewMixer.app (Note that you must change your settings to run programs from unidentified develops)
 
 ### For Developers: Clone repository
   ```bash
@@ -26,7 +28,7 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
   # Initialize JUCE submodule
   $ git submodule update --init --recursive
   ```
-  Executable binary files can be found in the "Bin" subfolder. Instructions for building from scratch can be found [here](#Building).
+  Instructions for building from scratch can be found [here](#Building).
 
 ## Getting Started: Mixing
 ### Creating and opening sessions
