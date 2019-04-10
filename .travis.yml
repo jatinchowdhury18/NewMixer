@@ -60,22 +60,22 @@ script:
 
   - echo "SUCCESS"
 
-# after_success: # upload mac bins
-#   - |
-#     if [[ $TRAVIS_JOB_NAME == 'osx' && type != push ]]; then
-#       echo "Copying Files..."
-#       cd $TRAVIS_BUILD_DIR/
-#       cp -R $TRAVIS_BUILD_DIR/Builds/MacOSX/build/Release/NewMixer.app $TRAVIS_BUILD_DIR/Bin/Mac/NewMixer.app
-# 
-#       echo "Setting Up Git..."
-#       git config --global user.email "travis@travis-ci.org"
-#       git config --global user.name "Travis CI"
-# 
-#       echo "Committing Files..."
-#       git checkout -b builds
-#       git add Bin/Mac/
-#       git commit -m "Travis build- $TRAVIS_BUILD_NUMBER"
-# 
-#       echo "Pushing to branch..."
-#       git push https://${GH_TOKEN}@github.com/jatinchowdhury18/NewMixer.git
-#     fi
+after_success: # upload mac bins
+  - |
+    if [[ $TRAVIS_JOB_NAME == 'osx' && type != push ]]; then
+      echo "Copying Files..."
+      cd $TRAVIS_BUILD_DIR/
+      cp -R $TRAVIS_BUILD_DIR/Builds/MacOSX/build/Release/NewMixer.app $TRAVIS_BUILD_DIR/NewMixer.app
+
+      echo "Setting Up Git..."
+      git config --global user.email "travis@travis-ci.org"
+      git config --global user.name "Travis CI"
+
+      echo "Committing Files..."
+      git checkout -b builds
+      git add NewMixer.app
+      git commit -m "Travis build- $TRAVIS_BUILD_NUMBER"
+
+      echo "Pushing to branch..."
+      git push https://${GH_TOKEN}@github.com/jatinchowdhury18/NewMixer.git
+    fi
