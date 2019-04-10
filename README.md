@@ -15,7 +15,7 @@ This is part of a class project for [Music 256a](https://ccrma.stanford.edu/cour
 ### For Users: Download
   - Download the [latest release &rarr;](https://github.com/jatinchowdhury18/NewMixer/releases/latest)
   - Windows users can run the installer to set up NewMixer
-  - Mac users can download and run NewMixer.app (Note that you must change your settings to run programs from unidentified develops)
+  - Mac users can download and run NewMixer.app (Note that you must change your settings to run programs from unidentified developers)
 
 ### For Developers: Clone repository
   ```bash
