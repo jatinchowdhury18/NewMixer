@@ -16,6 +16,7 @@ private:
 
     static void parseTrackXml (MainComponent* mc, XmlElement* trackXml);
     static void parseAutomationXml (Track* newTrack, XmlElement* pointXml);
+    static bool validateTrackFile (File& file);
     
     static void copyTrackFiles (MainComponent* mc, OwnedArray<Track>& tracks, const File stemsFolder);
     static void saveTracksToXml (const OwnedArray<Track>& tracks, XmlElement* xmlTracks);
