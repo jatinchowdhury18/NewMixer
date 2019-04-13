@@ -81,6 +81,9 @@ void SessionManager::openSession (MainComponent* mc, const File* sessionFile)
 void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
 {
     File trackFile (trackXml->getStringAttribute ("filePath"));
+    if (! validateTrackFile (trackFile))
+        return;
+
     String trackName (trackXml->getStringAttribute ("name"));
     String trackShortName (trackXml->getStringAttribute ("shortName"));
     Colour trackColour = Colour::fromString (trackXml->getStringAttribute ("colour"));
@@ -119,6 +122,31 @@ void SessionManager::parseAutomationXml (Track* newTrack, XmlElement* pointXml)
     auto sample = (int64) pointXml->getIntAttribute ("sampleTime");
 
     newTrack->getAutoHelper()->addAutoPoint (pointX, pointY, pointDiameter, sample);
+}
+
+bool SessionManager::validateTrackFile (File& file)
+{
+    if (file.existsAsFile())
+        return true;
+
+    int errorBox = NativeMessageBox::showYesNoBox (AlertWindow::AlertIconType::WarningIcon, String ("File not found!"),
+                                                   String ("The following file could not be found: " + file.getFullPathName() + 
+                                                   ".\n Would you like to locate this file?"), nullptr, nullptr);
+
+    switch (errorBox)
+    {
+    case 0: //"No"
+        return false;
+    case 1: //"Yes"
+        FileChooser nativeFileChooser (String ("Locate File"), {}, "*.wav", true);
+
+        if (nativeFileChooser.browseForFileToOpen())
+        {
+            file = File (nativeFileChooser.getResult());
+            return true;
+        }
+    }
+    return false;
 }
 
 void SessionManager::saveSession (MainComponent* mc)
