@@ -1,6 +1,7 @@
 #include "MainComponent.h"
 #include "TrackHelpers/TrackActionHelper.h"
 #include "ActionHelper.h"
+#include "SessionManager.h"
 
 //==============================================================================
 enum
@@ -15,12 +16,20 @@ MainComponent::MainComponent (String mode)
     setSize (width, height);
     setWantsKeyboardFocus (true);
 
-    addTracks (mode); //"" (default), "Test", or "Bridge"
-
     master.reset (new MasterTrack (tracks));
 
     waveformView.reset (new WaveformViewer (tracks));
     addAndMakeVisible (waveformView.get());
+
+    if (File (mode.unquoted()).exists())
+    {
+        const File fileToOpen = File (mode.unquoted());
+        if (fileToOpen.hasFileExtension (".chow"))
+            SessionManager::openSession (this, &fileToOpen);
+    }
+    else
+        addTracks (mode); //"" (default), "Test", or "Bridge"
+    
     resized();
 
     tooltipWindow.reset (new TooltipWindow (this, tooltipTime));
@@ -65,27 +74,13 @@ void MainComponent::addTracks (String stemsToUse)
         bridgeTracks();
     else if (stemsToUse == "Test")
         testTracks();
-
-    for (auto* track : tracks)
-    {
-        addAndMakeVisible (track);
-        track->addListener (this);
-        track->resized();
-
-        autoPaths.add (new AutomationPath (track));
-        addAndMakeVisible (autoPaths.getLast());
-        autoPaths.getLast()->toBehind (tracks[0]);
-    }
 }
 
 void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName)
 {
     int xPos = xOffset + xSpace * tracks.size();
     MemoryInputStream* mis = new MemoryInputStream (sourceData, sourceSize, false);
-    tracks.add (new Track (mis, name, shortName, getNextColour()));
-    addAndMakeVisible (tracks.getLast());
-    tracks.getLast()->addListener (this);
-    tracks.getLast()->initialise (xPos, yPos, tracks.size() - 1);
+    ActionHelper::addTrack (new Track (mis, name, shortName, getNextColour()), this, xPos, yPos);
 }
 
 void MainComponent::bridgeTracks()

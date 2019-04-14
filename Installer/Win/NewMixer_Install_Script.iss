@@ -12,7 +12,7 @@ ArchitecturesInstallIn64BitMode=x64
 ChangesAssociations=yes
 
 [Files]
-Source: "..\..\Bin\Win\NewMixer.exe"; DestDir: "{app}"
+Source: "..\..\Builds\VisualStudio2017\x64\Release\App\NewMixer.exe"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\NewMixer"; Filename: "{app}\NewMixer.exe"
