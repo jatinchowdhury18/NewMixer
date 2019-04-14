@@ -98,10 +98,7 @@ public:
             setFullScreen (true);
            #else
             setUsingNativeTitleBar (true);
-            if (mode == "Test" || mode == "Bridge")
-                setContentOwned (new MainComponent (mode), true);
-            else
-                setContentOwned (new MainComponent(), true);
+            setContentOwned (new MainComponent (mode), true);
             
             setResizable (true, false);
             centreWithSize (getWidth(), getHeight());
