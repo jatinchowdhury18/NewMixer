@@ -27,6 +27,8 @@ public:
     static void addRecordingTrack (MainComponent* mc, int x, int y);
     static void addTrack (Track* track, MainComponent* mc, int x, int y);
 
+    static void loadLocalTracks (MainComponent* mc, String tracksToLoad);
+
 private:
     static bool validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc);
 

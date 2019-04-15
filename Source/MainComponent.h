@@ -2,17 +2,12 @@
 
 #include "JuceHeader.h"
 #include "Track.h"
-#include "MasterTrack.h"
+#include "MasterTrackProcessor.h"
 #include "Colours.h"
 #include "Settings.h"
 #include "Timeline/WaveformViewer.h"
 #include "AutomationPath.h"
 
-//==============================================================================
-/*
-    This component lives inside our window, and this is where you should put all
-    your controls and content.
-*/
 namespace MainConstants
 {
     constexpr float heightFactor = 0.8f;
@@ -55,7 +50,7 @@ public:
 
     OwnedArray<Track>& getTracks() { return tracks; }
     OwnedArray<AutomationPath>& getAutoPaths() { return autoPaths; }
-    MasterTrack* getMaster() { return master.get(); }
+    MasterTrackProcessor* getMaster() { return master.get(); }
     Colour getNextColour() { return trackColours.getColour (tracks.size()); }
     WaveformViewer* getWaveform() { return waveformView.get(); }
 
@@ -78,17 +73,12 @@ private:
     void initSettings();
     void initPlayButton();
 
-    void addTracks (String stemsToUse);
-    void bridgeTracks();
-    void testTracks();
-    void setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName);
-
     void deleteSelectedTrack() override;
     void duplicateSelectedTrack() override;
     void soloSelectedTrack() override;
 
     //==============================================================================
-    std::unique_ptr<MasterTrack> master;
+    std::unique_ptr<MasterTrackProcessor> master;
     OwnedArray<Track> tracks;
     OwnedArray<AutomationPath> autoPaths;
 

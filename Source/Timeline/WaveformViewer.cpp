@@ -111,7 +111,7 @@ void WaveformViewer::deleteTrack (Track* track, int index)
     track->removeListener (this);
 
     playhead->removeListener (track);
-    playhead->deleteProc (index);
+    playhead->removeProc (index);
 }
 
 void WaveformViewer::trackColourChanged (Track* track, int index)

@@ -1,7 +1,7 @@
-#include "MasterTrack.h"
+#include "MasterTrackProcessor.h"
 #include "InputTrackProcessor.h"
 
-MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
+MasterTrackProcessor::MasterTrackProcessor (OwnedArray<Track>& tracks)
 {
     deviceManager.initialiseWithDefaultDevices (2, 2);
     deviceManager.addAudioCallback (&player);
@@ -21,12 +21,12 @@ MasterTrack::MasterTrack (OwnedArray<Track>& tracks)
     togglePlay();
 }
 
-MasterTrack::~MasterTrack()
+MasterTrackProcessor::~MasterTrackProcessor()
 {
     deviceManager.removeAudioCallback (&player);
 }
 
-void MasterTrack::connectTracks()
+void MasterTrackProcessor::connectTracks()
 {
     for (auto trackNode : trackNodes)
     {
@@ -38,7 +38,7 @@ void MasterTrack::connectTracks()
     }
 }
 
-void MasterTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer)
+void MasterTrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer)
 {
     if (! isPlaying)
     {
@@ -49,7 +49,7 @@ void MasterTrack::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuff
     AudioProcessorGraph::processBlock (buffer, midiBuffer);
 }
 
-void MasterTrack::togglePlay()
+void MasterTrackProcessor::togglePlay()
 {
     if (! isPlaying)
         prepareToPlay (getSampleRate(), getBlockSize());
@@ -59,7 +59,7 @@ void MasterTrack::togglePlay()
     isPlaying = ! isPlaying;
 }
 
-void MasterTrack::addTrack (Track* track)
+void MasterTrackProcessor::addTrack (Track* track)
 {
     trackNodes.add (addNode (track->getProcessor()));
     auto trackNode = trackNodes.getLast();
@@ -74,7 +74,7 @@ void MasterTrack::addTrack (Track* track)
     }
 }
 
-void MasterTrack::removeTrack (Track* track)
+void MasterTrackProcessor::removeTrack (Track* track)
 {
     ReferenceCountedObjectPtr<Node> nodeToDelete;
     for (int i = 0; i < trackNodes.size(); i++)

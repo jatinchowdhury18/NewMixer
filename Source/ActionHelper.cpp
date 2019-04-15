@@ -3,6 +3,13 @@
 #include "TrackHelpers/TrackActionHelper.h"
 #include "SessionManager.h"
 
+enum
+{
+    xSpace = MainComponent::width / 9, //stems.size();
+    xOffset = (xSpace / 2) - (TrackConstants::width / 2),
+    yPos = 350,
+};
+
 void ActionHelper::rightClickMenu (MainComponent* mc, const MouseEvent& e)
 {
     PopupMenu m;
@@ -317,4 +324,31 @@ bool ActionHelper::validTrackFile (Track* firstTrack, Track* newTrack, MainCompo
     newTrack->uninitialise();
     delete newTrack;
     return false;
+}
+
+void ActionHelper::loadLocalTracks (MainComponent* mc, String tracksToLoad)
+{
+    auto setupTrack = [mc] (const void* sourceData, size_t sourceSize, String name, String shortName)
+    {
+        int xPos = xOffset + xSpace * mc->getTracks().size();
+        MemoryInputStream* mis = new MemoryInputStream (sourceData, sourceSize, false);
+        addTrack (new Track (mis, name, shortName, mc->getNextColour()), mc, xPos, yPos);
+    };
+
+    if (tracksToLoad == "Bridge")
+    {
+        setupTrack (BinaryData::Bass_wav,  BinaryData::Bass_wavSize,  String ("Bass"),     String ("Bass"));
+        setupTrack (BinaryData::Drums_wav, BinaryData::Drums_wavSize, String ("Drums"),    String ("Drum"));
+        setupTrack (BinaryData::Gtr1_wav,  BinaryData::Gtr1_wavSize,  String ("Guitar 1"), String ("Gtr1"));
+        setupTrack (BinaryData::Gtr2_wav,  BinaryData::Gtr2_wavSize,  String ("Guitar 2"), String ("Gtr2"));
+        setupTrack (BinaryData::Organ_wav, BinaryData::Organ_wavSize, String ("Organ"),    String ("Org"));
+        setupTrack (BinaryData::Vox1_wav,  BinaryData::Vox1_wavSize,  String ("Vocals 1"), String ("Vox1"));
+        setupTrack (BinaryData::Vox2_wav,  BinaryData::Vox2_wavSize,  String ("Vocals 2"), String ("Vox2"));
+        setupTrack (BinaryData::Vox3_wav,  BinaryData::Vox3_wavSize,  String ("Vocals 3"), String ("Vox3"));
+        setupTrack (BinaryData::Vox4_wav,  BinaryData::Vox4_wavSize,  String ("Vocals 4"), String ("Vox4"));
+    }
+    else if (tracksToLoad == "Test")
+    {
+        setupTrack (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, String ("Drums"), String ("Drum"));
+    }
 }
