@@ -4,19 +4,12 @@
 #include "SessionManager.h"
 
 //==============================================================================
-enum
-{
-    xSpace = MainComponent::width / 9, //stems.size();
-    xOffset = (xSpace / 2) - (TrackConstants::width / 2),
-    yPos = 350,
-};
-
 MainComponent::MainComponent (String mode)
 {
     setSize (width, height);
     setWantsKeyboardFocus (true);
 
-    master.reset (new MasterTrack (tracks));
+    master.reset (new MasterTrackProcessor (tracks));
 
     waveformView.reset (new WaveformViewer (tracks));
     addAndMakeVisible (waveformView.get());
@@ -28,7 +21,7 @@ MainComponent::MainComponent (String mode)
             SessionManager::openSession (this, &fileToOpen);
     }
     else
-        addTracks (mode); //"" (default), "Test", or "Bridge"
+        ActionHelper::loadLocalTracks (this, mode); // "Test", or "Bridge"s
     
     resized();
 
@@ -67,39 +60,6 @@ void MainComponent::initPlayButton()
     addAndMakeVisible (playButton);
 }
 #endif
-
-void MainComponent::addTracks (String stemsToUse)
-{
-    if (stemsToUse == "Bridge")
-        bridgeTracks();
-    else if (stemsToUse == "Test")
-        testTracks();
-}
-
-void MainComponent::setupTrack (const void* sourceData, size_t sourceSize, String name, String shortName)
-{
-    int xPos = xOffset + xSpace * tracks.size();
-    MemoryInputStream* mis = new MemoryInputStream (sourceData, sourceSize, false);
-    ActionHelper::addTrack (new Track (mis, name, shortName, getNextColour()), this, xPos, yPos);
-}
-
-void MainComponent::bridgeTracks()
-{
-    setupTrack (BinaryData::Bass_wav, BinaryData::Bass_wavSize, String ("Bass"), String ("Bass"));
-    setupTrack (BinaryData::Drums_wav, BinaryData::Drums_wavSize, String ("Drums"), String ("Drum"));
-    setupTrack (BinaryData::Gtr1_wav, BinaryData::Gtr1_wavSize, String ("Guitar 1"), String ("Gtr1"));
-    setupTrack (BinaryData::Gtr2_wav, BinaryData::Gtr2_wavSize, String ("Guitar 2"), String ("Gtr2"));
-    setupTrack (BinaryData::Organ_wav, BinaryData::Organ_wavSize, String ("Organ"), String ("Org"));
-    setupTrack (BinaryData::Vox1_wav, BinaryData::Vox1_wavSize, String ("Vocals 1"), String ("Vox1"));
-    setupTrack (BinaryData::Vox2_wav, BinaryData::Vox2_wavSize, String ("Vocals 2"), String ("Vox2"));
-    setupTrack (BinaryData::Vox3_wav, BinaryData::Vox3_wavSize, String ("Vocals 3"), String ("Vox3"));
-    setupTrack (BinaryData::Vox4_wav, BinaryData::Vox4_wavSize, String ("Vocals 4"), String ("Vox4"));
-}
-
-void MainComponent::testTracks()
-{
-    setupTrack (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, String ("Drums"), String ("Drum"));
-}
 
 void MainComponent::deleteSelectedTrack() { ActionHelper::deleteSelectedTrack (this); }
 void MainComponent::duplicateSelectedTrack() { ActionHelper::duplicateSelectedTrack (this); }

@@ -31,15 +31,6 @@ void SessionManager::newSession (MainComponent* mc)
     mc->setSessionFile (File());
 }
 
-void SessionManager::clearTracks (MainComponent* mc, OwnedArray<Track>& tracks)
-{
-    while (! tracks.isEmpty())
-    {
-        ActionHelper::changeSelect (mc, true);
-        ActionHelper::deleteSelectedTrack (mc);
-    }
-}
-
 void SessionManager::openSession (MainComponent* mc, const File* sessionFile)
 {
 #if JUCE_ANDROID
@@ -75,6 +66,68 @@ void SessionManager::openSession (MainComponent* mc, const File* sessionFile)
         }
 
         mc->setSessionFile (sessionFile->getParentDirectory());
+    }
+}
+
+void SessionManager::saveSession (MainComponent* mc)
+{
+    auto session = mc->getSessionFile();
+    if (! session.exists())
+    {
+        saveSessionAs (mc);
+        return;
+    }
+    File stemsFolder = session.getChildFile ("Stems");
+    
+    std::unique_ptr<XmlElement> xml (new XmlElement ("NewMixerSession"));
+    xml->setAttribute ("SessionName", session.getFileName());
+
+    std::unique_ptr<XmlElement> xmlTracks (new XmlElement ("Tracks"));
+    auto& tracks = mc->getTracks();
+    copyTrackFiles (mc, tracks, stemsFolder);
+    saveTracksToXml (tracks, xmlTracks.get());
+    xml->addChildElement (xmlTracks.release());
+
+    File saveFile (session.getChildFile (session.getFileName() + ".chow"));
+    xml->writeToFile (saveFile, {});
+}
+
+void SessionManager::saveSessionAs (MainComponent* mc, File* sessionFolder)
+{
+#if JUCE_ANDROID
+    return;
+#endif
+
+    if (sessionFolder == nullptr)
+    {
+        FileChooser nativeFileSaver (String ("Save Session As"), {}, {}, true);
+
+        if (nativeFileSaver.browseForFileToSave (true))
+        {
+            sessionFolder = new File (nativeFileSaver.getResult().withFileExtension ({}));
+        }
+        else
+            return;
+    }
+
+    if (! sessionFolder->exists())
+    {
+        sessionFolder->createDirectory();
+        
+        File stemsFolder (sessionFolder->getChildFile ("Stems"));
+        stemsFolder.createDirectory();
+
+        mc->setSessionFile (*sessionFolder);
+        saveSession (mc);
+    }
+}
+
+void SessionManager::clearTracks (MainComponent* mc, OwnedArray<Track>& tracks)
+{
+    while (! tracks.isEmpty())
+    {
+        ActionHelper::changeSelect (mc, true);
+        ActionHelper::deleteSelectedTrack (mc);
     }
 }
 
@@ -147,29 +200,6 @@ bool SessionManager::validateTrackFile (File& file)
         }
     }
     return false;
-}
-
-void SessionManager::saveSession (MainComponent* mc)
-{
-    auto session = mc->getSessionFile();
-    if (! session.exists())
-    {
-        saveSessionAs (mc);
-        return;
-    }
-    File stemsFolder = session.getChildFile ("Stems");
-    
-    std::unique_ptr<XmlElement> xml (new XmlElement ("NewMixerSession"));
-    xml->setAttribute ("SessionName", session.getFileName());
-
-    std::unique_ptr<XmlElement> xmlTracks (new XmlElement ("Tracks"));
-    auto& tracks = mc->getTracks();
-    copyTrackFiles (mc, tracks, stemsFolder);
-    saveTracksToXml (tracks, xmlTracks.get());
-    xml->addChildElement (xmlTracks.release());
-
-    File saveFile (session.getChildFile (session.getFileName() + ".chow"));
-    xml->writeToFile (saveFile, {});
 }
 
 void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& tracks, const File stemsFolder)
@@ -264,36 +294,4 @@ void SessionManager::saveAutomationToXml (Track* track, XmlElement* xmlTrack)
 
         xmlTrack->addChildElement (xmlAutomation.release());
     }
-}
-
-void SessionManager::saveSessionAs (MainComponent* mc, File* sessionFolder)
-{
-#if JUCE_ANDROID
-    return;
-#endif
-
-    if (sessionFolder == nullptr)
-    {
-        FileChooser nativeFileSaver (String ("Save Session As"), {}, {}, true);
-
-        if (nativeFileSaver.browseForFileToSave (true))
-        {
-            sessionFolder = new File (nativeFileSaver.getResult().withFileExtension ({}));
-        }
-        else
-            return;
-    }
-
-    if (! sessionFolder->exists())
-    {
-        sessionFolder->createDirectory();
-        
-        File stemsFolder (sessionFolder->getChildFile ("Stems"));
-        stemsFolder.createDirectory();
-
-        mc->setSessionFile (*sessionFolder);
-        saveSession (mc);
-    }
-
-    //delete sessionFolder;
 }

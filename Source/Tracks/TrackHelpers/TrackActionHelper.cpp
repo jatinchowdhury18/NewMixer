@@ -48,7 +48,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::solo:
-        track->soloSelectedTrack();
+        track->getListeners().call (&Track::Listener::soloSelectedTrack);
         return;
 
     case TrackCmds::recordAutomation:
@@ -76,11 +76,11 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::deleteTrack:
-        track->deleteSelectedTrack();
+        track->getListeners().call (&Track::Listener::deleteSelectedTrack);
         return;
 
     case TrackCmds::duplicateTrack:
-        track->duplicateSelectedTrack();
+        track->getListeners().call (&Track::Listener::duplicateSelectedTrack);
         return;
 
     default: //Change Colour
@@ -137,7 +137,7 @@ void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
     e.source.enableUnboundedMouseMovement (true);
     const float initValue = track->getDiameter();
     const int curY = e.getDistanceFromDragStartY();
-    auto& lastDragLocation = track->getLastDrag();
+    auto lastDragLocation = track->getLastDrag();
 
     if (curY < lastDragLocation)
         setSizeConstrained (track, initValue, 1.0f); //up
@@ -145,7 +145,7 @@ void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
         setSizeConstrained (track, initValue, -1.0f); //down
 
     track->setDragging (true);
-    lastDragLocation = curY;
+    track->setLastDrag (curY);
 
     track->resized();
 }
@@ -225,7 +225,7 @@ void TrackActionHelper::changeColour (Track* track, int index)
 { 
     track->setTrackColour (track->getColours().getColour (index));
     track->repaint();
-    track->trackColourChanged();
+    track->getListeners().call (&Track::Listener::trackColourChanged, track, index);
 }
 
 //@TODO: Unit tests for constraint functions

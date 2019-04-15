@@ -93,6 +93,10 @@
               file="Source/Processors/InputTrackProcessor.cpp"/>
         <FILE id="a6kKBU" name="InputTrackProcessor.h" compile="0" resource="0"
               file="Source/Processors/InputTrackProcessor.h"/>
+        <FILE id="Z5GijO" name="MasterTrackProcessor.cpp" compile="1" resource="0"
+              file="Source/Processors/MasterTrackProcessor.cpp"/>
+        <FILE id="j59tJ1" name="MasterTrackProcessor.h" compile="0" resource="0"
+              file="Source/Processors/MasterTrackProcessor.h"/>
         <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
         <FILE id="Fbtunr" name="TrackBase.cpp" compile="1" resource="0" file="Source/Processors/TrackBase.cpp"/>
         <FILE id="Rw8iSM" name="TrackBase.h" compile="0" resource="0" file="Source/Processors/TrackBase.h"/>
@@ -118,8 +122,6 @@
               file="Source/Tracks/AutomationPath.cpp"/>
         <FILE id="kwGGr6" name="AutomationPath.h" compile="0" resource="0"
               file="Source/Tracks/AutomationPath.h"/>
-        <FILE id="Vl1s91" name="MasterTrack.cpp" compile="1" resource="0" file="Source/Tracks/MasterTrack.cpp"/>
-        <FILE id="tngBIE" name="MasterTrack.h" compile="0" resource="0" file="Source/Tracks/MasterTrack.h"/>
         <FILE id="GrRKh8" name="Track.cpp" compile="1" resource="0" file="Source/Tracks/Track.cpp"/>
         <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
         <FILE id="IkwDkf" name="TrackMeter.cpp" compile="1" resource="0" file="Source/Tracks/TrackMeter.cpp"/>

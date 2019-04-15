@@ -85,7 +85,8 @@ public:
     void setDiameter (float newD) { diameter = newD; }
     float getDiameter() { return diameter; }
 
-    int& getLastDrag() { return lastDragLocation; }
+    int getLastDrag() const { return lastDragLocation; }
+    void setLastDrag (int drag) { lastDragLocation = drag; }
     void setDragging (bool drag) { isDragging = drag; }
 
     String getName() const { return name; }
@@ -107,10 +108,7 @@ public:
 
     void addListener (Listener* listener) { listeners.add (listener); }
     void removeListener (Listener* listener) { listeners.remove (listener); }
-    void deleteSelectedTrack() { listeners.call (&Track::Listener::deleteSelectedTrack); }
-    void duplicateSelectedTrack() { listeners.call (&Track::Listener::duplicateSelectedTrack); }
-    void soloSelectedTrack() { listeners.call (&Track::Listener::soloSelectedTrack); }
-    void trackColourChanged() { listeners.call (&Track::Listener::trackColourChanged, this, index); }
+    ListenerList<Listener>& getListeners() { return listeners; }
 
     void setRelativePosition (float x, float y) { relX = x; relY = y; }
     float getRelX() const { return relX; }

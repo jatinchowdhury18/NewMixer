@@ -1,16 +1,16 @@
-#ifndef MASTERTRACK_H_INCLUDED
-#define MASTERTRACK_H_INCLUDED
+#ifndef MASTERTRACKPROCESSOR_H_INCLUDED
+#define MASTERTRACKPROCESSOR_H_INCLUDED
 
 #include "Track.h"
 
-class MasterTrack : public AudioProcessorGraph
+class MasterTrackProcessor : public AudioProcessorGraph
 {
 public:
     using AudioGraphIOProcessor = AudioProcessorGraph::AudioGraphIOProcessor;
     using Node = AudioProcessorGraph::Node;
 
-    MasterTrack (OwnedArray<Track>& tracks);
-    ~MasterTrack();
+    MasterTrackProcessor (OwnedArray<Track>& tracks);
+    ~MasterTrackProcessor();
 
     AudioDeviceManager& getDeviceManager() { return deviceManager; }
 
@@ -34,7 +34,7 @@ private:
 
     bool isPlaying = true;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrack)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrackProcessor)
 };
 
-#endif //MASTERTRACK_H_INCLUDED
+#endif //MASTERTRACKPROCESSOR_H_INCLUDED

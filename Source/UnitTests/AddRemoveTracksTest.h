@@ -9,9 +9,8 @@ public:
     void runTest() override
     {
         MainComponent main;
-
+        
         beginTest ("Adding Tracks");
-
         for (int i = 0; i < MainComponent::numTestTracks; i++)
             ActionHelper::addRecordingTrack (&main, 0, 0);
 
@@ -20,11 +19,9 @@ public:
         beginTest ("Removing tracks");
         for (int i = MainComponent::numTestTracks - 1; i >= 0; i--)
         {
-            main.tracks[i]->setSelected (true);
-            main.tracks[i]->deleteSelectedTrack();
+            TrackActionHelper::doKeyPressed (main.tracks[i], KeyPress::createFromDescription ("DELETE"));
             ActionHelper::togglePlay (&main);
         }
-
         main.deleteSelectedTrack();
     }
 };
