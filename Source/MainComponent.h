@@ -7,6 +7,7 @@
 #include "Settings.h"
 #include "Timeline/WaveformViewer.h"
 #include "AutomationPath.h"
+#include "Exporting/ExportWindow.h"
 
 namespace MainConstants
 {
@@ -35,6 +36,7 @@ public:
         saveSessionAs,
         newRecordTrack,
         newFileTrack,
+        exportSession,
     };
 
     //==============================================================================
@@ -53,7 +55,9 @@ public:
     MasterTrackProcessor* getMaster() { return master.get(); }
     Colour getNextColour() { return trackColours.getColour (tracks.size()); }
     WaveformViewer* getWaveform() { return waveformView.get(); }
+    std::unique_ptr<ExportWindow>& getExportWindow() { return exportWindow; }
 
+    int64 getSessionLength() const;
     File getSessionFile() const { return sessionDirectory; }
     void setSessionFile (File session) { sessionDirectory = session; }
 
@@ -83,6 +87,8 @@ private:
     OwnedArray<AutomationPath> autoPaths;
 
     std::unique_ptr<WaveformViewer> waveformView;
+
+    std::unique_ptr<ExportWindow> exportWindow;
 
     TrackColours trackColours;
     std::unique_ptr<TooltipWindow> tooltipWindow;

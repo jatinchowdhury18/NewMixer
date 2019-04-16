@@ -125,6 +125,14 @@ bool MainComponent::keyPressed (const KeyPress& key)
     return ActionHelper::doKeyPressed (this, key);
 }
 
+int64 MainComponent::getSessionLength() const
+{
+    if (tracks.isEmpty())
+        return 0;
+
+    return tracks.getFirst()->getProcessor()->getLengthSamples();
+}
+
 //=====================================================
 #if JUCE_DEBUG //Unit test declarations
 #include "UnitTests/PlayTest.h"

@@ -3,6 +3,36 @@
 
 #include "Track.h"
 
+struct ExportInfo
+{
+public:
+    enum ExportFormat
+    {
+        WAV = 0x3232,
+        AIFF,
+    };
+
+    static constexpr int AIFFBitDepths[2] = { 24, 16 };
+    static constexpr int WAVBitDepths[3] = { 32, 24, 16 };
+
+    ExportFormat format = WAV;
+    int bitDepth = 32;
+    double sampleRate = 0; //@TODO
+    File exportFile;
+    int samplesPerBlock = 256;
+    int64 lengthSamples;
+
+    static String getStringForFormat (ExportFormat format)
+    {
+        if (format == WAV)
+            return "wav";
+        else if (format == AIFF)
+            return "aiff";
+        
+        return "";
+    }
+};
+
 class MasterTrackProcessor : public AudioProcessorGraph
 {
 public:
@@ -22,17 +52,37 @@ public:
     void addTrack (Track* track);
     void removeTrack (Track* track);
 
+    void prepareToExport (ExportInfo exportInfo);
+    void restoreAfterExporting();
+    AudioSampleBuffer getAudioBuffer (int bufferLength);
+    void exportToFile (ExportInfo exportInfo, ThreadWithProgressWindow* progress);
+
+    class Listener
+    {
+    public:
+        virtual ~Listener() {}
+        virtual void exportCompleted() {}
+    };
+
+    void addListener (Listener* listener) { exportListeners.add (listener); }
+    void removeListener (Listener* listener) { exportListeners.remove (listener); }
+
 private:
     void connectTracks();
 
+    ListenerList<Listener> exportListeners;
+
+    AudioFormatManager formatManager;
     AudioDeviceManager deviceManager;
     AudioProcessorPlayer player;
 
     Node::Ptr audioOutputNode;
     Node::Ptr audioInputNode;
     ReferenceCountedArray<Node> trackNodes;
+    OwnedArray<Track>& tracks;
 
     bool isPlaying = true;
+    bool isExporting = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MasterTrackProcessor)
 };

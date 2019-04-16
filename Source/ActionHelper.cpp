@@ -19,6 +19,7 @@ void ActionHelper::rightClickMenu (MainComponent* mc, const MouseEvent& e)
     m.addItem (Cmds::openSession, String ("Open Session [CMD + O]"));
     m.addItem (Cmds::saveSession, String ("Save Session [CMD +S]"));
     m.addItem (Cmds::saveSessionAs, String ("Save Session As [CMD + SHIFT + S]"));
+    m.addItem (Cmds::exportSession, String ("Export Session [CMD + E]"));
     //m.addItem (Cmds::newRecordTrack, String ("New Recording Track"));
 
     m.showMenuAsync (PopupMenu::Options(), ModalCallbackFunction::forComponent (rightClickCallback, mc, Point<int> (e.x, e.y)));
@@ -53,6 +54,10 @@ void ActionHelper::rightClickCallback (int result, MainComponent* mc, Point<int>
 
     case Cmds::newRecordTrack:
         ActionHelper::addRecordingTrack (mc, p.x, p.y);
+        return;
+
+    case Cmds::exportSession:
+        exportSession (mc);
         return;
 
     default:
@@ -126,6 +131,11 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
     else if (key == KeyPress::createFromDescription ("CMD + L")) //loop mode
     {
         ActionHelper::toggleLoop (mc);
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + E")) //export session
+    { 
+        exportSession (mc);
         return true;
     }
 
@@ -351,4 +361,14 @@ void ActionHelper::loadLocalTracks (MainComponent* mc, String tracksToLoad)
     {
         setupTrack (BinaryData::test_drums_wav, BinaryData::test_drums_wavSize, String ("Drums"), String ("Drum"));
     }
+}
+
+void ActionHelper::exportSession (MainComponent* mc)
+{
+    if (mc->getMaster()->getIsPlaying())
+        togglePlay (mc);
+    
+    rewind (mc);
+    
+    mc->getExportWindow().reset (new ExportWindow (mc->getMaster(), mc->getSessionLength(), mc->getSessionFile()));
 }

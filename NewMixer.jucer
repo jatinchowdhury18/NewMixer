@@ -27,6 +27,11 @@
       </GROUP>
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
+      <GROUP id="{E57E395B-F612-6274-CEAA-A92EA6363804}" name="Exporting">
+        <FILE id="aj5I8g" name="ExportWindow.cpp" compile="1" resource="0"
+              file="Source/Exporting/ExportWindow.cpp"/>
+        <FILE id="fDubs6" name="ExportWindow.h" compile="0" resource="0" file="Source/Exporting/ExportWindow.h"/>
+      </GROUP>
       <GROUP id="{2F81838E-E7E3-AE43-72F1-7D2B397D1C58}" name="UnitTests">
         <FILE id="cqn7QJ" name="AddRemoveTracksTest.h" compile="0" resource="0"
               file="Source/UnitTests/AddRemoveTracksTest.h"/>
@@ -38,10 +43,6 @@
         <FILE id="RTVWym" name="TrackMoveTest.h" compile="0" resource="0" file="Source/UnitTests/TrackMoveTest.h"/>
         <FILE id="Tyhf14" name="TrackNameTest.h" compile="0" resource="0" file="Source/UnitTests/TrackNameTest.h"/>
       </GROUP>
-      <FILE id="BlMfn4" name="SessionManager.cpp" compile="1" resource="0"
-            file="Source/SessionManager.cpp"/>
-      <FILE id="fuCz6z" name="SessionManager.h" compile="0" resource="0"
-            file="Source/SessionManager.h"/>
       <GROUP id="{0E5CFD79-976A-F180-1D3F-50D60AAF4405}" name="Timeline">
         <FILE id="zoscis" name="Marker.cpp" compile="1" resource="0" file="Source/Timeline/Marker.cpp"/>
         <FILE id="uWj5C7" name="Marker.h" compile="0" resource="0" file="Source/Timeline/Marker.h"/>
@@ -54,9 +55,6 @@
         <FILE id="P3HARG" name="WaveformViewer.h" compile="0" resource="0"
               file="Source/Timeline/WaveformViewer.h"/>
       </GROUP>
-      <FILE id="WCzuLe" name="ActionHelper.cpp" compile="1" resource="0"
-            file="Source/ActionHelper.cpp"/>
-      <FILE id="PtVFiB" name="ActionHelper.h" compile="0" resource="0" file="Source/ActionHelper.h"/>
       <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
         <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
         <FILE id="um2iCS" name="Settings.cpp" compile="1" resource="0" file="Source/GUI Extras/Settings.cpp"/>
@@ -127,6 +125,13 @@
         <FILE id="IkwDkf" name="TrackMeter.cpp" compile="1" resource="0" file="Source/Tracks/TrackMeter.cpp"/>
         <FILE id="IhxrcD" name="TrackMeter.h" compile="0" resource="0" file="Source/Tracks/TrackMeter.h"/>
       </GROUP>
+      <FILE id="WCzuLe" name="ActionHelper.cpp" compile="1" resource="0"
+            file="Source/ActionHelper.cpp"/>
+      <FILE id="PtVFiB" name="ActionHelper.h" compile="0" resource="0" file="Source/ActionHelper.h"/>
+      <FILE id="BlMfn4" name="SessionManager.cpp" compile="1" resource="0"
+            file="Source/SessionManager.cpp"/>
+      <FILE id="fuCz6z" name="SessionManager.h" compile="0" resource="0"
+            file="Source/SessionManager.h"/>
       <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>

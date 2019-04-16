@@ -62,7 +62,7 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
     }
     else
     {
-        auto samplesUnder = reader->lengthInSamples - readerStartSample;
+        auto samplesUnder = jmax<int64> (reader->lengthInSamples - readerStartSample, 0);
         reader->read (&buffer, 0, (int) samplesUnder, readerStartSample, true, true);
 
         if (looping)
