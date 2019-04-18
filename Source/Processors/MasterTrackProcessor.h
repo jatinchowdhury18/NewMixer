@@ -12,9 +12,6 @@ public:
         AIFF,
     };
 
-    static constexpr int AIFFBitDepths[2] = { 24, 16 };
-    static constexpr int WAVBitDepths[3] = { 32, 24, 16 };
-
     ExportFormat format = WAV;
     int bitDepth = 32;
     double sampleRate = 0; //@TODO

@@ -13,8 +13,8 @@ MainComponent::MainComponent (String mode)
 
     waveformView.reset (new WaveformViewer (tracks));
     addAndMakeVisible (waveformView.get());
-
-    if (File (mode.unquoted()).exists())
+    
+    if (mode.contains ("chow") && File (mode.unquoted()).exists())
     {
         const File fileToOpen = File (mode.unquoted());
         if (fileToOpen.hasFileExtension (".chow"))

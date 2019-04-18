@@ -82,9 +82,9 @@ void ExportComponent::initSettingsComponents()
     std::function<void()> bitDepthLamda = [this]
     {
         if (exportInfo.format == ExportInfo::ExportFormat::WAV)
-            exportInfo.bitDepth = ExportInfo::WAVBitDepths[bitDepthBox.getSelectedId() - 1];
+            exportInfo.bitDepth = WavBitDepths[bitDepthBox.getSelectedItemIndex()].getIntValue();
         if (exportInfo.format == ExportInfo::ExportFormat::AIFF)
-            exportInfo.bitDepth = ExportInfo::AIFFBitDepths[bitDepthBox.getSelectedId() - 1];
+            exportInfo.bitDepth = AiffBitDepths[bitDepthBox.getSelectedItemIndex()].getIntValue();
     };
 
     setupBox (bitDepthBox, WavBitDepths, bitDepthLamda);
@@ -134,9 +134,10 @@ void ExportComponent::startExport()
 {
     File defaultExportFile = sessionFile.exists() ? sessionFile.getChildFile (sessionFile.getFileName()) : File();
     auto formatString = ExportInfo::getStringForFormat (exportInfo.format);
+    
     FileChooser nativeFileChooser (String ("Export File"), defaultExportFile, "*." + formatString);
 
-    if (nativeFileChooser.browseForFileToOpen())
+    if (nativeFileChooser.browseForFileToSave (true))
     {
         exportInfo.exportFile = nativeFileChooser.getResult().withFileExtension (formatString);
 
@@ -150,9 +151,10 @@ void ExportComponent::exportCompleted()
 }
 
 ExportProgressWindow::ExportProgressWindow (MasterTrackProcessor* master, ExportComponent* comp) :
+    ThreadWithProgressWindow (String ("Exporting..."), true, false, 1000000),
     masterProc (master),
-    exportComp (comp),
-    ThreadWithProgressWindow (String ("Exporting..."), true, false, 1000000)
+    exportComp (comp)
+
 {
     getAlertWindow()->getLookAndFeel().setColour (AlertWindow::backgroundColourId, Colours::antiquewhite);
     getAlertWindow()->getLookAndFeel().setColour (AlertWindow::outlineColourId, Colours::dodgerblue);
