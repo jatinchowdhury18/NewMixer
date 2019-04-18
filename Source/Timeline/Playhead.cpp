@@ -38,8 +38,11 @@ void Playhead::mouseMove (const MouseEvent& e)
 void Playhead::mouseDrag (const MouseEvent& e)
 {
     mouseIsDragging = true;
-    pos = e.x;
 
+    if (procs.isEmpty())
+        return; //Nothing to do!!
+
+    pos = e.x;
     setMouseCursor (MouseCursor::LeftRightResizeCursor);
 
     pos = jmax (e.x, 0);
@@ -52,6 +55,9 @@ void Playhead::mouseDrag (const MouseEvent& e)
 void Playhead::mouseUp (const MouseEvent& e)
 {
     mouseIsDragging = false;
+
+    if (procs.isEmpty())
+        return; //Nothing to do!!
 
     listeners.call (&Playhead::Listener::playheadMoving, -1);
 

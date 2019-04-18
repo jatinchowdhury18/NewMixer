@@ -27,7 +27,7 @@ class AutomationPath;
 class Track : public Component,
               public SettableTooltipClient,
               public Playhead::Listener,
-              private Timer,
+              public Timer,
               private TrackBase::Listener,
               private TrackRenameComponent::Listener
 {
@@ -117,6 +117,7 @@ public:
     void setIndex (int ind) { index = ind; }
 
     void setAutoPath (AutomationPath* ap) { autoPath = ap; }
+    void renderAutomationExport();
 
 private:
 #if JUCE_DEBUG
@@ -124,7 +125,6 @@ private:
 #endif
 
     void timerCallback() override;
-
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;

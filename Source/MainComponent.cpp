@@ -13,8 +13,8 @@ MainComponent::MainComponent (String mode)
 
     waveformView.reset (new WaveformViewer (tracks));
     addAndMakeVisible (waveformView.get());
-
-    if (File (mode.unquoted()).exists())
+    
+    if (mode.contains ("chow") && File (mode.unquoted()).exists())
     {
         const File fileToOpen = File (mode.unquoted());
         if (fileToOpen.hasFileExtension (".chow"))
@@ -123,6 +123,14 @@ void MainComponent::mouseDoubleClick (const MouseEvent& e)
 bool MainComponent::keyPressed (const KeyPress& key)
 {
     return ActionHelper::doKeyPressed (this, key);
+}
+
+int64 MainComponent::getSessionLength() const
+{
+    if (tracks.isEmpty())
+        return 0;
+
+    return tracks.getFirst()->getProcessor()->getLengthSamples();
 }
 
 //=====================================================

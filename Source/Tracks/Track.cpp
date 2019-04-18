@@ -122,6 +122,23 @@ void Track::timerCallback()
     }
 }
 
+void Track::renderAutomationExport()
+{
+    if (! autoHelper->isRecorded())
+        return;
+
+    if (playheadPos >= 0)
+        autoHelper->getPoint (relX, relY, diameter, playheadPos);
+    else
+        autoHelper->getPoint (relX, relY, diameter, processor->getStartSample());
+
+    const auto* parent = getParentComponent();
+    if (parent != nullptr)
+        processor->trackMoved ((int) (relX * parent->getWidth()) + width/2,
+                               (int) (relY * parent->getHeight()) + width/2,
+                               (int) diameter, parent->getWidth(), parent->getHeight());
+}
+
 void Track::newLoop()
 {
     autoHelper->setRecordingStatus();

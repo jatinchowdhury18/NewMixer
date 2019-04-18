@@ -1,8 +1,11 @@
 #include "MasterTrackProcessor.h"
-#include "InputTrackProcessor.h"
+#include "TrackProcessor.h"
 
-MasterTrackProcessor::MasterTrackProcessor (OwnedArray<Track>& tracks)
+MasterTrackProcessor::MasterTrackProcessor (OwnedArray<Track>& tracks) :
+    tracks (tracks)
 {
+    formatManager.registerBasicFormats();
+
     deviceManager.initialiseWithDefaultDevices (2, 2);
     deviceManager.addAudioCallback (&player);
 
@@ -40,7 +43,7 @@ void MasterTrackProcessor::connectTracks()
 
 void MasterTrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer)
 {
-    if (! isPlaying)
+    if (! (isPlaying || isExporting))
     {
         buffer.clear();
         return;
@@ -83,4 +86,115 @@ void MasterTrackProcessor::removeTrack (Track* track)
 
     removeNode (nodeToDelete.get());
     nodeToDelete.reset();
+}
+
+void MasterTrackProcessor::prepareToExport (ExportInfo exportInfo)
+{
+    deviceManager.removeAudioCallback (&player);
+
+    AudioDeviceManager::AudioDeviceSetup setup;
+    deviceManager.getAudioDeviceSetup (setup);
+
+    for (auto track : tracks)
+        track->stopTimer();
+
+    setNonRealtime (true);
+    prepareToPlay (setup.sampleRate, exportInfo.samplesPerBlock);
+
+    isExporting = true;
+
+    // this is needed to build the rendering sequence first,
+    // before the first actual buffer is processed
+    getAudioBuffer (exportInfo.samplesPerBlock);
+}
+
+void MasterTrackProcessor::restoreAfterExporting()
+{
+    isExporting = false;
+
+    releaseResources();
+    setNonRealtime (false);
+
+    AudioDeviceManager::AudioDeviceSetup setup;
+    deviceManager.getAudioDeviceSetup (setup);
+    prepareToPlay (setup.sampleRate, setup.bufferSize);
+
+    deviceManager.addAudioCallback (&player);
+
+    for (auto track : tracks)
+        track->startTimer (track->getAutoHelper()->timerInterval);
+
+    exportListeners.call (&MasterTrackProcessor::Listener::exportCompleted);
+    exportListeners.clear();
+}
+
+AudioSampleBuffer MasterTrackProcessor::getAudioBuffer (int bufferLength)
+{
+    AudioSampleBuffer buffer (getTotalNumOutputChannels(), bufferLength);
+    MidiBuffer midiMessages;
+
+    buffer.clear();
+    processBlock (buffer, midiMessages);
+
+    return buffer;
+}
+
+void MasterTrackProcessor::exportToFile (ExportInfo exportInfo, ThreadWithProgressWindow* progress)
+{
+    const int numBlocksEnd = 5; //num blocks silence buffer before ending??
+    const int64 timeOutSamples = (int64) getSampleRate(); //1 second forced timeout
+    const float exportSilence = 0.0001f; //-80 dB
+
+    FileOutputStream* fileStream (exportInfo.exportFile.createOutputStream());
+    AudioFormat* format = formatManager.findFormatForFileExtension (ExportInfo::getStringForFormat (exportInfo.format));
+    std::unique_ptr<AudioFormatWriter> writer (format->createWriterFor (fileStream, getSampleRate(),
+                                                                        getTotalNumOutputChannels(),
+                                                                        exportInfo.bitDepth, {}, 0));
+
+    AudioSampleBuffer buffer;
+
+    int64 currentSample = 0;
+    int numBlocksSilent = 0;
+    while (numBlocksSilent <= numBlocksEnd)
+    {
+        buffer = getAudioBuffer (exportInfo.samplesPerBlock);
+
+        //Handle tail after last clip end
+        if (currentSample >= (exportInfo.lengthSamples - exportInfo.samplesPerBlock * numBlocksEnd))
+        {
+            if (buffer.getMagnitude (0, exportInfo.samplesPerBlock) < exportSilence)
+            {
+                if (numBlocksSilent == numBlocksEnd)
+                    buffer.applyGainRamp (0, exportInfo.samplesPerBlock, 1.0f, 0.0f); //fade out last buffer
+
+                numBlocksSilent++;
+            }
+            else if (numBlocksSilent < numBlocksEnd) //reset count if output goes back above -80dB
+                numBlocksSilent = 0;
+
+            if (currentSample > exportInfo.lengthSamples + timeOutSamples) //Force time out
+            {
+                buffer.applyGainRamp (0, exportInfo.samplesPerBlock, 1.0f, 0.0f);
+                numBlocksSilent = numBlocksEnd + 1;
+            }
+        }
+
+        writer->writeFromAudioSampleBuffer (buffer, 0, exportInfo.samplesPerBlock);
+
+        currentSample += exportInfo.samplesPerBlock;
+
+        //@TODO move to own function??
+        for (auto node : trackNodes)
+            dynamic_cast<TrackProcessor*> (node->getProcessor())->setStartSample (currentSample);
+
+        for (auto track : tracks)
+            track->renderAutomationExport();
+
+        progress->setProgress ((double) currentSample / exportInfo.lengthSamples);
+    }
+
+    // Process 1 extra block of data once stopped to allow fade variables to update
+    
+    //globalTimer.setPlaying (false, true);
+    buffer = getAudioBuffer (exportInfo.samplesPerBlock);
 }

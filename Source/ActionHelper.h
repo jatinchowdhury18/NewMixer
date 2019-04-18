@@ -29,6 +29,8 @@ public:
 
     static void loadLocalTracks (MainComponent* mc, String tracksToLoad);
 
+    static void exportSession (MainComponent* mc);
+
 private:
     static bool validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc);
 
