@@ -1,4 +1,5 @@
 #include "Settings.h"
+#include "WindowHelper.h"
 
 SettingsWindow::SettingsWindow (const String& name, AudioDeviceManager& manager)
     : DocumentWindow (name, Desktop::getInstance().getDefaultLookAndFeel()
@@ -7,14 +8,10 @@ SettingsWindow::SettingsWindow (const String& name, AudioDeviceManager& manager)
 {
     settings.reset (new AudioSettings (manager));
 
-    setUsingNativeTitleBar (true);
-    setContentOwned (settings.get(), true);
-
-
     setResizable (true, false);
     setResizeLimits (300, 250, 10000, 10000);
-    centreWithSize (getWidth(), getHeight());
 
+    WindowHelper::setupDefaultDocumentWindow (*this, settings.get());
     setVisible (true);
 }
 

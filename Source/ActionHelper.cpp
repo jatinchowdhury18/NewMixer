@@ -1,7 +1,7 @@
 #include "ActionHelper.h"
 #include "Tracks/TrackHelpers/SoloHelper.h"
 #include "TrackHelpers/TrackActionHelper.h"
-#include "SessionManager.h"
+#include "Data Managing/SessionManager.h"
 
 enum
 {
