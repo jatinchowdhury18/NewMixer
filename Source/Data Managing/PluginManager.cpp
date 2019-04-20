@@ -20,6 +20,7 @@ void PluginManager::pluginScan()
     {
 
         auto* format = pluginFormatManager.getFormat (i);
+        std::cout << format->getName() <<std::endl;
 
         //Folder for testing plugins
         File testPluginsFolder = File::getCurrentWorkingDirectory();
@@ -27,12 +28,13 @@ void PluginManager::pluginScan()
             testPluginsFolder = testPluginsFolder.getParentDirectory();
 
     #if JUCE_WINDOWS
-        testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins\\Win");    
+        testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins").getChildFile ("Win");    
     #endif
     #if JUCE_MAC
-        testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins\\Mac");
+        testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins").getChildFile ("Mac");
     #endif
         
+        std::cout << testPluginsFolder.getFullPathName() << std::endl;
         FileSearchPath defaultSearchpaths = FileSearchPath (testPluginsFolder.getFullPathName());
         StringArray results = pluginFormatManager.getFormat (i)->searchPathsForPlugins (defaultSearchpaths, true);
 

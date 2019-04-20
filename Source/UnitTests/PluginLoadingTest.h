@@ -13,12 +13,25 @@ public:
         PluginManager manager;
         auto& pluginList = manager.getPluginList();
 
-        expectEquals (pluginList.getNumTypes(), 1, "Incorrect number of plugin types");
+        expect (pluginList.getNumTypes() > 0, "No plugins found!");
 
-        auto plugins = pluginList.createTree (KnownPluginList::SortMethod::defaultOrder)->plugins;
+        std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
+        auto plugins = pluginTree->plugins;
 
-        expectEquals<String> (plugins[0]->name, "CHOWTapeModel", "Incorrect plugin name");
-        expectEquals<String> (plugins[0]->pluginFormatName, "VST", "Incorrect plugin format");
+        int numTestPluginsFound = 0;
+        for (const auto plugin : plugins)
+        {
+            std::cout << plugin->name << std::endl;
+
+            if (plugin->name == "CHOWTapeModel")
+                numTestPluginsFound++;
+            else
+                continue;
+
+            auto formatName = plugin->pluginFormatName;
+            expect (formatName == "VST" || formatName == "VST3", "Incorrect plugin format");
+        }
+        expect (numTestPluginsFound > 0, "Test plugin not found");
     }
 };
 
