@@ -1,25 +1,52 @@
 #include "PluginManager.h"
 
+#include <unordered_map>
+
 PluginManager::PluginManager()
 {
     pluginFormatManager.addDefaultFormats();
-    //pluginFormatManager.addFormat (new audioworks::AudioWorksSynthsAudioPluginFormat());
 
     // Set up the known plugin list
-    //knownPluginList.setCustomScanner (new audioworks::ChildProcessPluginScanner());
     pluginList.addChangeListener (this);
-
-    // Parse saved known plugins list
-    //auto fileName = getSaveFolderPath().getChildFile (DataManagerConstants::knownPluginListFilename);
-
-    //knownPluginFileLock.enterRead();
-    //ScopedPointer<XmlElement> element = XmlDocument::parse (fileName);
-    //knownPluginFileLock.exitRead();
-
-    //if (element != nullptr && element->hasTagName (DataManagerConstants::knownPluginsId))
-    //    knownPluginList.recreateFromXml (*element);
+    pluginScan();
 
     pluginsWindow.reset (new PluginListWindow (pluginFormatManager, pluginList));
+}
+
+void PluginManager::pluginScan()
+{
+    std::unordered_map<String, AudioPluginFormat*> allPlugins;
+    for (int i = 0; i < pluginFormatManager.getNumFormats(); i++)
+    {
+
+        auto* format = pluginFormatManager.getFormat (i);
+
+        //Folder for testing plugins
+        File testPluginsFolder = File::getCurrentWorkingDirectory();
+        while (testPluginsFolder.getFileName() != "NewMixer")
+            testPluginsFolder = testPluginsFolder.getParentDirectory();
+
+    #if JUCE_WINDOWS
+        testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins\\Win");    
+    #endif
+    #if JUCE_MAC
+        testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins\\Mac");
+    #endif
+        
+        FileSearchPath defaultSearchpaths = FileSearchPath (testPluginsFolder.getFullPathName());
+        StringArray results = pluginFormatManager.getFormat (i)->searchPathsForPlugins (defaultSearchpaths, true);
+
+        for (auto path : results)
+            allPlugins.emplace (path, format);
+    }
+
+    OwnedArray<PluginDescription> types; //this empty Array is needed as scanAndAddFile requires a reference to one
+    int index = 0;
+    for (auto path : allPlugins)
+    {
+        index++;
+        pluginList.scanAndAddFile (path.first, true, types, *path.second);
+    }
 }
 
 void PluginManager::showPluginListWindow()
@@ -30,3 +57,9 @@ void PluginManager::showPluginListWindow()
         pluginsWindow->toFront (true);
     }
 }
+
+#if JUCE_DEBUG
+#include "UnitTests/PluginLoadingTest.h"
+
+static PluginLoadingTest pluginTest;
+#endif

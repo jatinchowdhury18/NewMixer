@@ -44,6 +44,7 @@ script:
   - cd $TRAVIS_BUILD_DIR/
   - export PROJUCER=$PROJUCER_EXPORT
   - $PROJUCER --set-global-search-path $TRAVIS_OS_NAME defaultJuceModulePath  $TRAVIS_BUILD_DIR/JUCE/modules
+  - $PROJUCER --set-global-search-path $TRAVIS_OS_NAME vstLegacyPath $TRAVIS_BUILD_DIR/JUCE/VST2_SDK
   - $PROJUCER --resave NewMixer.jucer
   - cd $TRAVIS_BUILD_DIR/Builds/$BUILD_FOLDER/
 

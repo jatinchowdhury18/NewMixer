@@ -45,6 +45,8 @@
         <FILE id="DisqQw" name="AutomationTest.h" compile="0" resource="0"
               file="Source/UnitTests/AutomationTest.h"/>
         <FILE id="K1kQZI" name="PlayTest.h" compile="0" resource="0" file="Source/UnitTests/PlayTest.h"/>
+        <FILE id="R9Z3pc" name="PluginLoadingTest.h" compile="0" resource="0"
+              file="Source/UnitTests/PluginLoadingTest.h"/>
         <FILE id="Onpx0Z" name="ProcessorTest.h" compile="0" resource="0" file="Source/UnitTests/ProcessorTest.h"/>
         <FILE id="CILscM" name="SavingTest.h" compile="0" resource="0" file="Source/UnitTests/SavingTest.h"/>
         <FILE id="RTVWym" name="TrackMoveTest.h" compile="0" resource="0" file="Source/UnitTests/TrackMoveTest.h"/>
@@ -265,5 +267,6 @@
     <WINDOWS/>
     <OSX/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_ASIO="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_ASIO="1" JUCE_PLUGINHOST_VST="1"
+               JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"/>
 </JUCERPROJECT>

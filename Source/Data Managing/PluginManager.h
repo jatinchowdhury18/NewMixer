@@ -11,8 +11,10 @@ public:
     void changeListenerCallback (ChangeBroadcaster* /*source*/) override {}
 
     void showPluginListWindow();
+    KnownPluginList& getPluginList() { return pluginList; }
 
 private:
+    void pluginScan();
 
     AudioPluginFormatManager pluginFormatManager;
     KnownPluginList pluginList;
