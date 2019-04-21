@@ -29,6 +29,10 @@ BinaryData15.cpp
 #Visual Studio Code files
 .vscode/
 
+#Test Plugins
+*.dll
+*.vst3
+
 #Extra folders
 Demos
 Testing

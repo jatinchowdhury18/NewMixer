@@ -21,15 +21,13 @@ public:
         int numTestPluginsFound = 0;
         for (const auto plugin : plugins)
         {
-            std::cout << plugin->name << std::endl;
-
-            if (plugin->name == "CHOWTapeModel")
+            if (plugin->name == "CHOW")
                 numTestPluginsFound++;
             else
                 continue;
 
             auto formatName = plugin->pluginFormatName;
-            expect (formatName == "VST" || formatName == "VST3", "Incorrect plugin format");
+            expect (formatName == "VST" || formatName == "VST3" || formatName == "AudioUnit", "Incorrect plugin format");
         }
         expect (numTestPluginsFound > 0, "Test plugin not found");
     }

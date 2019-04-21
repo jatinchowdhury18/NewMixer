@@ -18,9 +18,7 @@ void PluginManager::pluginScan()
     std::unordered_map<String, AudioPluginFormat*> allPlugins;
     for (int i = 0; i < pluginFormatManager.getNumFormats(); i++)
     {
-
         auto* format = pluginFormatManager.getFormat (i);
-        std::cout << format->getName() <<std::endl;
 
         //Folder for testing plugins
         File testPluginsFolder = File::getCurrentWorkingDirectory();
@@ -34,7 +32,6 @@ void PluginManager::pluginScan()
         testPluginsFolder = testPluginsFolder.getChildFile ("TestPlugins").getChildFile ("Mac");
     #endif
         
-        std::cout << testPluginsFolder.getFullPathName() << std::endl;
         FileSearchPath defaultSearchpaths = FileSearchPath (testPluginsFolder.getFullPathName());
         StringArray results = pluginFormatManager.getFormat (i)->searchPathsForPlugins (defaultSearchpaths, true);
 

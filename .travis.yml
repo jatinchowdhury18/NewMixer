@@ -52,10 +52,26 @@ script:
   - if [[ $TRAVIS_JOB_NAME == 'osx' ]]; then xcodebuild -project NewMixer.xcodeproj/ -configuration Release | xcpretty -s -f `xcpretty-travis-formatter`; fi
   - if [[ $TRAVIS_JOB_NAME == 'win' ]]; then msbuild.exe -v:normal NewMixer.sln; fi
 
-  - |
+  - | # Unit testing!!
     if [[ $TRAVIS_JOB_NAME == 'unit-tests' ]]; then 
+      # Build debug mode
       xcodebuild -project NewMixer.xcodeproj/ -configuration Debug | xcpretty -s -f `xcpretty-travis-formatter`
-      cd build/Debug/NewMixer.app/Contents/MacOS
+
+      echo "Building Test plugin..."
+      cd $TRAVIS_BUILD_DIR/TestPlugins/CHOW/
+      $PROJUCER --resave CHOW.jucer
+      cd Builds/$BUILD_FOLDER/
+      xcodebuild -project CHOW.xcodeproj/ clean
+      xcodebuild -project CHOW.xcodeproj/ -configuration Release > /dev/null
+
+      echo "Copying test plugin"
+      cd $TRAVIS_BUILD_DIR/
+      cp -R $TRAVIS_BUILD_DIR/TestPlugins/CHOW/Builds/MacOSX/build/Release/CHOW.component $TRAVIS_BUILD_DIR/TestPlugins/Mac/CHOW.component
+      cp -R $TRAVIS_BUILD_DIR/TestPlugins/CHOW/Builds/MacOSX/build/Release/CHOW.vst $TRAVIS_BUILD_DIR/TestPlugins/Mac/CHOW.vst
+      cp -R $TRAVIS_BUILD_DIR/TestPlugins/CHOW/Builds/MacOSX/build/Release/CHOW.vst3 $TRAVIS_BUILD_DIR/TestPlugins/Mac/CHOW.vst3
+
+      echo "Running unit test"
+      cd $TRAVIS_BUILD_DIR/Builds/$BUILD_FOLDER/build/Debug/NewMixer.app/Contents/MacOS
       ./NewMixer --unit-tests
     fi
 
