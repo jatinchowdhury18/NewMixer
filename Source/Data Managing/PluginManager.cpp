@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+JUCE_IMPLEMENT_SINGLETON (PluginManager)
+
 PluginManager::PluginManager()
 {
     pluginFormatManager.addDefaultFormats();

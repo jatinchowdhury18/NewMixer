@@ -8,6 +8,7 @@
 #include "TrackMeter.h"
 #include "Timeline/Playhead.h"
 #include "AutomationPath.h"
+#include "GUI Extras/PluginWindow.h"
 
 namespace TrackConstants
 {
@@ -129,9 +130,9 @@ private:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
-#if JUCE_IOS || JUCE_ANDROID
     void mouseDoubleClick (const MouseEvent& e) override;
-    
+
+#if JUCE_IOS || JUCE_ANDROID   
     Array<MouseEvent> touches;
 #endif
 
@@ -162,6 +163,8 @@ private:
     AutomationPath* autoPath;
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
+
+    std::unique_ptr<PluginWindow> pluginWindow;
 
     JUCE_LEAK_DETECTOR (Track)
 };

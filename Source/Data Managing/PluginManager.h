@@ -7,11 +7,15 @@ class PluginManager : private ChangeListener
 {
 public:
     PluginManager();
+    ~PluginManager() { clearSingletonInstance(); }
 
     void changeListenerCallback (ChangeBroadcaster* /*source*/) override {}
 
     void showPluginListWindow();
     KnownPluginList& getPluginList() { return pluginList; }
+    AudioPluginFormatManager& getPluginFormatManager() { return pluginFormatManager; }
+
+    JUCE_DECLARE_SINGLETON (PluginManager, false)
 
 private:
     void pluginScan();
@@ -19,8 +23,6 @@ private:
     AudioPluginFormatManager pluginFormatManager;
     KnownPluginList pluginList;
     std::unique_ptr<PluginListWindow> pluginsWindow;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginManager)
 };
 
 #endif //PLUGINMANAGER_H_INCLUDED

@@ -2,12 +2,15 @@
 #include "TrackHelpers/TrackActionHelper.h"
 #include "ActionHelper.h"
 #include "Data Managing/SessionManager.h"
+#include "Data Managing/PluginManager.h"
 
 //==============================================================================
 MainComponent::MainComponent (String mode)
 {
     setSize (width, height);
     setWantsKeyboardFocus (true);
+
+    PluginManager::getInstance();
 
     master.reset (new MasterTrackProcessor (tracks));
 
@@ -55,7 +58,7 @@ void MainComponent::initSettings()
                 [this] { settingsWindow.reset (new SettingsWindow (String ("Settings"), master->getDeviceManager())); });
 
     setupButton (pluginsButton, "Plugins",
-                [this] { pluginManager.showPluginListWindow(); });
+                [this] { PluginManager::getInstance()->showPluginListWindow(); });
 }
 
 #if JUCE_IOS || JUCE_ANDROID

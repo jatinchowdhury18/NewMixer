@@ -245,6 +245,13 @@ void Track::mouseDown (const MouseEvent& e)
 #endif
 }
 
+#if JUCE_MAC || JUCE_WINDOWS
+void Track::mouseDoubleClick (const MouseEvent& /*e*/)
+{
+    pluginWindow.reset (new PluginWindow (processor->getPlugin()->createEditorIfNeeded()));
+}
+#endif
+
 #if JUCE_IOS || JUCE_ANDROID
 void Track::mouseDoubleClick (const MouseEvent& e)
 {

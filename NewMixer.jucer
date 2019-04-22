@@ -70,6 +70,9 @@
               file="Source/GUI Extras/PluginListWindow.cpp"/>
         <FILE id="XVAxsU" name="PluginListWindow.h" compile="0" resource="0"
               file="Source/GUI Extras/PluginListWindow.h"/>
+        <FILE id="ndHxlS" name="PluginWindow.cpp" compile="1" resource="0"
+              file="Source/GUI Extras/PluginWindow.cpp"/>
+        <FILE id="IgLKZC" name="PluginWindow.h" compile="0" resource="0" file="Source/GUI Extras/PluginWindow.h"/>
         <FILE id="um2iCS" name="Settings.cpp" compile="1" resource="0" file="Source/GUI Extras/Settings.cpp"/>
         <FILE id="lcWjtV" name="Settings.h" compile="0" resource="0" file="Source/GUI Extras/Settings.h"/>
         <FILE id="f4qKyC" name="TrackRenameWindow.cpp" compile="1" resource="0"
