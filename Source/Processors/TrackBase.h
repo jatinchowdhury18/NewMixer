@@ -7,6 +7,7 @@
 #include "Effects/DelayProcessor.h"
 #include "Effects/DistanceProcessor.h"
 #include "Effects/ReverbProcessor.h"
+#include "PluginEffectsChain.h"
 
 class TrackBase : public ProcessorBase
 {
@@ -56,7 +57,7 @@ public:
 
     void toggleLoop() { looping = ! looping; }
 
-    AudioPluginInstance* getPlugin() { return plugin.get(); }
+    PluginEffectsChain* getPluginChain() { return plugins.get(); }
 
 protected:
     ListenerList<Listener> listeners;
@@ -70,12 +71,11 @@ private:
 #endif
 
     Array<AudioProcessor*> processors;
+    std::unique_ptr<PluginEffectsChain> plugins;
     std::unique_ptr<GainProcessor> gainProcessor;
     std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
-
-    std::unique_ptr<AudioPluginInstance> plugin;
 
     void updateGain (int width);
     void updateDelay (int x, int y, int screenWidth, int screenHeight);

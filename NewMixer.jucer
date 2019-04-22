@@ -112,6 +112,10 @@
               file="Source/Processors/MasterTrackProcessor.cpp"/>
         <FILE id="j59tJ1" name="MasterTrackProcessor.h" compile="0" resource="0"
               file="Source/Processors/MasterTrackProcessor.h"/>
+        <FILE id="PzKNlX" name="PluginEffectsChain.cpp" compile="1" resource="0"
+              file="Source/Processors/PluginEffectsChain.cpp"/>
+        <FILE id="AyEYL4" name="PluginEffectsChain.h" compile="0" resource="0"
+              file="Source/Processors/PluginEffectsChain.h"/>
         <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
         <FILE id="Fbtunr" name="TrackBase.cpp" compile="1" resource="0" file="Source/Processors/TrackBase.cpp"/>
         <FILE id="Rw8iSM" name="TrackBase.h" compile="0" resource="0" file="Source/Processors/TrackBase.h"/>

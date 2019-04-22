@@ -20,17 +20,18 @@ TrackBase::TrackBase (String name) : ProcessorBase (name)
 
     //Test plugin
     auto& pluginList = PluginManager::getInstance()->getPluginList();
-    auto& pluginFormatManager = PluginManager::getInstance()->getPluginFormatManager();
 
     std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
-    auto plugins = pluginTree->plugins;
+    auto pluginArray = pluginTree->plugins;
 
-    String t = "Test??";
-    plugin.reset (pluginFormatManager.createPluginInstance (*plugins[0], getSampleRate(), getBlockSize(), t));
+    plugins->addPlugin (pluginArray[0]);
 }
 
 void TrackBase::initProcessors()
 {
+    plugins.reset (new PluginEffectsChain);
+    processors.add (plugins.get());
+
     gainProcessor.reset (new GainProcessor);
     processors.add (gainProcessor.get());
     
@@ -50,25 +51,16 @@ void TrackBase::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerB
     
     for (auto* processor : processors)
         processor->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
-
-    if (plugin.get() != nullptr)
-        plugin->prepareToPlay (sampleRate, maximumExpectedSamplesPerBlock);
 }
 
 void TrackBase::releaseResources()
 {
-    if (plugin.get() != nullptr)
-        plugin->releaseResources();
-
     for (auto* processor : processors)
         processor->releaseResources();
 }
 
 void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    if (plugin.get() != nullptr)
-        plugin->processBlock (buffer, midiMessages);
-
     for (auto* processor : processors)
         processor->processBlock (buffer, midiMessages);
     
