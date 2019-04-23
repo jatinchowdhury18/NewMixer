@@ -40,6 +40,8 @@ MainComponent::~MainComponent()
 {
     for (auto track : tracks)
         track->removeListener (this);
+
+    PluginManager::deleteInstance();
 }
 
 void MainComponent::initSettings()

@@ -17,14 +17,6 @@ namespace
 TrackBase::TrackBase (String name) : ProcessorBase (name)
 {
     initProcessors();
-
-    //Test plugin
-    auto& pluginList = PluginManager::getInstance()->getPluginList();
-
-    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
-    auto pluginArray = pluginTree->plugins;
-
-    plugins->addPlugin (pluginArray[0]);
 }
 
 void TrackBase::initProcessors()

@@ -29,9 +29,15 @@ void PluginEffectsChain::addPlugin (const PluginDescription* description, int in
     auto* plugin = pluginFormatManager.createPluginInstance (*description, getSampleRate(), getBlockSize(), errorMessage);
 
     if (index < 0)
+    {
         pluginList.add (plugin);
+        pluginList.getLast()->prepareToPlay (getSampleRate(), getBlockSize());
+    }
     else
+    {
         pluginList.insert (jmin (index, pluginList.size()-1), plugin);
+        pluginList[index]->prepareToPlay (getSampleRate(), getBlockSize());
+    }
 }
 
 void PluginEffectsChain::movePlugin (int oldIndex, int newIndex)
@@ -42,10 +48,11 @@ void PluginEffectsChain::movePlugin (int oldIndex, int newIndex)
 
 void PluginEffectsChain::removePlugin (int index)
 {
+    pluginList[index]->releaseResources();
     pluginList.remove (index);
 }
 
 AudioProcessorEditor* PluginEffectsChain::getPluginEditor (int index)
 {
-    return pluginList[index]->createEditorIfNeeded();
+    return pluginList[index]->createEditor();
 }

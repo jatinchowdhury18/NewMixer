@@ -145,6 +145,10 @@
         <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
         <FILE id="IkwDkf" name="TrackMeter.cpp" compile="1" resource="0" file="Source/Tracks/TrackMeter.cpp"/>
         <FILE id="IhxrcD" name="TrackMeter.h" compile="0" resource="0" file="Source/Tracks/TrackMeter.h"/>
+        <FILE id="dlpBGO" name="TrackPluginMenu.cpp" compile="1" resource="0"
+              file="Source/Tracks/TrackPluginMenu.cpp"/>
+        <FILE id="A4XebX" name="TrackPluginMenu.h" compile="0" resource="0"
+              file="Source/Tracks/TrackPluginMenu.h"/>
       </GROUP>
       <FILE id="WCzuLe" name="ActionHelper.cpp" compile="1" resource="0"
             file="Source/ActionHelper.cpp"/>

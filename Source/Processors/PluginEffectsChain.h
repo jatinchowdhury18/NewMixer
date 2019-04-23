@@ -16,6 +16,7 @@ public:
     void addPlugin (const PluginDescription* pluginDescription, int index = -1);
     void movePlugin (int oldIndex, int newIndex);
     void removePlugin (int index);
+    String getPluginName (int index) const { return pluginList[index]->getName(); }
 
     AudioProcessorEditor* getPluginEditor (int index); 
 

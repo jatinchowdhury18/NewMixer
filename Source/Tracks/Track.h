@@ -9,6 +9,7 @@
 #include "Timeline/Playhead.h"
 #include "AutomationPath.h"
 #include "GUI Extras/PluginWindow.h"
+#include "TrackPluginMenu.h"
 
 namespace TrackConstants
 {
@@ -120,6 +121,9 @@ public:
     void setAutoPath (AutomationPath* ap) { autoPath = ap; }
     void renderAutomationExport();
 
+    void openPluginWindow (int pluginIndex);
+    void closePluginWindow();
+
 private:
 #if JUCE_DEBUG
     friend class NameTest;
@@ -164,6 +168,7 @@ private:
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
 
+    //TrackPluginMenu* pluginMenu;
     std::unique_ptr<PluginWindow> pluginWindow;
 
     JUCE_LEAK_DETECTOR (Track)

@@ -195,7 +195,13 @@ void Track::trackMoved()
         processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, parent->getWidth(), parent->getHeight());
 }
 
-void Track::paintOverChildren (Graphics& g) { PaintHelper::paint (this, g); }
+void Track::paintOverChildren (Graphics& g)
+{ 
+    PaintHelper::paint (this, g);
+
+    if (pluginWindow.get() != nullptr && pluginWindow->isVisible())
+        pluginWindow->repaint();
+}
 
 void Track::resized()
 {
@@ -225,6 +231,16 @@ bool Track::hitTest (int x, int y)
         return false;
 }
 
+void Track::openPluginWindow (int pluginIndex)
+{
+    pluginWindow.reset (new PluginWindow (processor->getPluginChain()->getPluginEditor (pluginIndex)));
+}
+
+void Track::closePluginWindow()
+{
+    pluginWindow.reset (nullptr);
+}
+
 void Track::mouseDown (const MouseEvent& e)
 {
     getParentComponent()->mouseDown (e);
@@ -248,7 +264,8 @@ void Track::mouseDown (const MouseEvent& e)
 #if JUCE_MAC || JUCE_WINDOWS
 void Track::mouseDoubleClick (const MouseEvent& /*e*/)
 {
-    pluginWindow.reset (new PluginWindow (processor->getPluginChain()->getPluginEditor (0)));
+    TrackPluginMenu pluginMenu (this);
+    pluginMenu.show();
 }
 #endif
 
