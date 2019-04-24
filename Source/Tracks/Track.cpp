@@ -346,7 +346,9 @@ String Track::getFilePath() const
 #if JUCE_DEBUG
 #include "UnitTests/TrackNameTest.h"
 #include "UnitTests/TrackMoveTest.h"
+#include "UnitTests/PluginProcessingTest.h"
 
 static MoveTest moveTest;
 static NameTest nameTest;
+static PluginProcessingTest pluginTest;
 #endif

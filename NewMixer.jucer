@@ -47,6 +47,8 @@
         <FILE id="K1kQZI" name="PlayTest.h" compile="0" resource="0" file="Source/UnitTests/PlayTest.h"/>
         <FILE id="R9Z3pc" name="PluginLoadingTest.h" compile="0" resource="0"
               file="Source/UnitTests/PluginLoadingTest.h"/>
+        <FILE id="FfthRf" name="PluginProcessingTest.h" compile="0" resource="0"
+              file="Source/UnitTests/PluginProcessingTest.h"/>
         <FILE id="Onpx0Z" name="ProcessorTest.h" compile="0" resource="0" file="Source/UnitTests/ProcessorTest.h"/>
         <FILE id="CILscM" name="SavingTest.h" compile="0" resource="0" file="Source/UnitTests/SavingTest.h"/>
         <FILE id="RTVWym" name="TrackMoveTest.h" compile="0" resource="0" file="Source/UnitTests/TrackMoveTest.h"/>
