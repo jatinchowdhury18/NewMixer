@@ -9,7 +9,6 @@
 #include "Timeline/Playhead.h"
 #include "AutomationPath.h"
 #include "GUI Extras/PluginWindow.h"
-#include "TrackPluginMenu.h"
 
 namespace TrackConstants
 {
@@ -26,6 +25,7 @@ namespace TrackConstants
 }
 
 class AutomationPath;
+class TrackPluginMenu;
 class Track : public Component,
               public SettableTooltipClient,
               public Playhead::Listener,
@@ -168,7 +168,7 @@ private:
 
     std::unique_ptr<TrackRenameWindow> renameWindow;
 
-    //TrackPluginMenu* pluginMenu;
+    std::unique_ptr<TrackPluginMenu> pluginMenu;
     std::unique_ptr<PluginWindow> pluginWindow;
 
     JUCE_LEAK_DETECTOR (Track)

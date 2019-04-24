@@ -3,8 +3,6 @@
 
 #include "Track.h"
 
-class Track;
-
 class AddPluginComponent : public PopupMenu::CustomComponent
 {
 public:
@@ -28,7 +26,7 @@ private:
 class PluginComponent : public PopupMenu::CustomComponent
 {
 public:
-    PluginComponent (Track* track, String name, int index);
+    PluginComponent (Track* track, String name, int index, TrackPluginMenu* parentMenu);
 
     void getIdealSize (int& idealWidth, int& idealHeight) override;
     void paint (Graphics& g) override;
@@ -38,9 +36,13 @@ public:
     void mouseUp (const MouseEvent& e) override;
 
 private:
+    bool isBypassed() const;
+
     Track* track;
     String name;
     int index;
+    
+    TrackPluginMenu* parent;
 
     bool isDragging = false;
 
@@ -51,6 +53,7 @@ class TrackPluginMenu : public PopupMenu
 {
 public:
     TrackPluginMenu (Track* track);
+    void refresh();
 
 private:
     Track* track;

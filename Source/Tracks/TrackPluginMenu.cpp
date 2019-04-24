@@ -14,6 +14,14 @@ namespace
     
         width = 80,
         height = 80,
+
+        outlineThick = 5,
+    };
+
+    enum PluginActions
+    {
+        remove = 1,
+        bypass,
     };
 }
 
@@ -31,7 +39,7 @@ void AddPluginComponent::getIdealSize (int& idealWidth, int& idealHeight)
 void AddPluginComponent::paint (Graphics& g)
 {
     g.fillAll (Colours::black);
-    g.setColour (Colours::darkred);
+    g.setColour (Colours::red);
 
     auto b = getBounds().toFloat();
 
@@ -43,12 +51,11 @@ void AddPluginComponent::paint (Graphics& g)
                 b.getWidth() / 2.0f, (b.getHeight() + lineLength) / 2.0f,
                 lineThick);
     
-    // if (isMouseOver)
-    // {
-    //     g.setColour (Colours::goldenrod);
-
-    //     g.drawRect (10, 10, 60, 60, 2);
-    // }
+    if (isItemHighlighted())
+    {
+        g.setColour (Colours::goldenrod);
+        g.drawRect (0, 0, getWidth(), getHeight(), outlineThick);
+    }
 }
 
 void AddPluginComponent::mouseDown (const MouseEvent& /*e*/)
@@ -68,16 +75,16 @@ void AddPluginComponent::mouseDown (const MouseEvent& /*e*/)
         {
             track->getProcessor()->getPluginChain()->addPlugin (plugin);
             track->openPluginWindow (track->getProcessor()->getPluginChain()->getNumPlugins()-1);
-            triggerMenuItem();
         }
     }
 }
 
-PluginComponent::PluginComponent (Track* track, String name, int index) :
+PluginComponent::PluginComponent (Track* track, String name, int index, TrackPluginMenu* parentMenu) :
     PopupMenu::CustomComponent (false),
     track (track),
     name (name),
-    index (index)
+    index (index),
+    parent (parentMenu)
 {}
 
 void PluginComponent::getIdealSize (int& idealWidth, int& idealHeight)
@@ -89,17 +96,21 @@ void PluginComponent::getIdealSize (int& idealWidth, int& idealHeight)
 void PluginComponent::paint (Graphics& g)
 {
     g.fillAll (Colours::black);
-    g.setColour (Colours::blue);
 
+    if (isBypassed())
+        g.setColour (Colours::grey);
+    else
+        g.setColour (Colours::orange);
+
+    g.setFont (Font (18.0f).boldened());
     g.drawFittedText (name, 0, (getHeight() - (int) lineLength) / 2,
                       getWidth(), (int) lineLength, Justification::centred, 1);
     
-    // if (isMouseOver)
-    // {
-    //     g.setColour (Colours::goldenrod);
-
-    //     g.drawRect (10, 10, 60, 60, 2);
-    // }
+    if (isItemHighlighted())
+    {
+        g.setColour (Colours::goldenrod);
+        g.drawRect (0, 0, getWidth(), getHeight(), outlineThick);
+    }
 }
 
 void PluginComponent::mouseDown (const MouseEvent& e)
@@ -107,17 +118,29 @@ void PluginComponent::mouseDown (const MouseEvent& e)
     if (e.mods.isPopupMenu())
     {
         PopupMenu m;
-        m.addItem (1, "Remove");
+        m.addItem (PluginActions::remove, "Remove");
+        m.addItem (PluginActions::bypass, "Bypass", true, isBypassed());
 
         int result = m.show();
 
-        if (result == 1)
+        switch (result)
         {
+        case PluginActions::remove:
             track->closePluginWindow();
             track->getProcessor()->getPluginChain()->removePlugin (index);
             triggerMenuItem();
+            break;
+
+        case PluginActions::bypass:
+            track->getProcessor()->getPluginChain()->toggleBypassPlugin (index);
+            break;
         }
     }
+}
+
+bool PluginComponent::isBypassed() const
+{
+    return track->getProcessor()->getPluginChain()->isPluginBypassed (index);
 }
 
 void PluginComponent::mouseDrag (const MouseEvent& /*e*/)
@@ -143,12 +166,18 @@ void PluginComponent::mouseUp (const MouseEvent& e)
 TrackPluginMenu::TrackPluginMenu (Track* track) :
     track (track)
 {
-    auto pluginChain = track->getProcessor()->getPluginChain();
+    refresh();
+}
 
+void TrackPluginMenu::refresh()
+{
+    
+    clear();
+
+    auto pluginChain = track->getProcessor()->getPluginChain();
     for (int i = 0; i < pluginChain->getNumPlugins(); i++)
     {
-        addCustomItem (pluginBaseID + i, new PluginComponent (track, pluginChain->getPluginName (i), i));   
+        addCustomItem (pluginBaseID + i, new PluginComponent (track, pluginChain->getPluginName (i), i, this));   
     }
-
     addCustomItem (newPluginID, new AddPluginComponent (track));
 }

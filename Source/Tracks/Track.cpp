@@ -4,6 +4,7 @@
 #include "TrackHelpers/TrackActionHelper.h"
 #include "TrackHelpers/PaintHelper.h"
 #include "MainComponent.h"
+#include "TrackPluginMenu.h"
 
 using namespace TrackConstants;
 
@@ -264,8 +265,8 @@ void Track::mouseDown (const MouseEvent& e)
 #if JUCE_MAC || JUCE_WINDOWS
 void Track::mouseDoubleClick (const MouseEvent& /*e*/)
 {
-    TrackPluginMenu pluginMenu (this);
-    pluginMenu.show();
+    pluginMenu.reset (new TrackPluginMenu (this));
+    pluginMenu->show();
 }
 #endif
 

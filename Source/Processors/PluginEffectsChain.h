@@ -16,12 +16,15 @@ public:
     void addPlugin (const PluginDescription* pluginDescription, int index = -1);
     void movePlugin (int oldIndex, int newIndex);
     void removePlugin (int index);
+    void toggleBypassPlugin (int index);
+    bool isPluginBypassed (int index);
     String getPluginName (int index) const { return pluginList[index]->getName(); }
 
     AudioProcessorEditor* getPluginEditor (int index); 
 
 private:
     OwnedArray<AudioPluginInstance> pluginList;
+    Array<bool> bypasses;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEffectsChain)
 };

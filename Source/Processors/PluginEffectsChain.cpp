@@ -17,8 +17,15 @@ void PluginEffectsChain::releaseResources()
 
 void PluginEffectsChain::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    for (auto plugin : pluginList)
-        plugin->processBlock (buffer, midiMessages);
+    for (int i = 0; i < pluginList.size(); i++)
+    {
+        if (bypasses[i])
+        {
+            pluginList[i]->processBlockBypassed (buffer, midiMessages);
+            return;
+        }
+        pluginList[i]->processBlock (buffer, midiMessages);
+    }
 }
 
 void PluginEffectsChain::addPlugin (const PluginDescription* description, int index)
@@ -32,24 +39,47 @@ void PluginEffectsChain::addPlugin (const PluginDescription* description, int in
     {
         pluginList.add (plugin);
         pluginList.getLast()->prepareToPlay (getSampleRate(), getBlockSize());
+        bypasses.add (false);
     }
     else
     {
-        pluginList.insert (jmin (index, pluginList.size()-1), plugin);
+        int corrIndex = jmin (index, pluginList.size()-1);
+        pluginList.insert (corrIndex, plugin);
         pluginList[index]->prepareToPlay (getSampleRate(), getBlockSize());
+        bypasses.insert (corrIndex, false);
     }
 }
 
 void PluginEffectsChain::movePlugin (int oldIndex, int newIndex)
 {
-    auto* plugin = pluginList.removeAndReturn (oldIndex);
-    pluginList.insert (newIndex, plugin);
+    pluginList.move (oldIndex, newIndex);
+    bypasses.move (oldIndex, newIndex);
 }
 
 void PluginEffectsChain::removePlugin (int index)
 {
     pluginList[index]->releaseResources();
     pluginList.remove (index);
+
+    bypasses.remove (index);
+}
+
+void PluginEffectsChain::toggleBypassPlugin (int index)
+{
+    auto bypassParameter = pluginList[index]->getBypassParameter();
+    if (bypassParameter == nullptr)
+        bypasses.set (index, ! bypasses[index]);
+    else
+        bypassParameter->setValue (! (bool) bypassParameter->getValue());
+}
+
+bool PluginEffectsChain::isPluginBypassed (int index)
+{
+    auto bypassParameter = pluginList[index]->getBypassParameter();
+    if (bypassParameter == nullptr)
+        return bypasses[index];
+    else
+        return (bool) bypassParameter->getValue();
 }
 
 AudioProcessorEditor* PluginEffectsChain::getPluginEditor (int index)
