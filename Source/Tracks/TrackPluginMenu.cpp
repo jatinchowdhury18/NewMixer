@@ -75,6 +75,7 @@ void AddPluginComponent::mouseDown (const MouseEvent& /*e*/)
         {
             track->getProcessor()->getPluginChain()->addPlugin (plugin);
             track->openPluginWindow (track->getProcessor()->getPluginChain()->getNumPlugins()-1);
+            PopupMenu::dismissAllActiveMenus();
         }
     }
 }
@@ -152,14 +153,21 @@ void PluginComponent::mouseUp (const MouseEvent& e)
 {
     if (isDragging)
     {
-    
+        int newIndex = e.y > 0 ? index + e.y / height : index + (e.y - height) / height;
+        newIndex = jmin (jmax (newIndex, 0), track->getProcessor()->getPluginChain()->getNumPlugins()-1);
+        track->getProcessor()->getPluginChain()->movePlugin (index, newIndex);
+        index = newIndex;
+
+        PopupMenu::dismissAllActiveMenus();
+        parent->refresh();
+        const auto b = track->getScreenBounds();
+        parent->showAt (Rectangle<int> (b.getCentreX(), b.getCentreY(), 0, 0));
     }
     else if (! e.mods.isPopupMenu())
     {
         track->openPluginWindow (index);
         triggerMenuItem();
     }
-
     isDragging = false;
 }
 
@@ -171,7 +179,6 @@ TrackPluginMenu::TrackPluginMenu (Track* track) :
 
 void TrackPluginMenu::refresh()
 {
-    
     clear();
 
     auto pluginChain = track->getProcessor()->getPluginChain();

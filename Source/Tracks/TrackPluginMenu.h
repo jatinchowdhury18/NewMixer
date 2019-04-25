@@ -11,9 +11,6 @@ public:
     void getIdealSize (int& idealWidth, int& idealHeight) override;
     void paint (Graphics& g) override;
 
-    // void mouseEnter (const MouseEvent& /*e*/) override { isMouseOver = true; }
-    // void mouseExit (const MouseEvent& /*e*/) override { isMouseOver = false; }
-
     void mouseDown (const MouseEvent& e) override;
 
 private:

@@ -266,7 +266,9 @@ void Track::mouseDown (const MouseEvent& e)
 void Track::mouseDoubleClick (const MouseEvent& /*e*/)
 {
     pluginMenu.reset (new TrackPluginMenu (this));
-    pluginMenu->show();
+
+    const auto b = getScreenBounds();
+    pluginMenu->showAt (Rectangle<int> (b.getCentreX(), b.getCentreY(), 0, 0));
 }
 #endif
 
