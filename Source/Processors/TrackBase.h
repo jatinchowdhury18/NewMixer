@@ -20,6 +20,7 @@ public:
     };
     
     TrackBase (String name);
+    TrackBase (const TrackBase& trackBase);
     
     void initProcessors();
     
@@ -57,7 +58,8 @@ public:
 
     void toggleLoop() { looping = ! looping; }
 
-    PluginEffectsChain* getPluginChain() { return plugins.get(); }
+    PluginEffectsChain* getPluginChain() const { return plugins.get(); }
+    void setPluginChain (PluginEffectsChain* newPluginChain);
 
 protected:
     ListenerList<Listener> listeners;
@@ -77,6 +79,8 @@ private:
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
 
+    void copyPlugin (AudioPluginInstance* plugin);
+
     void updateGain (int width);
     void updateDelay (int x, int y, int screenWidth, int screenHeight);
     void updatePan (int x, int screenWidth);
@@ -86,7 +90,7 @@ private:
     SoloState soloState = noTracks;
     float lastRMS = 0.0f;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackBase)
+    JUCE_LEAK_DETECTOR (TrackBase)
 };
 
 #endif // TRACKBASE_H_INCLUDED

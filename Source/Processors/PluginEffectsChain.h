@@ -20,7 +20,8 @@ public:
     bool isPluginBypassed (int index);
     String getPluginName (int index) const { return pluginList[index]->getName(); }
 
-    AudioProcessorEditor* getPluginEditor (int index); 
+    AudioProcessorEditor* getPluginEditor (int index);
+    OwnedArray<AudioPluginInstance>& getPluginList() { return pluginList; }
 
 private:
     OwnedArray<AudioPluginInstance> pluginList;

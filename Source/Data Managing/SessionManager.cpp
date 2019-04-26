@@ -1,6 +1,7 @@
 #include "SessionManager.h"
 #include "TrackProcessor.h"
 #include "ActionHelper.h"
+#include"PluginManager.h"
 
 void SessionManager::newSession (MainComponent* mc)
 {
@@ -165,6 +166,17 @@ void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
             pointXml = pointXml->getNextElement();
         }
     }
+
+    XmlElement* pluginListXml (trackXml->getChildByName ("Plugins"));
+    if (pluginListXml != nullptr)
+    {
+        XmlElement* pluginXml (pluginListXml->getFirstChildElement());
+        while (pluginXml != nullptr)
+        {
+            parsePluginXml (newTrack, pluginXml);
+            pluginXml = pluginXml->getNextElement();
+        }
+    }
 }
 
 void SessionManager::parseAutomationXml (Track* newTrack, XmlElement* pointXml)
@@ -175,6 +187,39 @@ void SessionManager::parseAutomationXml (Track* newTrack, XmlElement* pointXml)
     auto sample = (int64) pointXml->getIntAttribute ("sampleTime");
 
     newTrack->getAutoHelper()->addAutoPoint (pointX, pointY, pointDiameter, sample);
+}
+
+void SessionManager::parsePluginXml (Track* newTrack, XmlElement* pluginXml)
+{
+    auto& pluginList = PluginManager::getInstance()->getPluginList();
+
+    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
+    auto pluginArray = pluginTree->plugins;
+
+    bool found = false;
+    for (auto plugin : pluginArray)
+    {
+        if (plugin->name == pluginXml->getTagName() && plugin->pluginFormatName == pluginXml->getStringAttribute ("Format"))
+        {
+            found = true;
+            newTrack->getProcessor()->getPluginChain()->addPlugin (plugin);
+        }
+    }
+
+    if (found)
+    {
+        PropertySet pluginState;
+        pluginState.restoreFromXml (*pluginXml->getChildByName ("pluginStateXml"));
+        
+        MemoryBlock data;
+        if (data.fromBase64Encoding (pluginState.getValue ("pluginState")) && data.getSize() > 0)
+            newTrack->getProcessor()->getPluginChain()->getPluginList().getLast()->setStateInformation (data.getData(), (int) data.getSize());
+    }
+    else
+    {
+        NativeMessageBox::showMessageBox (AlertWindow::AlertIconType::WarningIcon, String ("Plugin not found!"),
+                                          String ("The following plugin could not be found: " + pluginXml->getTagName()));
+    }
 }
 
 bool SessionManager::validateTrackFile (File& file)
@@ -234,6 +279,8 @@ void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& track
             for (auto point : autoPoints)
                 newTrack->getAutoHelper()->addAutoPoint (point->x, point->y, point->diameter, point->sample);
 
+            newTrack->getProcessor()->setPluginChain (track->getProcessor()->getPluginChain());
+
             copyTracks.add (newTrack);
             x.add (trackX);
             y.add (trackY);
@@ -268,6 +315,7 @@ void SessionManager::saveTracksToXml (const OwnedArray<Track>& tracks, XmlElemen
         xmlTrack->setAttribute ("colour", track->getColour().toString());
 
         saveAutomationToXml (track, xmlTrack.get());
+        savePluginsToXml (track, xmlTrack.get());
 
         xmlTracks->addChildElement (xmlTrack.release());
     }
@@ -293,5 +341,33 @@ void SessionManager::saveAutomationToXml (Track* track, XmlElement* xmlTrack)
         }
 
         xmlTrack->addChildElement (xmlAutomation.release());
+    }
+}
+
+void SessionManager::savePluginsToXml (Track* track, XmlElement* xmlTrack)
+{
+    const auto pluginChain = track->getProcessor()->getPluginChain();
+    if (pluginChain->getNumPlugins() > 0)
+    {
+        std::unique_ptr<XmlElement> xmlPlugins (new XmlElement ("Plugins"));
+
+        for (auto plugin : pluginChain->getPluginList())
+        {
+            std::unique_ptr<XmlElement> xmlPluginInstance (new XmlElement (plugin->getName()));
+            xmlPluginInstance->setAttribute ("Format", plugin->getPluginDescription().pluginFormatName);
+
+            MemoryBlock data;
+            plugin->getStateInformation (data);
+
+            PropertySet pluginState;
+            pluginState.setValue ("pluginState", data.toBase64Encoding());
+
+            std::unique_ptr<XmlElement> pluginStateXml (pluginState.createXml ("pluginStateXml"));
+
+            xmlPluginInstance->addChildElement (pluginStateXml.release());
+            xmlPlugins->addChildElement (xmlPluginInstance.release());
+        }
+
+        xmlTrack->addChildElement (xmlPlugins.release());
     }
 }

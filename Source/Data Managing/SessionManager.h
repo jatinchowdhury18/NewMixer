@@ -16,11 +16,13 @@ private:
 
     static void parseTrackXml (MainComponent* mc, XmlElement* trackXml);
     static void parseAutomationXml (Track* newTrack, XmlElement* pointXml);
+    static void parsePluginXml (Track* newTrack, XmlElement* pluginXml);
     static bool validateTrackFile (File& file);
     
     static void copyTrackFiles (MainComponent* mc, OwnedArray<Track>& tracks, const File stemsFolder);
     static void saveTracksToXml (const OwnedArray<Track>& tracks, XmlElement* xmlTracks);
     static void saveAutomationToXml (Track* track, XmlElement* xmlTrack);
+    static void savePluginsToXml (Track* track, XmlElement* xmlTrack);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SessionManager)
 };
