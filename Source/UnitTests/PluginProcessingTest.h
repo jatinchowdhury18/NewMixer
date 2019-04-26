@@ -61,6 +61,7 @@ public:
 
     void shutdown() override 
     {
+        delete dynamic_cast<TrackProcessor*> (track->getProcessor())->getReader();
         delete track->getProcessor(); 
         delete track;
     }
