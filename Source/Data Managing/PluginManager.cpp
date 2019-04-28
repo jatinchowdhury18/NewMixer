@@ -29,10 +29,8 @@ void PluginManager::rescanPlugins()
     }
 
     OwnedArray<PluginDescription> types; //this empty Array is needed as scanAndAddFile requires a reference to one
-    int index = 0;
     for (auto path : allPlugins)
     {
-        index++;
         pluginList.scanAndAddFile (path.first, true, types, *path.second);
     }
 }
