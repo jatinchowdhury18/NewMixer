@@ -1,6 +1,7 @@
 #include "TrackBase.h"
 #include "Track.h"
 #include "MainComponent.h"
+#include "Data Managing/PluginManager.h"
 
 namespace
 {
@@ -18,8 +19,20 @@ TrackBase::TrackBase (String name) : ProcessorBase (name)
     initProcessors();
 }
 
+TrackBase::TrackBase (const TrackBase& trackBase) :
+    ProcessorBase (trackBase.getName())
+{
+    initProcessors();
+
+    for (auto plugin : trackBase.getPluginChain()->getPluginList())
+        copyPlugin (plugin);
+}
+
 void TrackBase::initProcessors()
 {
+    plugins.reset (new PluginEffectsChain);
+    processors.add (plugins.get());
+
     gainProcessor.reset (new GainProcessor);
     processors.add (gainProcessor.get());
     
@@ -31,6 +44,26 @@ void TrackBase::initProcessors()
     
     distProcessor.reset (new DistanceProcessor);
     processors.add (distProcessor.get());
+}
+
+void TrackBase::setPluginChain (PluginEffectsChain* newPluginChain)
+{
+    plugins->getPluginList().clear();
+
+    for (auto plugin : newPluginChain->getPluginList())
+        copyPlugin (plugin);
+}
+
+void TrackBase::copyPlugin (AudioPluginInstance* plugin)
+{
+    std::unique_ptr<PluginDescription> copyPlugin (new PluginDescription (plugin->getPluginDescription()));
+    plugins->addPlugin (copyPlugin.get());
+
+    MemoryBlock data;
+    plugin->getStateInformation (data);
+
+    if (data.getSize() > 0)
+        plugins->getPluginList().getLast()->setStateInformation (data.getData(), (int) data.getSize());
 }
 
 void TrackBase::prepareToPlay (double sampleRate, int maximumExpectedSamplesPerBlock)

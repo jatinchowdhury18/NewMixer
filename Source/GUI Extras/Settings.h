@@ -20,6 +20,9 @@ private:
     AudioDeviceManager& audioDeviceManager;
 
     std::unique_ptr<AudioDeviceSelectorComponent> audioSetupComp;
+    Label pluginsLabel;
+    TextEditor pluginsPath;
+    TextButton rescanPlugins;
     TextEditor diagnosticsBox;
 
     void changeListenerCallback (ChangeBroadcaster*) override;

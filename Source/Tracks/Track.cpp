@@ -4,6 +4,7 @@
 #include "TrackHelpers/TrackActionHelper.h"
 #include "TrackHelpers/PaintHelper.h"
 #include "MainComponent.h"
+#include "TrackPluginMenu.h"
 
 using namespace TrackConstants;
 
@@ -195,7 +196,13 @@ void Track::trackMoved()
         processor->trackMoved (getX() + radius,  getY() + radius, (int) diameter, parent->getWidth(), parent->getHeight());
 }
 
-void Track::paintOverChildren (Graphics& g) { PaintHelper::paint (this, g); }
+void Track::paintOverChildren (Graphics& g)
+{ 
+    PaintHelper::paint (this, g);
+
+    if (pluginWindow.get() != nullptr && pluginWindow->isVisible())
+        pluginWindow->repaint();
+}
 
 void Track::resized()
 {
@@ -225,6 +232,16 @@ bool Track::hitTest (int x, int y)
         return false;
 }
 
+void Track::openPluginWindow (int pluginIndex)
+{
+    pluginWindow.reset (new PluginWindow (processor->getPluginChain()->getPluginEditor (pluginIndex)));
+}
+
+void Track::closePluginWindow()
+{
+    pluginWindow.reset (nullptr);
+}
+
 void Track::mouseDown (const MouseEvent& e)
 {
     getParentComponent()->mouseDown (e);
@@ -244,6 +261,16 @@ void Track::mouseDown (const MouseEvent& e)
     touches.add (e);
 #endif
 }
+
+#if JUCE_MAC || JUCE_WINDOWS
+void Track::mouseDoubleClick (const MouseEvent& /*e*/)
+{
+    pluginMenu.reset (new TrackPluginMenu (this));
+
+    const auto b = getScreenBounds();
+    pluginMenu->showAt (Rectangle<int> (b.getCentreX(), b.getCentreY(), 0, 0));
+}
+#endif
 
 #if JUCE_IOS || JUCE_ANDROID
 void Track::mouseDoubleClick (const MouseEvent& e)
@@ -322,7 +349,9 @@ String Track::getFilePath() const
 #if JUCE_DEBUG
 #include "UnitTests/TrackNameTest.h"
 #include "UnitTests/TrackMoveTest.h"
+#include "UnitTests/PluginProcessingTest.h"
 
 static MoveTest moveTest;
 static NameTest nameTest;
+static PluginProcessingTest pluginTest;
 #endif

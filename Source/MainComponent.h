@@ -7,7 +7,7 @@
 #include "Settings.h"
 #include "Timeline/WaveformViewer.h"
 #include "AutomationPath.h"
-#include "Exporting/ExportWindow.h"
+#include "Data Managing/ExportWindow.h"
 
 namespace MainConstants
 {
@@ -95,6 +95,8 @@ private:
 
     TextButton settingsButton;
     std::unique_ptr<SettingsWindow> settingsWindow;
+
+    TextButton pluginsButton;
 
     File sessionDirectory;
 #if JUCE_IOS || JUCE_ANDROID

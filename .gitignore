@@ -16,7 +16,6 @@ BinaryData12.cpp
 BinaryData13.cpp
 BinaryData14.cpp
 BinaryData15.cpp
-AndroidTest
 
 #Windows Temp Cache Files
 [Tt]humbs.db
@@ -30,10 +29,13 @@ AndroidTest
 #Visual Studio Code files
 .vscode/
 
+#Test Plugins
+*.dll
+*.vst3
+
 #Extra folders
 Demos
 Testing
-AndroidTest
 spag.png
 
 *.exe

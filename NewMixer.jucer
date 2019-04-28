@@ -27,10 +27,17 @@
       </GROUP>
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
-      <GROUP id="{E57E395B-F612-6274-CEAA-A92EA6363804}" name="Exporting">
-        <FILE id="aj5I8g" name="ExportWindow.cpp" compile="1" resource="0"
-              file="Source/Exporting/ExportWindow.cpp"/>
-        <FILE id="fDubs6" name="ExportWindow.h" compile="0" resource="0" file="Source/Exporting/ExportWindow.h"/>
+      <GROUP id="{E57E395B-F612-6274-CEAA-A92EA6363804}" name="Data Managing">
+        <FILE id="TUpsPX" name="ExportWindow.cpp" compile="1" resource="0"
+              file="Source/Data Managing/ExportWindow.cpp"/>
+        <FILE id="ZIW8Kb" name="ExportWindow.h" compile="0" resource="0" file="Source/Data Managing/ExportWindow.h"/>
+        <FILE id="xC1PUX" name="PluginManager.cpp" compile="1" resource="0"
+              file="Source/Data Managing/PluginManager.cpp"/>
+        <FILE id="eGBF9F" name="PluginManager.h" compile="0" resource="0" file="Source/Data Managing/PluginManager.h"/>
+        <FILE id="Y8zGcn" name="SessionManager.cpp" compile="1" resource="0"
+              file="Source/Data Managing/SessionManager.cpp"/>
+        <FILE id="tTsnbp" name="SessionManager.h" compile="0" resource="0"
+              file="Source/Data Managing/SessionManager.h"/>
       </GROUP>
       <GROUP id="{2F81838E-E7E3-AE43-72F1-7D2B397D1C58}" name="UnitTests">
         <FILE id="cqn7QJ" name="AddRemoveTracksTest.h" compile="0" resource="0"
@@ -38,7 +45,14 @@
         <FILE id="DisqQw" name="AutomationTest.h" compile="0" resource="0"
               file="Source/UnitTests/AutomationTest.h"/>
         <FILE id="K1kQZI" name="PlayTest.h" compile="0" resource="0" file="Source/UnitTests/PlayTest.h"/>
+        <FILE id="R9Z3pc" name="PluginLoadingTest.h" compile="0" resource="0"
+              file="Source/UnitTests/PluginLoadingTest.h"/>
+        <FILE id="xvMIHm" name="PluginProcessingTest.cpp" compile="1" resource="0"
+              file="Source/UnitTests/PluginProcessingTest.cpp"/>
+        <FILE id="FfthRf" name="PluginProcessingTest.h" compile="0" resource="0"
+              file="Source/UnitTests/PluginProcessingTest.h"/>
         <FILE id="Onpx0Z" name="ProcessorTest.h" compile="0" resource="0" file="Source/UnitTests/ProcessorTest.h"/>
+        <FILE id="hr4IqX" name="SavingTest.cpp" compile="1" resource="0" file="Source/UnitTests/SavingTest.cpp"/>
         <FILE id="CILscM" name="SavingTest.h" compile="0" resource="0" file="Source/UnitTests/SavingTest.h"/>
         <FILE id="RTVWym" name="TrackMoveTest.h" compile="0" resource="0" file="Source/UnitTests/TrackMoveTest.h"/>
         <FILE id="Tyhf14" name="TrackNameTest.h" compile="0" resource="0" file="Source/UnitTests/TrackNameTest.h"/>
@@ -57,12 +71,20 @@
       </GROUP>
       <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
         <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
+        <FILE id="Mj1GRP" name="PluginListWindow.cpp" compile="1" resource="0"
+              file="Source/GUI Extras/PluginListWindow.cpp"/>
+        <FILE id="XVAxsU" name="PluginListWindow.h" compile="0" resource="0"
+              file="Source/GUI Extras/PluginListWindow.h"/>
+        <FILE id="ndHxlS" name="PluginWindow.cpp" compile="1" resource="0"
+              file="Source/GUI Extras/PluginWindow.cpp"/>
+        <FILE id="IgLKZC" name="PluginWindow.h" compile="0" resource="0" file="Source/GUI Extras/PluginWindow.h"/>
         <FILE id="um2iCS" name="Settings.cpp" compile="1" resource="0" file="Source/GUI Extras/Settings.cpp"/>
         <FILE id="lcWjtV" name="Settings.h" compile="0" resource="0" file="Source/GUI Extras/Settings.h"/>
         <FILE id="f4qKyC" name="TrackRenameWindow.cpp" compile="1" resource="0"
               file="Source/GUI Extras/TrackRenameWindow.cpp"/>
         <FILE id="XJZivd" name="TrackRenameWindow.h" compile="0" resource="0"
               file="Source/GUI Extras/TrackRenameWindow.h"/>
+        <FILE id="Wsj2wK" name="WindowHelper.h" compile="0" resource="0" file="Source/GUI Extras/WindowHelper.h"/>
       </GROUP>
       <GROUP id="{B45D25AD-CEFF-02F9-6A66-DF7E89CDDA8E}" name="Processors">
         <GROUP id="{26FBB757-F206-78D2-9409-271399682CF3}" name="Effects">
@@ -95,6 +117,10 @@
               file="Source/Processors/MasterTrackProcessor.cpp"/>
         <FILE id="j59tJ1" name="MasterTrackProcessor.h" compile="0" resource="0"
               file="Source/Processors/MasterTrackProcessor.h"/>
+        <FILE id="PzKNlX" name="PluginEffectsChain.cpp" compile="1" resource="0"
+              file="Source/Processors/PluginEffectsChain.cpp"/>
+        <FILE id="AyEYL4" name="PluginEffectsChain.h" compile="0" resource="0"
+              file="Source/Processors/PluginEffectsChain.h"/>
         <FILE id="amUpzF" name="ProcessorBase.h" compile="0" resource="0" file="Source/Processors/ProcessorBase.h"/>
         <FILE id="Fbtunr" name="TrackBase.cpp" compile="1" resource="0" file="Source/Processors/TrackBase.cpp"/>
         <FILE id="Rw8iSM" name="TrackBase.h" compile="0" resource="0" file="Source/Processors/TrackBase.h"/>
@@ -124,14 +150,14 @@
         <FILE id="iGkTeA" name="Track.h" compile="0" resource="0" file="Source/Tracks/Track.h"/>
         <FILE id="IkwDkf" name="TrackMeter.cpp" compile="1" resource="0" file="Source/Tracks/TrackMeter.cpp"/>
         <FILE id="IhxrcD" name="TrackMeter.h" compile="0" resource="0" file="Source/Tracks/TrackMeter.h"/>
+        <FILE id="dlpBGO" name="TrackPluginMenu.cpp" compile="1" resource="0"
+              file="Source/Tracks/TrackPluginMenu.cpp"/>
+        <FILE id="A4XebX" name="TrackPluginMenu.h" compile="0" resource="0"
+              file="Source/Tracks/TrackPluginMenu.h"/>
       </GROUP>
       <FILE id="WCzuLe" name="ActionHelper.cpp" compile="1" resource="0"
             file="Source/ActionHelper.cpp"/>
       <FILE id="PtVFiB" name="ActionHelper.h" compile="0" resource="0" file="Source/ActionHelper.h"/>
-      <FILE id="BlMfn4" name="SessionManager.cpp" compile="1" resource="0"
-            file="Source/SessionManager.cpp"/>
-      <FILE id="fuCz6z" name="SessionManager.h" compile="0" resource="0"
-            file="Source/SessionManager.h"/>
       <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
@@ -257,5 +283,6 @@
     <WINDOWS/>
     <OSX/>
   </LIVE_SETTINGS>
-  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_ASIO="1"/>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_ASIO="1" JUCE_PLUGINHOST_VST="1"
+               JUCE_PLUGINHOST_VST3="1" JUCE_PLUGINHOST_AU="1"/>
 </JUCERPROJECT>

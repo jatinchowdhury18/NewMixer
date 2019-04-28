@@ -22,7 +22,8 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input, int64 startSample) : T
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }
 
-TrackProcessor::TrackProcessor (const TrackProcessor& processor) : TrackBase (String ("Track Processor"))
+TrackProcessor::TrackProcessor (const TrackProcessor& processor) :
+    TrackBase (processor)
 {
     readerStartSample = processor.getStartSample();
 

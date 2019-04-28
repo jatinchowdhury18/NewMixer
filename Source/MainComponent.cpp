@@ -1,13 +1,16 @@
 #include "MainComponent.h"
 #include "TrackHelpers/TrackActionHelper.h"
 #include "ActionHelper.h"
-#include "SessionManager.h"
+#include "Data Managing/SessionManager.h"
+#include "Data Managing/PluginManager.h"
 
 //==============================================================================
 MainComponent::MainComponent (String mode)
 {
     setSize (width, height);
     setWantsKeyboardFocus (true);
+
+    PluginManager::getInstance();
 
     master.reset (new MasterTrackProcessor (tracks));
 
@@ -37,16 +40,27 @@ MainComponent::~MainComponent()
 {
     for (auto track : tracks)
         track->removeListener (this);
+
+    PluginManager::deleteInstance();
 }
 
 void MainComponent::initSettings()
 {
-    settingsButton.setButtonText ("Settings");
-    settingsButton.setColour (TextButton::buttonColourId, Colours::transparentBlack);
-    settingsButton.setColour (TextButton::textColourOffId, Colours::darkred);
-    settingsButton.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
-    settingsButton.onClick = [this] () { settingsWindow.reset (new SettingsWindow (String ("Settings"), master->getDeviceManager())); };
-    addAndMakeVisible (settingsButton);
+    auto setupButton = [this] (Button& button, String text = {}, std::function<void()> onClick = {})
+    {
+        button.setButtonText (text);
+        button.setColour (TextButton::buttonColourId, Colours::transparentBlack);
+        button.setColour (TextButton::textColourOffId, Colours::darkred);
+        button.setColour (ComboBox::outlineColourId, Colours::transparentBlack);
+        button.onClick = onClick;
+        addAndMakeVisible (button);
+    };
+
+    setupButton (settingsButton, "Settings",
+                [this] { settingsWindow.reset (new SettingsWindow (String ("Settings"), master->getDeviceManager())); });
+
+    setupButton (pluginsButton, "Plugins",
+                [this] { PluginManager::getInstance()->showPluginListWindow(); });
 }
 
 #if JUCE_IOS || JUCE_ANDROID
@@ -87,6 +101,8 @@ void MainComponent::resized()
     using namespace MainConstants;
     settingsButton.setBounds ((int) (getWidth() * (1 - buttonWidthFactor)), 0,
                               (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
+    pluginsButton.setBounds (settingsButton.getX(), settingsButton.getBottom(),
+                             settingsButton.getWidth(), settingsButton.getHeight());
 
     if (waveformView != nullptr)
         waveformView->setBounds (0, (int) (getHeight() * MainConstants::heightFactor),

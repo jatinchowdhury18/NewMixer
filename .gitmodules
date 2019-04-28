@@ -1,3 +1,6 @@
 [submodule "JUCE"]
 	path = JUCE
 	url = https://github.com/jatinchowdhury18/JUCE.git
+[submodule "TestPlugins/CHOW"]
+	path = TestPlugins/CHOW
+	url = https://github.com/jatinchowdhury18/CHOW.git

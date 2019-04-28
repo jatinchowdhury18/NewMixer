@@ -7,6 +7,7 @@
 #include "Effects/DelayProcessor.h"
 #include "Effects/DistanceProcessor.h"
 #include "Effects/ReverbProcessor.h"
+#include "PluginEffectsChain.h"
 
 class TrackBase : public ProcessorBase
 {
@@ -19,6 +20,7 @@ public:
     };
     
     TrackBase (String name);
+    TrackBase (const TrackBase& trackBase);
     
     void initProcessors();
     
@@ -56,6 +58,9 @@ public:
 
     void toggleLoop() { looping = ! looping; }
 
+    PluginEffectsChain* getPluginChain() const { return plugins.get(); }
+    void setPluginChain (PluginEffectsChain* newPluginChain);
+
 protected:
     ListenerList<Listener> listeners;
     
@@ -68,10 +73,13 @@ private:
 #endif
 
     Array<AudioProcessor*> processors;
+    std::unique_ptr<PluginEffectsChain> plugins;
     std::unique_ptr<GainProcessor> gainProcessor;
     std::unique_ptr<DelayProcessor> delayProcessor;
     std::unique_ptr<PanProcessor> panProcessor;
     std::unique_ptr<DistanceProcessor> distProcessor;
+
+    void copyPlugin (AudioPluginInstance* plugin);
 
     void updateGain (int width);
     void updateDelay (int x, int y, int screenWidth, int screenHeight);
@@ -82,7 +90,7 @@ private:
     SoloState soloState = noTracks;
     float lastRMS = 0.0f;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackBase)
+    JUCE_LEAK_DETECTOR (TrackBase)
 };
 
 #endif // TRACKBASE_H_INCLUDED
