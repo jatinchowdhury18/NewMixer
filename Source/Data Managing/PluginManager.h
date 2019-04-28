@@ -15,10 +15,14 @@ public:
     KnownPluginList& getPluginList() { return pluginList; }
     AudioPluginFormatManager& getPluginFormatManager() { return pluginFormatManager; }
 
+    void rescanPlugins();
+    FileSearchPath getPluginFolder();
+    void setPluginFolder (String folder);
+
     JUCE_DECLARE_SINGLETON (PluginManager, false)
 
 private:
-    void pluginScan();
+    FileSearchPath getTestPluginFolder();
 
     AudioPluginFormatManager pluginFormatManager;
     KnownPluginList pluginList;

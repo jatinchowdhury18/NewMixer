@@ -52,7 +52,7 @@ void SessionManager::openSession (MainComponent* mc, const File* sessionFile)
             return;
     }
         
-    std::unique_ptr<XmlElement> sessionXml (parseXML (*sessionFile));//(XmlDocument::parse (sessionFile));
+    std::unique_ptr<XmlElement> sessionXml (parseXML (*sessionFile));
     if (sessionXml.get() != nullptr)
     {
         XmlElement* tracksXml = sessionXml->getChildByName ("Tracks");

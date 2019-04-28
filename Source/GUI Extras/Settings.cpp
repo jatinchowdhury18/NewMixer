@@ -1,5 +1,6 @@
 #include "Settings.h"
 #include "WindowHelper.h"
+#include "Data Managing/PluginManager.h"
 
 SettingsWindow::SettingsWindow (const String& name, AudioDeviceManager& manager)
     : DocumentWindow (name, Desktop::getInstance().getDefaultLookAndFeel()
@@ -30,6 +31,18 @@ AudioSettings::AudioSettings (AudioDeviceManager& manager) : audioDeviceManager 
         0, 256, 0, 256, true, true, true, false));
     addAndMakeVisible (audioSetupComp.get());
 
+    addAndMakeVisible (pluginsLabel);
+    pluginsLabel.setText ("Plugin path:", NotificationType::dontSendNotification);
+
+    addAndMakeVisible (pluginsPath);
+    pluginsPath.setMultiLine (false);
+    pluginsPath.setText (PluginManager::getInstance()->getPluginFolder().toString());
+    pluginsPath.onTextChange = [this] { PluginManager::getInstance()->setPluginFolder (pluginsPath.getText()); };
+
+    addAndMakeVisible (rescanPlugins);
+    rescanPlugins.setButtonText ("Rescan");
+    rescanPlugins.onClick = [this] { PluginManager::getInstance()->rescanPlugins(); };
+
     addAndMakeVisible (diagnosticsBox);
     diagnosticsBox.setMultiLine (true);
     diagnosticsBox.setReturnKeyStartsNewLine (true);
@@ -59,8 +72,14 @@ void AudioSettings::paint (Graphics& g)
 void AudioSettings::resized()
 {
     auto r =  getLocalBounds().reduced (4);
-    audioSetupComp->setBounds (r.removeFromTop (proportionOfHeight (0.65f)));
-    diagnosticsBox.setBounds (r);
+    audioSetupComp->setBounds (r.removeFromTop (proportionOfHeight (0.6f)));
+    diagnosticsBox.setBounds (r.removeFromBottom (proportionOfHeight (0.2f)));
+
+    pluginsLabel.setBounds (r.removeFromLeft (proportionOfWidth (0.2f)));
+    pluginsPath.setBounds (r.removeFromLeft (proportionOfWidth (0.4f))
+                           .reduced (0, proportionOfHeight (0.072f)));
+    rescanPlugins.setBounds (r.removeFromLeft (proportionOfWidth (0.2f))
+                           .reduced (proportionOfWidth (0.01f), proportionOfHeight (0.07f)));
 }
 
 void AudioSettings::dumpDeviceInfo()
