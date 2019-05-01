@@ -10,6 +10,12 @@ void SavingTest::runTest()
     pluginTest();
 }
 
+void SavingTest::shutdown()
+{
+    auto testFolder = getTestFolder (getRoot());
+    testFolder.deleteRecursively();
+}
+
 void SavingTest::normalTest()
 {
     MainComponent main;
@@ -21,12 +27,10 @@ void SavingTest::normalTest()
     main.getTracks()[indexTrackAutomate]->getAutoHelper()->setRecorded (true);
     main.getTracks()[indexTrackUnmute]->toggleMute();
 
-    auto saveFolder = File (getTestFolder (root).getChildFile("Song").getNonexistentSibling());
-    SessionManager::saveSessionAs (&main, &saveFolder);
+    auto saveFolder = save (main, root);
     testSave (saveFolder, stems);
 
-    const auto chowFile = saveFolder.getChildFile (saveFolder.getFileNameWithoutExtension() + ".chow");
-    SessionManager::openSession (&main, &chowFile);
+    open (main, saveFolder);
     testOpen (main);
 }
 
@@ -39,12 +43,24 @@ void SavingTest::pluginTest()
     addTracks (main, stems);
     addPlugin (main.getTracks().getFirst());
 
+    auto saveFolder = save (main, root);
+    open (main, saveFolder);
+    
+    testPluginOpen (main.getTracks().getFirst());
+}
+
+File SavingTest::save (MainComponent& main, File root)
+{
     auto saveFolder = File (getTestFolder (root).getChildFile("Song").getNonexistentSibling());
     SessionManager::saveSessionAs (&main, &saveFolder);
 
+    return saveFolder;
+}
+
+void SavingTest::open (MainComponent& main, File saveFolder)
+{
     const auto chowFile = saveFolder.getChildFile (saveFolder.getFileNameWithoutExtension() + ".chow");
     SessionManager::openSession (&main, &chowFile);
-    testPluginOpen (main.getTracks().getFirst());
 }
 
 void SavingTest::testSave (File saveFolder, const Array<File>& stems)

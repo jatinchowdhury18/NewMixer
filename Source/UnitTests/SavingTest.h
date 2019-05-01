@@ -18,6 +18,7 @@ public:
     SavingTest() : UnitTest (String ("Saving and Opening")) {}
 
     void runTest() override;
+    void shutdown() override;
 
 private:
     void normalTest();
@@ -26,6 +27,9 @@ private:
     void testSave (File saveFolder, const Array<File>& stems);
     void testOpen (MainComponent& main);
     void testPluginOpen (Track* track);
+
+    File save (MainComponent& main, File root);
+    void open (MainComponent& main, File saveFolder);
 
     File getRoot();
     File getTestFolder (const File& root);
