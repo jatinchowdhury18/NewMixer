@@ -8,7 +8,6 @@
 #include "TrackMeter.h"
 #include "Timeline/Playhead.h"
 #include "AutomationPath.h"
-#include "GUI Extras/PluginWindow.h"
 
 namespace TrackConstants
 {
@@ -26,6 +25,7 @@ namespace TrackConstants
 
 class AutomationPath;
 class TrackPluginMenu;
+class PluginWindow;
 class Track : public Component,
               public SettableTooltipClient,
               public Playhead::Listener,

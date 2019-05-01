@@ -5,6 +5,7 @@
 #include "TrackHelpers/PaintHelper.h"
 #include "MainComponent.h"
 #include "TrackPluginMenu.h"
+#include "GUI Extras/PluginWindow.h"
 
 using namespace TrackConstants;
 
@@ -234,7 +235,7 @@ bool Track::hitTest (int x, int y)
 
 void Track::openPluginWindow (int pluginIndex)
 {
-    pluginWindow.reset (new PluginWindow (processor->getPluginChain()->getPluginEditor (pluginIndex)));
+    pluginWindow.reset (new PluginWindow (processor->getPluginChain()->getPluginList()[pluginIndex], this));
 }
 
 void Track::closePluginWindow()

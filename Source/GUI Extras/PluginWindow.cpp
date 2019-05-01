@@ -7,15 +7,17 @@ enum
     pluginY = 300,
 };
 
-PluginWindow::PluginWindow (AudioProcessorEditor* editor) :
-    DocumentWindow (editor->getName(), Colours::lightgrey, DocumentWindow::closeButton),
-    editor (editor)
+PluginWindow::PluginWindow (AudioPluginInstance* plugin, Track* track) :
+    DocumentWindow (track->getName(), Colours::lightgrey, DocumentWindow::closeButton),
+    editor (plugin->createEditor())
 {
     WindowHelper::setupDefaultDocumentWindow (*this, editor);
     setTopLeftPosition (pluginX, pluginY);
     setResizable (false, false);
     setVisible (true);
     setAlwaysOnTop (true);
+
+    setName (plugin->getPluginDescription().name + "-" + track->getName());
 }
 
 void PluginWindow::closeButtonPressed()

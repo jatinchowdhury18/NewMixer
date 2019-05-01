@@ -1,12 +1,12 @@
 #ifndef PLUGINWINDOW_H_INCLUDED
 #define PLUGINWINDOW_H_INCLUDED
 
-#include "JuceHeader.h"
+#include "Track.h"
 
 class PluginWindow : public DocumentWindow
 {
 public:
-    PluginWindow (AudioProcessorEditor* editor);
+    PluginWindow (AudioPluginInstance* plugin, Track* track);
     
     void closeButtonPressed() override;
 
