@@ -4,7 +4,7 @@
 [![Github All Releases](https://img.shields.io/github/downloads/jatinchowdhury18/newmixer/total.svg)](https://github.com/jatinchowdhury18/NewMixer/releases/latest)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/975518c11ead481ea60d9f8f04d7f0ac)](https://www.codacy.com/app/jatinchowdhury18/NewMixer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jatinchowdhury18/NewMixer&amp;utm_campaign=Badge_Grade)
 
-![Pic](https://raw.githubusercontent.com/jatinchowdhury18/NewMixer/master/Assets/screenshot.png)
+![Pic](https://raw.githubusercontent.com/jatinchowdhury18/NewMixer/master/Assets/screenshot.PNG)
 
 An audio mixing tool that allows the user to visualize audio sources by their location in space rather than as channels on a mixing board.
 See a demo video [here](https://youtu.be/_oikZhhMsP4).
