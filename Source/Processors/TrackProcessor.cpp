@@ -7,7 +7,7 @@ TrackProcessor::TrackProcessor (File& file, int64 startSample) :
     readerStartSample = startSample;
 
     formatManager.registerBasicFormats();
-    reader = formatManager.createReaderFor (file.createInputStream());
+    setupTransportSource (file.createInputStream());
 
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }
@@ -17,7 +17,7 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input, int64 startSample) : T
     readerStartSample = startSample;
 
     formatManager.registerBasicFormats();
-    reader = formatManager.createReaderFor (input);
+    setupTransportSource (input);
 
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }
@@ -32,12 +32,12 @@ TrackProcessor::TrackProcessor (const TrackProcessor& processor) :
     if (oldMis != nullptr)
     {
         MemoryInputStream* mis = new MemoryInputStream (oldMis->getData(), oldMis->getDataSize(), false);
-        reader = formatManager.createReaderFor (mis);
+        setupTransportSource (mis);
     }
 
     file = processor.file;
     if (file.exists())
-        reader = formatManager.createReaderFor (file.createInputStream());
+        setupTransportSource (file.createInputStream());
 
     setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
 }
@@ -47,28 +47,48 @@ void TrackProcessor::setFile (File& newFile)
     file = newFile;
 
     delete reader;
-    reader = formatManager.createReaderFor (file.createInputStream());
+    setupTransportSource (file.createInputStream());
+}
+
+void TrackProcessor::setupTransportSource (InputStream* inputStream)
+{
+    reader = formatManager.createReaderFor (inputStream);
+    readerSource.reset (new AudioFormatReaderSource (reader, false));
+    transportSource.setSource (readerSource.get(), 0, nullptr, reader->sampleRate);
+}
+
+void TrackProcessor::prepareToPlay (double sampleRate, int maxExpectedBlockSize)
+{
+    TrackBase::prepareToPlay (sampleRate, maxExpectedBlockSize);
+
+    transportSource.prepareToPlay (maxExpectedBlockSize, sampleRate);
 }
 
 void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    if (reader->lengthInSamples < 0)
-        return; //@TODO: this should not be happening, ever.
+    if (! transportSource.isPlaying())
+        transportSource.start();
 
     const auto numSamples = buffer.getNumSamples();
-    if (readerStartSample + numSamples <= reader->lengthInSamples)
+    AudioSourceChannelInfo channelInfo (buffer);
+    transportSource.setNextReadPosition (readerStartSample);
+    if (readerStartSample + numSamples <= transportSource.getTotalLength())
     {
-        reader->read (&buffer, 0, numSamples, readerStartSample, true, true);
+        transportSource.getNextAudioBlock (channelInfo);
         readerStartSample += numSamples;
     }
     else
     {
-        auto samplesUnder = jmax<int64> (reader->lengthInSamples - readerStartSample, 0);
-        reader->read (&buffer, 0, (int) samplesUnder, readerStartSample, true, true);
+        auto samplesUnder = jmax<int64> (transportSource.getTotalLength() - readerStartSample, 0);
+
+        transportSource.getNextAudioBlock (channelInfo);
 
         if (looping)
         {
-            reader->read (&buffer, (int) samplesUnder, numSamples - (int) samplesUnder, 0, true, true);
+            channelInfo.startSample = (int) samplesUnder;
+            channelInfo.numSamples = numSamples - (int) samplesUnder;
+            transportSource.setNextReadPosition (0);
+            transportSource.getNextAudioBlock (channelInfo);
             readerStartSample = numSamples - samplesUnder;
 
             listeners.call (&TrackBase::Listener::newLoop);
@@ -77,11 +97,23 @@ void TrackProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiM
         {
             buffer.applyGainRamp (0, (int) samplesUnder, 1.0f, 0.0f);
             buffer.applyGain ((int) samplesUnder, numSamples - (int) samplesUnder, 0.0f);
-            readerStartSample = reader->lengthInSamples;
+            readerStartSample = transportSource.getTotalLength();
+
+            transportSource.stop();
 
             listeners.call (&TrackBase::Listener::endReached);
         }
     }
 
+    if (reader->numChannels < 2)
+        buffer.copyFrom (1, 0, buffer.getReadPointer(0), buffer.getNumSamples());
+
     TrackBase::processBlock (buffer, midiMessages);
+}
+
+void TrackProcessor::releaseResources()
+{
+    TrackBase::releaseResources();
+    transportSource.stop();
+    transportSource.releaseResources();
 }
