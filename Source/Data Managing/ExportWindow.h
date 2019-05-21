@@ -3,6 +3,26 @@
 
 #include "MasterTrackProcessor.h"
 
+class ExportLNF : public LookAndFeel_V4
+{
+public:
+    ExportLNF()
+    {
+        setColour (PopupMenu::backgroundColourId, Colours::antiquewhite);
+        setColour (PopupMenu::textColourId, Colours::red);
+        setColour (PopupMenu::highlightedBackgroundColourId, Colours::dodgerblue);
+
+        setColour (AlertWindow::backgroundColourId, Colours::antiquewhite);
+        setColour (AlertWindow::outlineColourId, Colours::dodgerblue);
+        setColour (AlertWindow::textColourId, Colours::red);
+        setColour (ProgressBar::backgroundColourId, Colours::antiquewhite.darker());
+        setColour (ProgressBar::foregroundColourId, Colours::dodgerblue);
+    }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ExportLNF)
+};
+
 class ExportComponent;
 class ExportProgressWindow : public ThreadWithProgressWindow
 {
@@ -35,9 +55,12 @@ public:
     ExportInfo getExportInfo() { return exportInfo; }
 
     void exportCompleted() override;
+    ExportLNF& getLNF() { return exportLNF; }
 
 private:
     void initSettingsComponents();
+
+    ExportLNF exportLNF;
 
     DocumentWindow* window;
     MasterTrackProcessor* master;
