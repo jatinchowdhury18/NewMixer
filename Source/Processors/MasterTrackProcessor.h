@@ -14,7 +14,7 @@ public:
 
     ExportFormat format = WAV;
     int bitDepth = 32;
-    double sampleRate = 0; //@TODO
+    double sampleRate = 44100.0;
     File exportFile;
     int samplesPerBlock = 256;
     int64 lengthSamples;

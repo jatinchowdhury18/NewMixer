@@ -13,6 +13,7 @@ namespace
 
     const StringArray WavBitDepths ({ "32", "24", "16" });
     const StringArray AiffBitDepths ({ "24", "16" });
+    const StringArray availableSampleRates ({ "44100", "48000", "96000" });
 };
 
 ExportWindow::ExportWindow (MasterTrackProcessor* master, int64 sessionLengthSamples, File sessionFile) :
@@ -72,9 +73,7 @@ void ExportComponent::initSettingsComponents()
         box.setColour (ComboBox::outlineColourId, Colours::dodgerblue);
         box.setColour (ComboBox::textColourId, Colours::red);
         box.setColour (ComboBox::arrowColourId, Colours::red);
-        getLookAndFeel().setColour (PopupMenu::backgroundColourId, Colours::antiquewhite);
-        getLookAndFeel().setColour (PopupMenu::textColourId, Colours::red);
-        getLookAndFeel().setColour (PopupMenu::highlightedBackgroundColourId, Colours::dodgerblue);
+        box.setLookAndFeel (&exportLNF);
 
         addAndMakeVisible (box);
     };
@@ -86,11 +85,10 @@ void ExportComponent::initSettingsComponents()
         if (exportInfo.format == ExportInfo::ExportFormat::AIFF)
             exportInfo.bitDepth = AiffBitDepths[bitDepthBox.getSelectedItemIndex()].getIntValue();
     };
-
     setupBox (bitDepthBox, WavBitDepths, bitDepthLamda);
 
-    setupBox (sampleRateBox, StringArray ({ "44100" }));
-    sampleRateBox.setEnabled (false);
+    setupBox (sampleRateBox, availableSampleRates,
+            [this] { exportInfo.sampleRate = availableSampleRates[sampleRateBox.getSelectedItemIndex()].getDoubleValue(); });
 
     std::function<void()> formatLamda = [this]
     {
@@ -141,6 +139,8 @@ void ExportComponent::startExport()
     {
         exportInfo.exportFile = nativeFileChooser.getResult().withFileExtension (formatString);
 
+        exportInfo.lengthSamples = int64 (exportInfo.lengthSamples * exportInfo.sampleRate / master->getSampleRate());
+
         progressWindow->launchThread();
     }
 }
@@ -156,17 +156,12 @@ ExportProgressWindow::ExportProgressWindow (MasterTrackProcessor* master, Export
     exportComp (comp)
 
 {
-    getAlertWindow()->getLookAndFeel().setColour (AlertWindow::backgroundColourId, Colours::antiquewhite);
-    getAlertWindow()->getLookAndFeel().setColour (AlertWindow::outlineColourId, Colours::dodgerblue);
-    getAlertWindow()->getLookAndFeel().setColour (AlertWindow::textColourId, Colours::red);
-    getAlertWindow()->getLookAndFeel().setColour (ProgressBar::backgroundColourId, Colours::antiquewhite.darker());
-    getAlertWindow()->getLookAndFeel().setColour (ProgressBar::foregroundColourId, Colours::dodgerblue);
+    getAlertWindow()->setLookAndFeel (&exportComp->getLNF());
     getAlertWindow()->sendLookAndFeelChange();
 }
 
 void ExportProgressWindow::run()
 {
-    //@TODO: options for export file type, sample rate, bit depth
     masterProc->prepareToExport (exportComp->getExportInfo());
     masterProc->exportToFile (exportComp->getExportInfo(), this);
 }

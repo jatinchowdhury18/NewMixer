@@ -92,14 +92,11 @@ void MasterTrackProcessor::prepareToExport (ExportInfo exportInfo)
 {
     deviceManager.removeAudioCallback (&player);
 
-    AudioDeviceManager::AudioDeviceSetup setup;
-    deviceManager.getAudioDeviceSetup (setup);
-
     for (auto track : tracks)
         track->stopTimer();
 
     setNonRealtime (true);
-    prepareToPlay (setup.sampleRate, exportInfo.samplesPerBlock);
+    prepareToPlay (exportInfo.sampleRate, exportInfo.samplesPerBlock);
 
     isExporting = true;
 
@@ -142,12 +139,12 @@ AudioSampleBuffer MasterTrackProcessor::getAudioBuffer (int bufferLength)
 void MasterTrackProcessor::exportToFile (ExportInfo exportInfo, ThreadWithProgressWindow* progress)
 {
     const int numBlocksEnd = 5; //num blocks silence buffer before ending??
-    const int64 timeOutSamples = (int64) getSampleRate(); //1 second forced timeout
+    const int64 timeOutSamples = (int64) exportInfo.sampleRate; //1 second forced timeout
     const float exportSilence = 0.0001f; //-80 dB
 
     FileOutputStream* fileStream (exportInfo.exportFile.createOutputStream());
     AudioFormat* format = formatManager.findFormatForFileExtension (ExportInfo::getStringForFormat (exportInfo.format));
-    std::unique_ptr<AudioFormatWriter> writer (format->createWriterFor (fileStream, getSampleRate(),
+    std::unique_ptr<AudioFormatWriter> writer (format->createWriterFor (fileStream, exportInfo.sampleRate,
                                                                         getTotalNumOutputChannels(),
                                                                         exportInfo.bitDepth, {}, 0));
 
