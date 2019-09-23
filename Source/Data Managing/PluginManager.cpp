@@ -95,7 +95,7 @@ FileSearchPath PluginManager::getPluginFolder()
         }
     }
     settingsXml->setAttribute ("pluginsPath", folder.toString());
-    settingsXml->writeToFile (settingsFile, {});
+    settingsXml->writeTo (settingsFile, {});
     return folder;
 #endif
 }
