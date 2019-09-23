@@ -293,10 +293,6 @@ void ActionHelper::addFileTrack (MainComponent* mc, int x, int y)
 
 void ActionHelper::addRecordingTrack (MainComponent* mc, int x, int y)
 {
-    TrackBase* t;
-    if (! mc->getTracks().isEmpty())
-        t = mc->getTracks()[0]->getProcessor();
-
     auto len =         mc->getTracks().isEmpty() ? (int64) 1000000 : mc->getTracks()[0]->getProcessor()->getLengthSamples();
     auto startSample = mc->getTracks().isEmpty() ? (int64) 0       : mc->getTracks()[0]->getProcessor()->getStartSample();
     auto playing =     mc->getTracks().isEmpty() ? false           : mc->getTracks()[0]->getIsPlaying();
