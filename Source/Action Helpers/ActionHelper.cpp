@@ -2,6 +2,7 @@
 #include "Tracks/TrackHelpers/SoloHelper.h"
 #include "TrackHelpers/TrackActionHelper.h"
 #include "Data Managing/SessionManager.h"
+#include "DuplicateTrack.h"
 
 enum
 {
@@ -138,6 +139,16 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
         exportSession (mc);
         return true;
     }
+    else if (key == KeyPress::createFromDescription ("CMD + Z")) //Undo
+    {
+        mc->getUndoManager().undo();
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + Y")) //Redo
+    {
+        mc->getUndoManager().redo();
+        return true;
+    }
 
     for (auto track : mc->getTracks())
     {
@@ -199,20 +210,8 @@ void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 {
-    Track* trackToDuplicate = nullptr;
-    for (int i = 0; i < mc->getTracks().size(); i++)
-    {
-        if (mc->getTracks()[i]->getIsSelected())
-        {
-            trackToDuplicate = mc->getTracks()[i];
-            break;
-        }
-    }
-
-    if (trackToDuplicate != nullptr)
-        addTrack (new Track (*trackToDuplicate), mc, 
-            trackToDuplicate->getX() + TrackConstants::width * 3 / 4,
-            trackToDuplicate->getY() + TrackConstants::width * 3 / 4);
+    mc->getUndoManager().perform (new DuplicateTrack (mc, getSelectedTrack (mc)));
+    return;
 }
 
 void ActionHelper::clearSelectedTrack (MainComponent* mc)
@@ -370,4 +369,15 @@ void ActionHelper::exportSession (MainComponent* mc)
     rewind (mc);
     
     mc->getExportWindow().reset (new ExportWindow (mc->getMaster(), mc->getSessionLength(), mc->getSessionFile()));
+}
+
+Track* ActionHelper::getSelectedTrack (MainComponent* mc)
+{
+    for (int i = 0; i < mc->getTracks().size(); i++)
+    {
+        if (mc->getTracks()[i]->getIsSelected())
+            return mc->getTracks()[i];
+    }
+
+    return nullptr;
 }

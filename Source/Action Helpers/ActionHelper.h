@@ -31,6 +31,9 @@ public:
 
     static void exportSession (MainComponent* mc);
 
+    // Util functions
+    static Track* getSelectedTrack (MainComponent* mc);
+
 private:
     static bool validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc);
 

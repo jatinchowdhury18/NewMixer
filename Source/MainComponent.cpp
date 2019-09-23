@@ -61,6 +61,9 @@ void MainComponent::initSettings()
 
     setupButton (pluginsButton, "Plugins",
                 [this] { PluginManager::getInstance()->showPluginListWindow(); });
+
+    setupButton (undoButton, "Undo", [this] { undoManager.undo(); });
+    setupButton (redoButton, "Redo", [this] { undoManager.redo(); });
 }
 
 #if JUCE_IOS || JUCE_ANDROID
@@ -103,6 +106,11 @@ void MainComponent::resized()
                               (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
     pluginsButton.setBounds (settingsButton.getX(), settingsButton.getBottom(),
                              settingsButton.getWidth(), settingsButton.getHeight());
+
+#if ! (JUCE_IOS || JUCE_ANDROID)
+    undoButton.setBounds (0, 0,                      settingsButton.getWidth(), settingsButton.getHeight());
+    redoButton.setBounds (0, undoButton.getBottom(), settingsButton.getWidth(), settingsButton.getHeight());
+#endif
 
     if (waveformView != nullptr)
         waveformView->setBounds (0, (int) (getHeight() * MainConstants::heightFactor),

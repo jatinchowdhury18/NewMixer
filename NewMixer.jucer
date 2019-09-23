@@ -3,7 +3,7 @@
 <JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.4"
               version="0.3.0" companyName="Chowdhury DSP" companyWebsite="chowdsp.com"
               companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer"
-              headerPath="../../JUCE/ASIOSDK2.3.2/common/&#10;../../Source/&#10;../../Source/Tracks/&#10;../../Source/Processors/&#10;../../Source/GUI Extras/">
+              headerPath="../../JUCE/ASIOSDK2.3.2/common/&#10;../../Source/&#10;../../Source/Tracks/&#10;../../Source/Processors/&#10;../../Source/GUI Extras/&#10;../../Source/Action Helpers/">
   <MAINGROUP id="Gj1rsf" name="NewMixer">
     <GROUP id="{55BD9B08-0352-44B4-D2D8-8FBAA2107695}" name="Assets">
       <FILE id="KQiqcd" name="logo_256.png" compile="0" resource="1" file="Assets/logo_256.png"/>
@@ -27,6 +27,13 @@
       </GROUP>
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
+      <GROUP id="{DA1D1A37-AF8D-EDC7-FCBA-36CBCCE94F4B}" name="Action Helpers">
+        <FILE id="N3Hd5j" name="ActionHelper.cpp" compile="1" resource="0"
+              file="Source/Action Helpers/ActionHelper.cpp"/>
+        <FILE id="v9WcJc" name="ActionHelper.h" compile="0" resource="0" file="Source/Action Helpers/ActionHelper.h"/>
+        <FILE id="gt52F1" name="DuplicateTrack.h" compile="0" resource="0"
+              file="Source/Action Helpers/DuplicateTrack.h"/>
+      </GROUP>
       <GROUP id="{E57E395B-F612-6274-CEAA-A92EA6363804}" name="Data Managing">
         <FILE id="TUpsPX" name="ExportWindow.cpp" compile="1" resource="0"
               file="Source/Data Managing/ExportWindow.cpp"/>
@@ -155,9 +162,6 @@
         <FILE id="A4XebX" name="TrackPluginMenu.h" compile="0" resource="0"
               file="Source/Tracks/TrackPluginMenu.h"/>
       </GROUP>
-      <FILE id="WCzuLe" name="ActionHelper.cpp" compile="1" resource="0"
-            file="Source/ActionHelper.cpp"/>
-      <FILE id="PtVFiB" name="ActionHelper.h" compile="0" resource="0" file="Source/ActionHelper.h"/>
       <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
