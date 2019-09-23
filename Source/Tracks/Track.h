@@ -51,9 +51,10 @@ public:
     Track (const Track& track);
     void initialise (int x, int y, int ind);
     ~Track();
-    void uninitialise();
 
     TrackBase* getProcessor() const { return processor; }
+    std::unique_ptr<TrackBase> getProcessorPtr() { return std::move (initProcessor); }
+    void setProcessor (AudioProcessor* proc) { processor = dynamic_cast<TrackBase*> (proc); }
 
     void paintOverChildren (Graphics& g) override;
     void resized() override;
@@ -159,6 +160,7 @@ private:
     bool isPlaying = false;
     int index = 0;
 
+    std::unique_ptr<TrackBase> initProcessor;
     TrackBase* processor;
 
     std::unique_ptr<TrackMeter> meter;

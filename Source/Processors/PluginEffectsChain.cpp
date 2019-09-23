@@ -33,18 +33,18 @@ void PluginEffectsChain::addPlugin (const PluginDescription* description, int in
     auto& pluginFormatManager = PluginManager::getInstance()->getPluginFormatManager();
 
     String errorMessage;
-    auto* plugin = pluginFormatManager.createPluginInstance (*description, getSampleRate(), getBlockSize(), errorMessage);
+    auto plugin = pluginFormatManager.createPluginInstance (*description, getSampleRate(), getBlockSize(), errorMessage);
 
     if (index < 0)
     {
-        pluginList.add (plugin);
+        pluginList.add (plugin.release());
         pluginList.getLast()->prepareToPlay (getSampleRate(), getBlockSize());
         bypasses.add (false);
     }
     else
     {
         int corrIndex = jmin (index, pluginList.size()-1);
-        pluginList.insert (corrIndex, plugin);
+        pluginList.insert (corrIndex, plugin.release());
         pluginList[index]->prepareToPlay (getSampleRate(), getBlockSize());
         bypasses.insert (corrIndex, false);
     }

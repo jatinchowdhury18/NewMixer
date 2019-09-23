@@ -15,18 +15,18 @@ public:
 
         expect (pluginList.getNumTypes() > 0, "No plugins found!");
 
-        std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
+        std::unique_ptr<KnownPluginList::PluginTree> pluginTree (KnownPluginList::createTree (pluginList.getTypes(), KnownPluginList::SortMethod::defaultOrder));
         auto plugins = pluginTree->plugins;
 
         int numTestPluginsFound = 0;
         for (const auto plugin : plugins)
         {
-            if (plugin->name == "CHOW")
+            if (plugin.name == "CHOW")
                 numTestPluginsFound++;
             else
                 continue;
 
-            auto formatName = plugin->pluginFormatName;
+            auto formatName = plugin.pluginFormatName;
             expect (formatName == "VST" || formatName == "VST3" || formatName == "AudioUnit", "Incorrect plugin format");
         }
         expect (numTestPluginsFound > 0, "Test plugin not found");

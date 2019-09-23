@@ -138,13 +138,13 @@ void SavingTest::addPlugin (Track* track)
 {
     auto& pluginList = PluginManager::getInstance()->getPluginList();
 
-    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
+    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (KnownPluginList::createTree (pluginList.getTypes(), KnownPluginList::SortMethod::defaultOrder));
     auto pluginArray = pluginTree->plugins;
 
     for (auto plugin : pluginArray)
     {
-        if (plugin->name == "CHOW" && plugin->pluginFormatName == "VST3")
-            track->getProcessor()->getPluginChain()->addPlugin (plugin);
+        if (plugin.name == "CHOW" && plugin.pluginFormatName == "VST3")
+            track->getProcessor()->getPluginChain()->addPlugin (&plugin);
     }
     track->getProcessor()->getPluginChain()->getPluginList().getFirst()->getParameters().getFirst()->setValue (0.5f);
 }
