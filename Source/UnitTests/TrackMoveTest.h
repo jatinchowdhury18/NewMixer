@@ -50,7 +50,6 @@ public:
 
     void shutdown() override 
     {
-        delete track->getProcessor(); 
         delete track;
     }
 

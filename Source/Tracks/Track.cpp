@@ -16,7 +16,8 @@ Track::Track (File& file, String name, String shortName, Colour colour) :
 {
     autoHelper.reset (new AutoHelper);
 
-    processor = new TrackProcessor (file);
+    initProcessor.reset (new TrackProcessor (file));
+    processor = initProcessor.get();
     processor->addListener (this);
 }
 
@@ -27,7 +28,8 @@ Track::Track (MemoryInputStream* input, String name, String shortName, Colour co
 {
     autoHelper.reset (new AutoHelper);
 
-    processor = new TrackProcessor (input);
+    initProcessor.reset (new TrackProcessor (input));
+    processor = initProcessor.get();
     processor->addListener (this);
 }
 
@@ -39,7 +41,8 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
 {
     autoHelper.reset (new AutoHelper);
 
-    processor = new InputTrackProcessor (sampleLength, startSample);
+    initProcessor.reset (new InputTrackProcessor (sampleLength, startSample));
+    processor = initProcessor.get();
     processor->addListener (this);
 }
 
@@ -58,10 +61,11 @@ Track::Track (const Track& track) :
 
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track.getProcessor());
     if (inputProcessor == nullptr) //File track
-        processor = new TrackProcessor (*dynamic_cast<TrackProcessor*> (track.getProcessor()));
+        initProcessor.reset (new TrackProcessor (*dynamic_cast<TrackProcessor*> (track.getProcessor())));
     else //Record track
-        processor = new InputTrackProcessor (*inputProcessor);
+        initProcessor.reset (new InputTrackProcessor (*inputProcessor));
 
+    processor = initProcessor.get();
     processor->addListener (this);
 
     if (! track.getProcessor()->getIsMute())
@@ -96,13 +100,6 @@ Track::~Track()
 #if JUCE_IOS || JUCE_ANDROID
     touches.clear();
 #endif
-}
-
-void Track::uninitialise()
-{
-    delete dynamic_cast<TrackProcessor*> (processor)->getReader();
-    dynamic_cast<TrackProcessor*> (processor)->getFormatManager().clearFormats();
-    delete processor;
 }
 
 void Track::timerCallback()

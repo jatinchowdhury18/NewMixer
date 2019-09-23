@@ -55,7 +55,7 @@ void PluginManager::setPluginFolder (String folder)
         if (settingsXml.get() != nullptr)
             settingsXml->setAttribute ("pluginsPath", folder);
         
-        settingsXml->writeToFile (settingsFile, {});
+        settingsXml->writeTo (settingsFile, {});
     }
 }
 

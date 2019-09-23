@@ -60,20 +60,20 @@ void AddPluginComponent::paint (Graphics& g)
 
 void AddPluginComponent::mouseDown (const MouseEvent& /*e*/)
 {
-    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (PluginManager::getInstanceWithoutCreating()->getPluginList()
-                                                            .createTree(KnownPluginList::SortMethod::defaultOrder));
+    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (KnownPluginList::createTree (PluginManager::getInstanceWithoutCreating()->getPluginList().getTypes(),
+                                                                                          KnownPluginList::SortMethod::defaultOrder));
     auto plugins = pluginTree->plugins;
 
     PopupMenu m;
     for (auto plugin : plugins)
-        m.addItem (plugin->uid, plugin->name);
+        m.addItem (plugin.uid, plugin.name);
     
     const int result = m.show();
     for (auto plugin : plugins)
     {
-        if (plugin->uid == result)
+        if (plugin.uid == result)
         {
-            track->getProcessor()->getPluginChain()->addPlugin (plugin);
+            track->getProcessor()->getPluginChain()->addPlugin (&plugin);
             track->openPluginWindow (track->getProcessor()->getPluginChain()->getNumPlugins()-1);
             PopupMenu::dismissAllActiveMenus();
         }
@@ -184,7 +184,7 @@ void TrackPluginMenu::refresh()
     auto pluginChain = track->getProcessor()->getPluginChain();
     for (int i = 0; i < pluginChain->getNumPlugins(); i++)
     {
-        addCustomItem (pluginBaseID + i, new PluginComponent (track, pluginChain->getPluginName (i), i, this));   
+        addCustomItem (pluginBaseID + i, std::make_unique<PluginComponent> (track, pluginChain->getPluginName (i), i, this));   
     }
-    addCustomItem (newPluginID, new AddPluginComponent (track));
+    addCustomItem (newPluginID, std::make_unique<AddPluginComponent> (track));
 }

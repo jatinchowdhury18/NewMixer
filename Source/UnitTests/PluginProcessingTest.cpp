@@ -8,13 +8,13 @@ void PluginProcessingTest::runTest()
     //Test plugin
     auto& pluginList = PluginManager::getInstance()->getPluginList();
 
-    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
+    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (KnownPluginList::createTree (pluginList.getTypes(), KnownPluginList::SortMethod::defaultOrder));
     auto pluginArray = pluginTree->plugins;
 
     for (auto plugin : pluginArray)
     {
-        if (plugin->name == "CHOW")
-            track->getProcessor()->getPluginChain()->addPlugin (plugin);
+        if (plugin.name == "CHOW")
+            track->getProcessor()->getPluginChain()->addPlugin (&plugin);
     }
     track->openPluginWindow (0);
 
@@ -50,7 +50,6 @@ void PluginProcessingTest::initialise()
 void PluginProcessingTest::shutdown()
 {
     delete dynamic_cast<TrackProcessor*> (track->getProcessor())->getReader();
-    delete track->getProcessor(); 
     delete track;
 }
 

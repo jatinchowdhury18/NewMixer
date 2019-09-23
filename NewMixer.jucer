@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.3"
+<JUCERPROJECT id="anMVHB" name="NewMixer" projectType="guiapp" jucerVersion="5.4.4"
               version="0.3.0" companyName="Chowdhury DSP" companyWebsite="chowdsp.com"
               companyEmail="chowdsp@gmail.com" bundleIdentifier="com.chowdsp.NewMixer"
               headerPath="../../JUCE/ASIOSDK2.3.2/common/&#10;../../Source/&#10;../../Source/Tracks/&#10;../../Source/Processors/&#10;../../Source/GUI Extras/">

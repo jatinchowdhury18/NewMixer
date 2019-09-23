@@ -90,7 +90,7 @@ void SessionManager::saveSession (MainComponent* mc)
     xml->addChildElement (xmlTracks.release());
 
     File saveFile (session.getChildFile (session.getFileName() + ".chow"));
-    xml->writeToFile (saveFile, {});
+    xml->writeTo (saveFile, {});
 }
 
 void SessionManager::saveSessionAs (MainComponent* mc, File* sessionFolder)
@@ -193,16 +193,16 @@ void SessionManager::parsePluginXml (Track* newTrack, XmlElement* pluginXml)
 {
     auto& pluginList = PluginManager::getInstance()->getPluginList();
 
-    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (pluginList.createTree (KnownPluginList::SortMethod::defaultOrder));
+    std::unique_ptr<KnownPluginList::PluginTree> pluginTree (KnownPluginList::createTree (pluginList.getTypes(), KnownPluginList::SortMethod::defaultOrder));
     auto pluginArray = pluginTree->plugins;
 
     bool found = false;
     for (auto plugin : pluginArray)
     {
-        if (plugin->name == pluginXml->getTagName() && plugin->pluginFormatName == pluginXml->getStringAttribute ("Format"))
+        if (plugin.name == pluginXml->getTagName() && plugin.pluginFormatName == pluginXml->getStringAttribute ("Format"))
         {
             found = true;
-            newTrack->getProcessor()->getPluginChain()->addPlugin (plugin);
+            newTrack->getProcessor()->getPluginChain()->addPlugin (&plugin);
         }
     }
 

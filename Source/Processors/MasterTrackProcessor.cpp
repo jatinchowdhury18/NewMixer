@@ -9,14 +9,17 @@ MasterTrackProcessor::MasterTrackProcessor (OwnedArray<Track>& tracks) :
     deviceManager.initialiseWithDefaultDevices (2, 2);
     deviceManager.addAudioCallback (&player);
 
-    audioOutputNode = addNode (new AudioGraphIOProcessor (AudioGraphIOProcessor::audioOutputNode));
+    audioOutputNode = addNode (std::make_unique<AudioGraphIOProcessor> (AudioGraphIOProcessor::audioOutputNode));
     audioOutputNode->getProcessor()->setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
 
-    audioInputNode = addNode (new AudioGraphIOProcessor (AudioGraphIOProcessor::audioInputNode));
+    audioInputNode = addNode (std::make_unique<AudioGraphIOProcessor> (AudioGraphIOProcessor::audioInputNode));
     audioInputNode->getProcessor()->setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
 
     for (auto track : tracks)
-        trackNodes.add (addNode (track->getProcessor()));
+    {
+        trackNodes.add (addNode (track->getProcessorPtr()));
+        track->setProcessor (trackNodes.getLast()->getProcessor());
+    }
     connectTracks();
 
     player.setProcessor (this);
@@ -64,8 +67,9 @@ void MasterTrackProcessor::togglePlay()
 
 void MasterTrackProcessor::addTrack (Track* track)
 {
-    trackNodes.add (addNode (track->getProcessor()));
+    trackNodes.add (addNode (track->getProcessorPtr()));
     auto trackNode = trackNodes.getLast();
+    track->setProcessor (trackNode->getProcessor());
 
     for (int channel = 0; channel < 2; ++channel)
     {
