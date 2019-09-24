@@ -5,6 +5,7 @@
 #include "DuplicateTrack.h"
 #include "DeleteTrack.h"
 #include "AddTrack.h"
+#include "ToggleLoop.h"
 
 enum
 {
@@ -52,6 +53,7 @@ void ActionHelper::rightClickCallback (int result, MainComponent* mc, Point<int>
         return;
 
     case Cmds::newFileTrack:
+        mc->getUndoManager().beginNewTransaction();
         mc->getUndoManager().perform (new AddTrack (mc, p.x, p.y));
         return;
 
@@ -107,6 +109,7 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
     }
     else if (key == KeyPress::createFromDescription ("CMD + N")) //New track
     {
+        mc->getUndoManager().beginNewTransaction();
         mc->getUndoManager().perform (new AddTrack (mc, mc->getWidth() / 2, mc->getHeight() / 2));
         //ActionHelper::addRecordingTrack (mc, mc->width / 2, mc->height / 2);
         return true;
@@ -170,8 +173,8 @@ void ActionHelper::togglePlay (MainComponent* mc)
 
 void ActionHelper::toggleLoop (MainComponent* mc)
 {
-    for (auto track : mc->getTracks())
-        track->getProcessor()->toggleLoop();
+    mc->getUndoManager().beginNewTransaction();
+    mc->getUndoManager().perform (new ToggleLoop (mc));
 }
 
 void ActionHelper::rewind (MainComponent* mc)
@@ -188,11 +191,13 @@ void ActionHelper::soloSelectedTrack (MainComponent* mc)
 
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
+    mc->getUndoManager().beginNewTransaction();
     mc->getUndoManager().perform (new DeleteTrack (mc, getSelectedTrack (mc)));
 }
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 {
+    mc->getUndoManager().beginNewTransaction();
     mc->getUndoManager().perform (new DuplicateTrack (mc, getSelectedTrack (mc)));
 }
 

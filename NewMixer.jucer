@@ -36,6 +36,7 @@
         <FILE id="uEO0N7" name="DeleteTrack.h" compile="0" resource="0" file="Source/Action Helpers/DeleteTrack.h"/>
         <FILE id="gt52F1" name="DuplicateTrack.h" compile="0" resource="0"
               file="Source/Action Helpers/DuplicateTrack.h"/>
+        <FILE id="kHWak7" name="ToggleLoop.h" compile="0" resource="0" file="Source/Action Helpers/ToggleLoop.h"/>
       </GROUP>
       <GROUP id="{E57E395B-F612-6274-CEAA-A92EA6363804}" name="Data Managing">
         <FILE id="TUpsPX" name="ExportWindow.cpp" compile="1" resource="0"
