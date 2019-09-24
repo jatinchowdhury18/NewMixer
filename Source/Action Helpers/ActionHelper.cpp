@@ -3,6 +3,7 @@
 #include "TrackHelpers/TrackActionHelper.h"
 #include "Data Managing/SessionManager.h"
 #include "DuplicateTrack.h"
+#include "DeleteTrack.h"
 
 enum
 {
@@ -186,32 +187,12 @@ void ActionHelper::soloSelectedTrack (MainComponent* mc)
 
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
-    Track* trackToDelete = nullptr;
-    for (int i = 0; i < mc->getTracks().size(); i++)
-    {
-        if (mc->getTracks()[i]->getIsSelected())
-        {
-            trackToDelete = mc->getTracks().removeAndReturn (i);
-            mc->getAutoPaths().remove (i);
-
-            mc->getWaveform()->deleteTrack (trackToDelete, i);
-
-            for (int j = i; j < mc->getTracks().size(); j++)
-                mc->getTracks()[j]->setIndex (j);
-        }
-    }
-
-    if (trackToDelete != nullptr)
-        mc->getMaster()->removeTrack (trackToDelete);
-    delete trackToDelete;
-
-    mc->repaint();
+    mc->getUndoManager().perform (new DeleteTrack (mc, getSelectedTrack (mc)));
 }
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 {
     mc->getUndoManager().perform (new DuplicateTrack (mc, getSelectedTrack (mc)));
-    return;
 }
 
 void ActionHelper::clearSelectedTrack (MainComponent* mc)

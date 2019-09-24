@@ -31,6 +31,7 @@
         <FILE id="N3Hd5j" name="ActionHelper.cpp" compile="1" resource="0"
               file="Source/Action Helpers/ActionHelper.cpp"/>
         <FILE id="v9WcJc" name="ActionHelper.h" compile="0" resource="0" file="Source/Action Helpers/ActionHelper.h"/>
+        <FILE id="uEO0N7" name="DeleteTrack.h" compile="0" resource="0" file="Source/Action Helpers/DeleteTrack.h"/>
         <FILE id="gt52F1" name="DuplicateTrack.h" compile="0" resource="0"
               file="Source/Action Helpers/DuplicateTrack.h"/>
       </GROUP>
