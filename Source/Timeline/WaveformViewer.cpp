@@ -94,9 +94,6 @@ void WaveformViewer::addTrack (Track* track)
 
 void WaveformViewer::deleteTrack (Track* track, int index)
 {
-    if (selectedTrack < 0)
-        return;
-
     if (index == selectedTrack)
         selectedTrack = -1;
 

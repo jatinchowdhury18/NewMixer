@@ -4,6 +4,7 @@
 #include "Data Managing/SessionManager.h"
 #include "DuplicateTrack.h"
 #include "DeleteTrack.h"
+#include "AddTrack.h"
 
 enum
 {
@@ -51,7 +52,7 @@ void ActionHelper::rightClickCallback (int result, MainComponent* mc, Point<int>
         return;
 
     case Cmds::newFileTrack:
-        ActionHelper::addFileTrack (mc, p.x, p.y);
+        mc->getUndoManager().perform (new AddTrack (mc, p.x, p.y));
         return;
 
     case Cmds::newRecordTrack:
@@ -106,7 +107,7 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
     }
     else if (key == KeyPress::createFromDescription ("CMD + N")) //New track
     {
-        ActionHelper::addFileTrack (mc, mc->getWidth() / 2, mc->getHeight() / 2);
+        mc->getUndoManager().perform (new AddTrack (mc, mc->getWidth() / 2, mc->getHeight() / 2));
         //ActionHelper::addRecordingTrack (mc, mc->width / 2, mc->height / 2);
         return true;
     }
@@ -299,6 +300,28 @@ void ActionHelper::addTrack (Track* track, MainComponent* mc, int x, int y)
     mc->addAndMakeVisible (autoPath);
     autoPath->setVisible (false);
     track->setAutoPath (autoPath);
+}
+
+void ActionHelper::deleteTrack (Track* track, MainComponent* mc)
+{
+    Track* trackToDelete = nullptr;
+    for (int i = 0; i < mc->getTracks().size(); i++)
+    {
+        if (mc->getTracks()[i] == track)
+        {
+            trackToDelete = mc->getTracks().removeAndReturn (i);
+            mc->getAutoPaths().remove (i);
+
+            mc->getWaveform()->deleteTrack (trackToDelete, i);
+
+            for (int j = i; j < mc->getTracks().size(); j++)
+                mc->getTracks()[j]->setIndex (j);
+        }
+    }
+
+    if (trackToDelete != nullptr)
+        mc->getMaster()->removeTrack (trackToDelete);
+    delete trackToDelete;
 }
 
 bool ActionHelper::validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc)

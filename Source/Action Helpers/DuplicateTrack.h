@@ -30,24 +30,7 @@ public:
         if (createdTrack == nullptr)
             return false;
 
-        Track* trackToDelete = nullptr;
-        for (int i = 0; i < mc->getTracks().size(); i++)
-        {
-            if (mc->getTracks()[i] == createdTrack)
-            {
-                trackToDelete = mc->getTracks().removeAndReturn (i);
-                mc->getAutoPaths().remove (i);
-
-                mc->getWaveform()->deleteTrack (trackToDelete, i);
-
-                for (int j = i; j < mc->getTracks().size(); j++)
-                    mc->getTracks()[j]->setIndex (j);
-            }
-        }
-
-        if (trackToDelete != nullptr)
-            mc->getMaster()->removeTrack (trackToDelete);
-        delete trackToDelete;
+        ActionHelper::deleteTrack (createdTrack, mc);
 
         mc->repaint();
         return true;
