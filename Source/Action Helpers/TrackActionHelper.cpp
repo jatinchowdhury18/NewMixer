@@ -1,6 +1,7 @@
 #include "TrackActionHelper.h"
 #include "InputTrackProcessor.h"
 #include "MainComponent.h"
+#include "ToggleMute.h"
 
 void TrackActionHelper::rightClickMenu (Track* track)
 {
@@ -44,7 +45,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::mute:
-        track->toggleMute();
+        toggleMute (track);
         return;
 
     case TrackCmds::solo:
@@ -96,7 +97,10 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
     if (key.getModifiers().isAltDown())                           //Change volume
         TrackActionHelper::changeSize (track);
     else if (key == KeyPress::createFromDescription ("m"))        //Mute Track
-        return track->toggleMute();
+    {
+        toggleMute (track);
+        return true;
+    }
     else if (key == KeyPress::createFromDescription ("a"))        //Automate
     {
         track->getAutoHelper()->arm();
@@ -130,6 +134,13 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
         TrackActionHelper::changePosition (track);
 
     return true;
+}
+
+void TrackActionHelper::toggleMute (Track* track)
+{
+    auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+    undoManager.beginNewTransaction();
+    undoManager.perform (new ToggleMute (track));
 }
 
 void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)

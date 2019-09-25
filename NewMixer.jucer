@@ -37,6 +37,11 @@
         <FILE id="gt52F1" name="DuplicateTrack.h" compile="0" resource="0"
               file="Source/Action Helpers/DuplicateTrack.h"/>
         <FILE id="kHWak7" name="ToggleLoop.h" compile="0" resource="0" file="Source/Action Helpers/ToggleLoop.h"/>
+        <FILE id="pvEdDT" name="TrackActionHelper.cpp" compile="1" resource="0"
+              file="Source/Action Helpers/TrackActionHelper.cpp"/>
+        <FILE id="T8kWit" name="TrackActionHelper.h" compile="0" resource="0"
+              file="Source/Action Helpers/TrackActionHelper.h"/>
+        <FILE id="xibXqS" name="ToggleMute.h" compile="0" resource="0" file="Source/Action Helpers/ToggleMute.h"/>
       </GROUP>
       <GROUP id="{E57E395B-F612-6274-CEAA-A92EA6363804}" name="Data Managing">
         <FILE id="TUpsPX" name="ExportWindow.cpp" compile="1" resource="0"
@@ -49,36 +54,6 @@
               file="Source/Data Managing/SessionManager.cpp"/>
         <FILE id="tTsnbp" name="SessionManager.h" compile="0" resource="0"
               file="Source/Data Managing/SessionManager.h"/>
-      </GROUP>
-      <GROUP id="{2F81838E-E7E3-AE43-72F1-7D2B397D1C58}" name="UnitTests">
-        <FILE id="cqn7QJ" name="AddRemoveTracksTest.h" compile="0" resource="0"
-              file="Source/UnitTests/AddRemoveTracksTest.h"/>
-        <FILE id="DisqQw" name="AutomationTest.h" compile="0" resource="0"
-              file="Source/UnitTests/AutomationTest.h"/>
-        <FILE id="K1kQZI" name="PlayTest.h" compile="0" resource="0" file="Source/UnitTests/PlayTest.h"/>
-        <FILE id="R9Z3pc" name="PluginLoadingTest.h" compile="0" resource="0"
-              file="Source/UnitTests/PluginLoadingTest.h"/>
-        <FILE id="xvMIHm" name="PluginProcessingTest.cpp" compile="1" resource="0"
-              file="Source/UnitTests/PluginProcessingTest.cpp"/>
-        <FILE id="FfthRf" name="PluginProcessingTest.h" compile="0" resource="0"
-              file="Source/UnitTests/PluginProcessingTest.h"/>
-        <FILE id="Onpx0Z" name="ProcessorTest.h" compile="0" resource="0" file="Source/UnitTests/ProcessorTest.h"/>
-        <FILE id="hr4IqX" name="SavingTest.cpp" compile="1" resource="0" file="Source/UnitTests/SavingTest.cpp"/>
-        <FILE id="CILscM" name="SavingTest.h" compile="0" resource="0" file="Source/UnitTests/SavingTest.h"/>
-        <FILE id="RTVWym" name="TrackMoveTest.h" compile="0" resource="0" file="Source/UnitTests/TrackMoveTest.h"/>
-        <FILE id="Tyhf14" name="TrackNameTest.h" compile="0" resource="0" file="Source/UnitTests/TrackNameTest.h"/>
-      </GROUP>
-      <GROUP id="{0E5CFD79-976A-F180-1D3F-50D60AAF4405}" name="Timeline">
-        <FILE id="zoscis" name="Marker.cpp" compile="1" resource="0" file="Source/Timeline/Marker.cpp"/>
-        <FILE id="uWj5C7" name="Marker.h" compile="0" resource="0" file="Source/Timeline/Marker.h"/>
-        <FILE id="ymYueU" name="MarkerView.cpp" compile="1" resource="0" file="Source/Timeline/MarkerView.cpp"/>
-        <FILE id="j64wW7" name="MarkerView.h" compile="0" resource="0" file="Source/Timeline/MarkerView.h"/>
-        <FILE id="MGCmS6" name="Playhead.cpp" compile="1" resource="0" file="Source/Timeline/Playhead.cpp"/>
-        <FILE id="APoJMD" name="Playhead.h" compile="0" resource="0" file="Source/Timeline/Playhead.h"/>
-        <FILE id="J9dR5u" name="WaveformViewer.cpp" compile="1" resource="0"
-              file="Source/Timeline/WaveformViewer.cpp"/>
-        <FILE id="P3HARG" name="WaveformViewer.h" compile="0" resource="0"
-              file="Source/Timeline/WaveformViewer.h"/>
       </GROUP>
       <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
         <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
@@ -140,12 +115,20 @@
         <FILE id="idP2bn" name="TrackProcessor.h" compile="0" resource="0"
               file="Source/Processors/TrackProcessor.h"/>
       </GROUP>
+      <GROUP id="{0E5CFD79-976A-F180-1D3F-50D60AAF4405}" name="Timeline">
+        <FILE id="zoscis" name="Marker.cpp" compile="1" resource="0" file="Source/Timeline/Marker.cpp"/>
+        <FILE id="uWj5C7" name="Marker.h" compile="0" resource="0" file="Source/Timeline/Marker.h"/>
+        <FILE id="ymYueU" name="MarkerView.cpp" compile="1" resource="0" file="Source/Timeline/MarkerView.cpp"/>
+        <FILE id="j64wW7" name="MarkerView.h" compile="0" resource="0" file="Source/Timeline/MarkerView.h"/>
+        <FILE id="MGCmS6" name="Playhead.cpp" compile="1" resource="0" file="Source/Timeline/Playhead.cpp"/>
+        <FILE id="APoJMD" name="Playhead.h" compile="0" resource="0" file="Source/Timeline/Playhead.h"/>
+        <FILE id="J9dR5u" name="WaveformViewer.cpp" compile="1" resource="0"
+              file="Source/Timeline/WaveformViewer.cpp"/>
+        <FILE id="P3HARG" name="WaveformViewer.h" compile="0" resource="0"
+              file="Source/Timeline/WaveformViewer.h"/>
+      </GROUP>
       <GROUP id="{CE0C74F8-D70C-3A56-AF3C-1D5E85BB03E7}" name="Tracks">
         <GROUP id="{FBD60609-1200-7D68-FE0A-2AF2C3EFEFBF}" name="Track Helpers">
-          <FILE id="ezawxC" name="TrackActionHelper.cpp" compile="1" resource="0"
-                file="Source/Tracks/TrackHelpers/TrackActionHelper.cpp"/>
-          <FILE id="ITOksQ" name="TrackActionHelper.h" compile="0" resource="0"
-                file="Source/Tracks/TrackHelpers/TrackActionHelper.h"/>
           <FILE id="xciFJL" name="AutomationHelper.cpp" compile="1" resource="0"
                 file="Source/Tracks/TrackHelpers/AutomationHelper.cpp"/>
           <FILE id="byk3sG" name="AutomationHelper.h" compile="0" resource="0"
@@ -166,10 +149,28 @@
         <FILE id="A4XebX" name="TrackPluginMenu.h" compile="0" resource="0"
               file="Source/Tracks/TrackPluginMenu.h"/>
       </GROUP>
-      <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <GROUP id="{2F81838E-E7E3-AE43-72F1-7D2B397D1C58}" name="UnitTests">
+        <FILE id="cqn7QJ" name="AddRemoveTracksTest.h" compile="0" resource="0"
+              file="Source/UnitTests/AddRemoveTracksTest.h"/>
+        <FILE id="DisqQw" name="AutomationTest.h" compile="0" resource="0"
+              file="Source/UnitTests/AutomationTest.h"/>
+        <FILE id="K1kQZI" name="PlayTest.h" compile="0" resource="0" file="Source/UnitTests/PlayTest.h"/>
+        <FILE id="R9Z3pc" name="PluginLoadingTest.h" compile="0" resource="0"
+              file="Source/UnitTests/PluginLoadingTest.h"/>
+        <FILE id="xvMIHm" name="PluginProcessingTest.cpp" compile="1" resource="0"
+              file="Source/UnitTests/PluginProcessingTest.cpp"/>
+        <FILE id="FfthRf" name="PluginProcessingTest.h" compile="0" resource="0"
+              file="Source/UnitTests/PluginProcessingTest.h"/>
+        <FILE id="Onpx0Z" name="ProcessorTest.h" compile="0" resource="0" file="Source/UnitTests/ProcessorTest.h"/>
+        <FILE id="hr4IqX" name="SavingTest.cpp" compile="1" resource="0" file="Source/UnitTests/SavingTest.cpp"/>
+        <FILE id="CILscM" name="SavingTest.h" compile="0" resource="0" file="Source/UnitTests/SavingTest.h"/>
+        <FILE id="RTVWym" name="TrackMoveTest.h" compile="0" resource="0" file="Source/UnitTests/TrackMoveTest.h"/>
+        <FILE id="Tyhf14" name="TrackNameTest.h" compile="0" resource="0" file="Source/UnitTests/TrackNameTest.h"/>
+      </GROUP>
+      <FILE id="PfFZvc" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="iwKKlq" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
-      <FILE id="PfFZvc" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="oXrSFR" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>

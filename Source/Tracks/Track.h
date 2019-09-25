@@ -66,7 +66,7 @@ public:
     bool isSoloed() { return processor->getSoloed() == TrackBase::SoloState::thisTrack; }
     void setSoloed (TrackBase::SoloState state) { processor->setSoloed (state); }
 
-    bool toggleMute();
+    void toggleMute();
     void togglePlay();
 
     void trackMoved();

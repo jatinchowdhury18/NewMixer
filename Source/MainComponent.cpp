@@ -1,5 +1,5 @@
 #include "MainComponent.h"
-#include "TrackHelpers/TrackActionHelper.h"
+#include "TrackActionHelper.h"
 #include "ActionHelper.h"
 #include "Data Managing/SessionManager.h"
 #include "Data Managing/PluginManager.h"

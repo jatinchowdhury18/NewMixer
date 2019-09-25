@@ -1,6 +1,6 @@
 #include "ActionHelper.h"
 #include "Tracks/TrackHelpers/SoloHelper.h"
-#include "TrackHelpers/TrackActionHelper.h"
+#include "TrackActionHelper.h"
 #include "Data Managing/SessionManager.h"
 #include "DuplicateTrack.h"
 #include "DeleteTrack.h"

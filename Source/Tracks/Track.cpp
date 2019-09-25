@@ -1,7 +1,7 @@
 #include "Track.h"
 #include "TrackProcessor.h"
 #include "InputTrackProcessor.h"
-#include "TrackHelpers/TrackActionHelper.h"
+#include "TrackActionHelper.h"
 #include "TrackHelpers/PaintHelper.h"
 #include "MainComponent.h"
 #include "TrackPluginMenu.h"
@@ -309,11 +309,10 @@ void Track::mouseUp (const MouseEvent& /*e*/)
 #endif
 }
 
-bool Track::toggleMute()
+void Track::toggleMute()
 {
     processor->setMute (! processor->getIsMute());
     repaint();
-    return true;
 }
 
 void Track::togglePlay()

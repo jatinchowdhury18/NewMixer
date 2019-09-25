@@ -12,6 +12,7 @@ public:
     static void rightClickCallback (int result, Track* track);
     static bool doKeyPressed (Track* track, const KeyPress& key);
 
+    static void toggleMute (Track* track);
     static void changeSize (Track* track, const MouseEvent& e);
     static void changeSize (Track* track);
     static void changePosition (Track* track, const MouseEvent& e);
