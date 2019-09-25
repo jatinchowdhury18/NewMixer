@@ -84,7 +84,7 @@ bool AddTrack::undo()
 
 bool AddTrack::checkLength (Track* track, const File& fileToCheck)
 {
-    const auto length = track->getProcessor()->getLengthSamples();
+    const auto length = dynamic_cast<TrackProcessor*> (track->getProcessor())->getReader()->lengthInSamples;
     return checkLength (length, fileToCheck);
 }
 
