@@ -15,6 +15,7 @@ public:
     static void toggleMute (Track* track);
     static void changeSize (Track* track, const MouseEvent& e);
     static void changeSize (Track* track);
+    static void changeSize (Track* track, bool shouldChangeUp, bool shouldChangeDown);
     static void changePosition (Track* track, const MouseEvent& e);
     static void changePosition (Track* track);
     static void changePosition (Track* track, Point<int> newPos);

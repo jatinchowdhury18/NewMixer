@@ -38,7 +38,7 @@ public:
         if (nextMoveTrack == nullptr) // next action is not a MoveTrack
             return nullptr;
 
-        auto newMoveTrack = new MoveTrack (nextMoveTrack->track, nextMoveTrack->point);
+        auto newMoveTrack = new MoveTrack (track, nextMoveTrack->point);
         newMoveTrack->origPoint = origPoint;
 
         return newMoveTrack;

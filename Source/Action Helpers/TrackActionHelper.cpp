@@ -3,6 +3,7 @@
 #include "MainComponent.h"
 #include "ToggleMute.h"
 #include "MoveTrack.h"
+#include "ChangeTrackVolume.h"
 
 void TrackActionHelper::rightClickMenu (Track* track)
 {
@@ -147,14 +148,10 @@ void TrackActionHelper::toggleMute (Track* track)
 void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
 {
     e.source.enableUnboundedMouseMovement (true);
-    const float initValue = track->getDiameter();
     const int curY = e.getDistanceFromDragStartY();
     auto lastDragLocation = track->getLastDrag();
 
-    if (curY < lastDragLocation)
-        setSizeConstrained (track, initValue, 1.0f); //up
-    else if (curY > lastDragLocation)
-        setSizeConstrained (track, initValue, -1.0f); //down
+    changeSize (track, curY < lastDragLocation, curY > lastDragLocation);
 
     track->setDragging (true);
     track->setLastDrag (curY);
@@ -164,14 +161,23 @@ void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
 
 void TrackActionHelper::changeSize (Track* track)
 {
-    const float initValue = track->getDiameter(); 
-
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
-        setSizeConstrained (track, initValue, 1.0f); //up
-    else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
-        setSizeConstrained (track, initValue, -1.0f); //down
+    changeSize (track, KeyPress::isKeyCurrentlyDown (KeyPress::upKey),
+                       KeyPress::isKeyCurrentlyDown (KeyPress::downKey));
 
     track->resized();
+}
+
+void TrackActionHelper::changeSize (Track* track, bool shouldChangeUp, bool shouldChangeDown)
+{
+    auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+
+    if (! (undoManager.getCurrentTransactionName() == "Changing Track Volume"))
+        undoManager.beginNewTransaction ("Changing Track Volume");
+
+    if (shouldChangeUp)
+        undoManager.perform (new ChangeTrackVolume (track, 1.0f));
+    else if (shouldChangeDown)
+        undoManager.perform (new ChangeTrackVolume (track, -1.0f));
 }
 
 void TrackActionHelper::setSizeConstrained (Track* track, float oldSize, float change)
