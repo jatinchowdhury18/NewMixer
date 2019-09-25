@@ -2,6 +2,7 @@
 #include "InputTrackProcessor.h"
 #include "MainComponent.h"
 #include "ToggleMute.h"
+#include "MoveTrack.h"
 
 void TrackActionHelper::rightClickMenu (Track* track)
 {
@@ -114,14 +115,14 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
             track->repaint();
         }
     }
-    else if (key == KeyPress::createFromDescription ("r"))        //Record
+    else if (key == KeyPress::createFromDescription ("r"))         //Record Track
     {
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
         if (inputProcessor != nullptr)
             inputProcessor->arm (NumLoops::One, true);
         track->repaint();
     }
-    else if (key == KeyPress::createFromDescription ("SHIFT + R"))        //Record
+    else if (key == KeyPress::createFromDescription ("SHIFT + R")) //Record
     {
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
         if (inputProcessor != nullptr)
@@ -130,7 +131,7 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
     }
     else if (key == KeyPress::createFromDescription ("CMD + R"))
         track->trackRename();
-    else                                                          // Normal move
+    else                                                           // Normal move
         TrackActionHelper::changePosition (track);
 
     return true;
@@ -192,9 +193,7 @@ void TrackActionHelper::changePosition (Track* track, const MouseEvent& e)
     newPos.x -= TrackConstants::width / 2;
     newPos.y -= TrackConstants::width / 2;
 
-    setPositionConstrained (track, newPos);
-    setRelPosition (track, newPos);
-    track->resized();
+    changePosition (track, newPos);
 }
 
 void TrackActionHelper::changePosition (Track* track)
@@ -211,9 +210,17 @@ void TrackActionHelper::changePosition (Track* track)
     if (KeyPress::isKeyCurrentlyDown (KeyPress::rightKey))
         pos.x += changeVal; //right
 
-    setRelPosition (track, pos);
-    setPositionConstrained (track, pos);
-    track->trackMoved();
+    changePosition (track, pos);
+}
+
+void TrackActionHelper::changePosition (Track* track, Point<int> newPos)
+{
+    auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+
+    if (! (undoManager.getCurrentTransactionName() == "Moving Track"))
+        undoManager.beginNewTransaction ("Moving Track");
+
+    undoManager.perform (new MoveTrack (track, newPos));
 }
 
 void TrackActionHelper::setRelPosition (Track* track, Point<int> pos)
