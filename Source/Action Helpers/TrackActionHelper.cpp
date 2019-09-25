@@ -184,7 +184,7 @@ void TrackActionHelper::setSizeConstrained (Track* track, float oldSize, float c
 {
     float newSize = jlimit<float> (TrackConstants::minDiameter, TrackConstants::maxDiameter, (oldSize + change));
 
-    if (newSize == oldSize)
+    if (newSize == track->getDiameter())
         return;
 
     track->setDiameter (newSize);
