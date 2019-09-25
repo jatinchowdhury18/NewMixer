@@ -67,6 +67,10 @@ bool AddTrack::perform()
 
 bool AddTrack::undo()
 {
+    return false;
+
+    //@TODO: Fix this
+    /*
     if (addedTracks.isEmpty())
         return false;
 
@@ -75,6 +79,7 @@ bool AddTrack::undo()
 
     mc->repaint();
     return true;
+    */
 }
 
 bool AddTrack::checkLength (Track* track, const File& fileToCheck)

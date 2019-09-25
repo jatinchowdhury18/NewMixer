@@ -185,7 +185,8 @@ void ActionHelper::rewind (MainComponent* mc)
 
 void ActionHelper::soloSelectedTrack (MainComponent* mc)
 {
-    SoloHelper::soloButtonPressed (mc->getTracks());
+    mc->getUndoManager().beginNewTransaction();
+    mc->getUndoManager().perform (new SoloAction (mc->getTracks()));
     mc->repaint();
 }
 
