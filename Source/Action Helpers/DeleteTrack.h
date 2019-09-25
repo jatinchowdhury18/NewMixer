@@ -15,6 +15,9 @@ public:
 
     ~DeleteTrack()
     {
+        auto proc = dynamic_cast<TrackProcessor*> (trackToKeep->getProcessor());
+        if (proc != nullptr)
+            delete proc->getReader();
     }
 
     bool perform() override
