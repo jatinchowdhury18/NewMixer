@@ -260,20 +260,18 @@ void Track::mouseDown (const MouseEvent& e)
 #endif
 }
 
-#if JUCE_MAC || JUCE_WINDOWS
+#if JUCE_IOS || JUCE_ANDROID
+void Track::mouseDoubleClick (const MouseEvent& e)
+{
+    TrackActionHelper::rightClickMenu (this);
+}
+#else
 void Track::mouseDoubleClick (const MouseEvent& /*e*/)
 {
     pluginMenu.reset (new TrackPluginMenu (this));
 
     const auto b = getScreenBounds();
     pluginMenu->showAt (Rectangle<int> (b.getCentreX(), b.getCentreY(), 0, 0));
-}
-#endif
-
-#if JUCE_IOS || JUCE_ANDROID
-void Track::mouseDoubleClick (const MouseEvent& e)
-{
-    TrackActionHelper::rightClickMenu (this);
 }
 #endif
 

@@ -27,7 +27,7 @@ void TrackMeter::paint (Graphics& g)
     bool darken = track->getProcessor()->getSoloed() == TrackBase::SoloState::otherTrack;
     g.setColour (darken ? track->getColour().withAlpha (TrackConstants::darkAlpha) : track->getColour());
 
-    float rmsFactor = 1.0f + std::expf (std::logf (track->getProcessor()->getRMSLevel()) / skewFactor);
+    float rmsFactor = 1.0f + expf (logf (track->getProcessor()->getRMSLevel()) / skewFactor);
 
     for (float factor = 1.0f; factor < rmsFactor; factor += circleSpacing)
     {
