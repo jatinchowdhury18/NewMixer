@@ -1,4 +1,22 @@
 #include "AutomationHelper.h"
+#include "MainComponent.h"
+#include "Track.h"
+#include "RecordAutomation.h"
+
+void AutoHelper::recordAutoPoint (Component* parent, float x, float y, float diameter, int64 sample)
+{
+    auto track = dynamic_cast<Track*> (parent);
+    
+    if (track != nullptr)
+    {
+        auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+
+        if (! (undoManager.getCurrentTransactionName() == "Recording Automation" || undoManager.getCurrentTransactionName() == "Moving Track"))
+            undoManager.beginNewTransaction ("Recording Automation");
+
+        undoManager.perform (new RecordAutomation (track, x, y, diameter, sample));
+    }
+}
 
 void AutoHelper::addAutoPoint (float x, float y, float diameter, int64 sample)
 {

@@ -223,7 +223,7 @@ void TrackActionHelper::changePosition (Track* track, Point<int> newPos)
 {
     auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
 
-    if (! (undoManager.getCurrentTransactionName() == "Moving Track"))
+    if (! (undoManager.getCurrentTransactionName() == "Moving Track" || undoManager.getCurrentTransactionName() == "Recording Automation"))
         undoManager.beginNewTransaction ("Moving Track");
 
     undoManager.perform (new MoveTrack (track, newPos));

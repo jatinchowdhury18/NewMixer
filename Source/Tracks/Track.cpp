@@ -105,7 +105,7 @@ Track::~Track()
 void Track::timerCallback()
 {
     if (autoHelper->isRecording())
-        autoHelper->addAutoPoint (relX, relY, diameter, processor->getStartSample());
+        autoHelper->recordAutoPoint (this, relX, relY, diameter, processor->getStartSample());
     else if (autoHelper->isRecorded())
     {
         if (playheadPos >= 0)
