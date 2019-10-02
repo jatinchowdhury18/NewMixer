@@ -140,9 +140,11 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
 
 void TrackActionHelper::toggleMute (Track* track)
 {
-    auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+    auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+    auto& undoManager = mc->getUndoManager();
+
     undoManager.beginNewTransaction();
-    undoManager.perform (new ToggleMute (track));
+    undoManager.perform (new ToggleMute (mc, track->getUuid()));
 }
 
 void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
@@ -169,15 +171,17 @@ void TrackActionHelper::changeSize (Track* track)
 
 void TrackActionHelper::changeSize (Track* track, bool shouldChangeUp, bool shouldChangeDown)
 {
-    auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+    auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+    auto& undoManager = mc->getUndoManager();
 
-    if (! (undoManager.getCurrentTransactionName() == "Changing Track Volume"))
-        undoManager.beginNewTransaction ("Changing Track Volume");
+    String newActionName = "Changing Track Volume: " + track->getUuid();
+    if (! (undoManager.getCurrentTransactionName() == newActionName))
+        undoManager.beginNewTransaction (newActionName);
 
     if (shouldChangeUp)
-        undoManager.perform (new ChangeTrackVolume (track, 1.0f));
+        undoManager.perform (new ChangeTrackVolume (mc, track->getUuid(), 1.0f));
     else if (shouldChangeDown)
-        undoManager.perform (new ChangeTrackVolume (track, -1.0f));
+        undoManager.perform (new ChangeTrackVolume (mc, track->getUuid(), -1.0f));
 }
 
 void TrackActionHelper::setSizeConstrained (Track* track, float oldSize, float change)
@@ -221,12 +225,14 @@ void TrackActionHelper::changePosition (Track* track)
 
 void TrackActionHelper::changePosition (Track* track, Point<int> newPos)
 {
-    auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+    auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+    auto& undoManager = mc->getUndoManager();
 
-    if (! (undoManager.getCurrentTransactionName() == "Moving Track" || undoManager.getCurrentTransactionName() == "Recording Automation"))
-        undoManager.beginNewTransaction ("Moving Track");
+    String newActionName = "Moving Track: " + track->getUuid();
+    if (! (undoManager.getCurrentTransactionName() == newActionName || undoManager.getCurrentTransactionName() == "Recording Automation"))
+        undoManager.beginNewTransaction (newActionName);
 
-    undoManager.perform (new MoveTrack (track, newPos));
+    undoManager.perform (new MoveTrack (mc, track->getUuid(), newPos));
 }
 
 void TrackActionHelper::setRelPosition (Track* track, Point<int> pos)

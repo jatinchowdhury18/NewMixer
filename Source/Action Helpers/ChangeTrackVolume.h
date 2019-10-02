@@ -1,14 +1,16 @@
 #ifndef CHANGETRACKVOLUME_H_INCLUDED
 #define CHANGETRACKVOLUME_H_INCLUDED
 
+#include "ActionHelper.h"
 #include "TrackActionHelper.h"
+#include "MainComponent.h"
 
 class ChangeTrackVolume : public UndoableAction
 {
 public:
-    ChangeTrackVolume (Track* track, float change) :
-        track (track),
-        origSize (track->getDiameter()),
+    ChangeTrackVolume (MainComponent* mc, String uuid, float change) :
+        mc (mc),
+        uuid (uuid),
         change (change)
     {
     }
@@ -17,12 +19,22 @@ public:
 
     bool perform() override
     {
+        auto track = ActionHelper::getTrackWithUuid (mc, uuid);
+        if (track == nullptr)
+            return false;
+
+        origSize = track->getDiameter();
+
         TrackActionHelper::setSizeConstrained (track, track->getDiameter(), change);
         return true;
     }
 
     bool undo() override
     {
+        auto track = ActionHelper::getTrackWithUuid (mc, uuid);
+        if (track == nullptr)
+            return false;
+
         TrackActionHelper::setSizeConstrained (track, origSize, 0);
         return true;
     }
@@ -34,13 +46,17 @@ public:
         if (nextChangeVolume == nullptr) // next action is not a ChangeTrackVolume
             return nullptr;
 
-        auto newChangeVolume = new ChangeTrackVolume (track, nextChangeVolume->change + change);
+        if (uuid != nextChangeVolume->uuid) //action is on wrong track
+            return nullptr;
+
+        auto newChangeVolume = new ChangeTrackVolume (mc, uuid, nextChangeVolume->change + change);
         newChangeVolume->origSize = origSize;
         return newChangeVolume;
     }
 
 private:
-    Track* track;
+    MainComponent* mc;
+    const String uuid;
     float origSize;
     float change;
 

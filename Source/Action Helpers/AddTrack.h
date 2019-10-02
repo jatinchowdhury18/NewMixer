@@ -20,7 +20,7 @@ public:
 private:
     MainComponent* mc;
     Array<File> trackFiles;
-    Array<Track*> addedTracks;
+    StringArray trackUuids;
     const int x;
     const int y;
 

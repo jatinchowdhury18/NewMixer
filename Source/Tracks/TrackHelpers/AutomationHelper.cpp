@@ -9,12 +9,13 @@ void AutoHelper::recordAutoPoint (Component* parent, float x, float y, float dia
     
     if (track != nullptr)
     {
-        auto& undoManager = dynamic_cast<MainComponent*> (track->getParentComponent())->getUndoManager();
+        auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+        auto& undoManager = mc->getUndoManager();
 
-        if (! (undoManager.getCurrentTransactionName() == "Recording Automation" || undoManager.getCurrentTransactionName() == "Moving Track"))
+        if (! (undoManager.getCurrentTransactionName() == "Recording Automation" || undoManager.getCurrentTransactionName().contains ("Moving Track")))
             undoManager.beginNewTransaction ("Recording Automation");
 
-        undoManager.perform (new RecordAutomation (track, x, y, diameter, sample));
+        undoManager.perform (new RecordAutomation (mc, track->getUuid(), x, y, diameter, sample));
     }
 }
 

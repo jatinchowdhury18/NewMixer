@@ -2,18 +2,21 @@
 #define TOGGLEMUTE_H_INCLUDED
 
 #include "Track.h"
+#include "ActionHelper.h"
 
 class ToggleMute : public UndoableAction
 {
 public:
-    ToggleMute (Track* track) :
-        track (track)
+    ToggleMute (MainComponent* mc, String uuid) :
+        mc (mc),
+        uuid (uuid)
     {}
 
     ~ToggleMute() {}
 
     bool perform() override
     {
+        auto track = ActionHelper::getTrackWithUuid (mc, uuid);
         if (track == nullptr)
             return false;
 
@@ -27,7 +30,8 @@ public:
     }
 
 private:
-    Track* track;
+    MainComponent* mc;
+    const String uuid;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToggleMute)
 };

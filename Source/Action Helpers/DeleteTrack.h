@@ -6,26 +6,31 @@
 class DeleteTrack : public UndoableAction
 {
 public:
-    DeleteTrack (MainComponent* mc, Track* track) :
+    DeleteTrack (MainComponent* mc, String uuid) :
         mc (mc),
-        trackToDelete (track),
-        x (track != nullptr ? track->getBounds().getCentreX() : 0),
-        y (track != nullptr ? track->getBounds().getCentreY() : 0)
+        uuid (uuid)
     {}
 
     ~DeleteTrack()
     {
-        auto proc = dynamic_cast<TrackProcessor*> (trackToKeep->getProcessor());
-        if (proc != nullptr)
-            delete proc->getReader();
+        if (trackToKeep != nullptr)
+        {
+            auto proc = dynamic_cast<TrackProcessor*> (trackToKeep->getProcessor());
+            if (proc != nullptr)
+                delete proc->getReader();
+        }
     }
 
     bool perform() override
     {
+        trackToDelete = ActionHelper::getTrackWithUuid (mc, uuid);
         if (trackToDelete == nullptr)
             return false;
 
-        trackToKeep.reset (new Track (*trackToDelete));
+        x = trackToDelete->getBounds().getCentreX();
+        y = trackToDelete->getBounds().getCentreY();
+
+        trackToKeep.reset (new Track (*trackToDelete, trackToDelete->getUuid()));
         ActionHelper::deleteTrack (trackToDelete, mc);
 
         mc->repaint();
@@ -44,11 +49,12 @@ public:
 
 private:
     MainComponent* mc;
+    const String uuid;
     Track* trackToDelete;
     std::unique_ptr<Track> trackToKeep;
 
-    const int x;
-    const int y;
+    int x;
+    int y;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DeleteTrack)
 };

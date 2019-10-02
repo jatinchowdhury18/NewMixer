@@ -49,37 +49,44 @@ bool AddTrack::perform()
     if (trackFiles.isEmpty())
         return false;
 
+    bool createNewUuids = trackUuids.isEmpty();
+
     int i = 0;
     for (auto& file : trackFiles)
     {
-        auto* newTrack = new Track (file, {}, {}, mc->getNextColour());
+        Track* newTrack;
+
+        if (createNewUuids)
+        {
+            newTrack = new Track (file, {}, {}, mc->getNextColour());
+            trackUuids.add (newTrack->getUuid());
+        }
+        else
+        {
+            newTrack = new Track (file, {}, {}, mc->getNextColour(), trackUuids[i]);
+        }
+
         newTrack->trackNameChanged (file.getFileNameWithoutExtension());
 
         const auto thisX = (int) (x - (trackFiles.size() * TrackConstants::defaultDiameter / 2)
                                     + (i * TrackConstants::defaultDiameter) + TrackConstants::defaultDiameter / 2);
 
         ActionHelper::addTrack (newTrack, mc, thisX, y);
-        addedTracks.add (newTrack);
         ++i;
     }
     return true;
 }
 
 bool AddTrack::undo()
-{
-    return false;
-
-    //@TODO: Fix this
-    /*
-    if (addedTracks.isEmpty())
+{    
+    if (trackUuids.isEmpty())
         return false;
 
-    while (! addedTracks.isEmpty())
-        ActionHelper::deleteTrack (addedTracks.removeAndReturn (0), mc);        
+    for (auto uuid : trackUuids)
+        ActionHelper::deleteTrack (ActionHelper::getTrackWithUuid (mc, uuid), mc);
 
     mc->repaint();
     return true;
-    */
 }
 
 bool AddTrack::checkLength (Track* track, const File& fileToCheck)

@@ -8,11 +8,12 @@ class DuplicateTrack : public UndoableAction
 public:
     DuplicateTrack (MainComponent* mc, Track* track) :
         mc (mc),
-        trackToDuplicate (track)
+        trackUuidToDuplicate (track->getUuid())
     {}
 
     bool perform() override
     {
+        auto* trackToDuplicate = ActionHelper::getTrackWithUuid (mc, trackUuidToDuplicate);
         if (trackToDuplicate == nullptr)
             return false;
 
@@ -39,7 +40,7 @@ public:
 private:
     MainComponent* mc;
     Track* createdTrack;
-    Track* trackToDuplicate;
+    const String trackUuidToDuplicate;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DuplicateTrack)
 };

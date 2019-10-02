@@ -34,6 +34,7 @@ public:
 
     // Util functions
     static Track* getSelectedTrack (MainComponent* mc);
+    static Track* getTrackWithUuid (MainComponent* mc, String uuid);
 
 private:
     static bool validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc);

@@ -193,7 +193,7 @@ void ActionHelper::soloSelectedTrack (MainComponent* mc)
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
     mc->getUndoManager().beginNewTransaction();
-    mc->getUndoManager().perform (new DeleteTrack (mc, getSelectedTrack (mc)));
+    mc->getUndoManager().perform (new DeleteTrack (mc, getSelectedTrack (mc)->getUuid()));
 }
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
@@ -387,6 +387,17 @@ Track* ActionHelper::getSelectedTrack (MainComponent* mc)
     {
         if (mc->getTracks()[i]->getIsSelected())
             return mc->getTracks()[i];
+    }
+
+    return nullptr;
+}
+
+Track* ActionHelper::getTrackWithUuid (MainComponent* mc, String uuid)
+{
+    for (auto* track : mc->getTracks())
+    {
+        if (track->getUuid() == uuid)
+            return track;
     }
 
     return nullptr;
