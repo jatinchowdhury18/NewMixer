@@ -30,6 +30,7 @@ void SessionManager::newSession (MainComponent* mc)
     clearTracks (mc, mc->getTracks());
 
     mc->setSessionFile (File());
+    mc->getUndoManager().clearUndoHistory();
 }
 
 void SessionManager::openSession (MainComponent* mc, const File* sessionFile)

@@ -56,6 +56,7 @@ public:
     Colour getNextColour() { return trackColours.getColour (tracks.size()); }
     WaveformViewer* getWaveform() { return waveformView.get(); }
     std::unique_ptr<ExportWindow>& getExportWindow() { return exportWindow; }
+    UndoManager& getUndoManager() { return undoManager; }
 
     int64 getSessionLength() const;
     File getSessionFile() const { return sessionDirectory; }
@@ -99,6 +100,11 @@ private:
     TextButton pluginsButton;
 
     File sessionDirectory;
+
+    UndoManager undoManager;
+    TextButton undoButton;
+    TextButton redoButton;
+
 #if JUCE_IOS || JUCE_ANDROID
     void mouseDoubleClick (const MouseEvent& e) override;
 

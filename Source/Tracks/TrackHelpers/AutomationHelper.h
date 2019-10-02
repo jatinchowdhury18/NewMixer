@@ -29,6 +29,7 @@ public:
 
     AutoHelper() {}
 
+    void recordAutoPoint (Component* parent, float x, float y, float diameter, int64 sample);
     void addAutoPoint (float x, float y, float diameter, int64 sample);
     void getPoint (float& x, float& y, float& diameter, int64 sample);
     OwnedArray<AutoPoint>& getPoints() { return points; }

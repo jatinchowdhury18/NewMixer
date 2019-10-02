@@ -1,7 +1,11 @@
 #include "ActionHelper.h"
 #include "Tracks/TrackHelpers/SoloHelper.h"
-#include "TrackHelpers/TrackActionHelper.h"
+#include "TrackActionHelper.h"
 #include "Data Managing/SessionManager.h"
+#include "DuplicateTrack.h"
+#include "DeleteTrack.h"
+#include "AddTrack.h"
+#include "ToggleLoop.h"
 
 enum
 {
@@ -49,7 +53,8 @@ void ActionHelper::rightClickCallback (int result, MainComponent* mc, Point<int>
         return;
 
     case Cmds::newFileTrack:
-        ActionHelper::addFileTrack (mc, p.x, p.y);
+        mc->getUndoManager().beginNewTransaction();
+        mc->getUndoManager().perform (new AddTrack (mc, p.x, p.y));
         return;
 
     case Cmds::newRecordTrack:
@@ -104,7 +109,8 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
     }
     else if (key == KeyPress::createFromDescription ("CMD + N")) //New track
     {
-        ActionHelper::addFileTrack (mc, mc->getWidth() / 2, mc->getHeight() / 2);
+        mc->getUndoManager().beginNewTransaction();
+        mc->getUndoManager().perform (new AddTrack (mc, mc->getWidth() / 2, mc->getHeight() / 2));
         //ActionHelper::addRecordingTrack (mc, mc->width / 2, mc->height / 2);
         return true;
     }
@@ -138,6 +144,16 @@ bool ActionHelper::doKeyPressed (MainComponent* mc, const KeyPress& key)
         exportSession (mc);
         return true;
     }
+    else if (key == KeyPress::createFromDescription ("CMD + Z")) //Undo
+    {
+        mc->getUndoManager().undo();
+        return true;
+    }
+    else if (key == KeyPress::createFromDescription ("CMD + Y")) //Redo
+    {
+        mc->getUndoManager().redo();
+        return true;
+    }
 
     for (auto track : mc->getTracks())
     {
@@ -157,8 +173,8 @@ void ActionHelper::togglePlay (MainComponent* mc)
 
 void ActionHelper::toggleLoop (MainComponent* mc)
 {
-    for (auto track : mc->getTracks())
-        track->getProcessor()->toggleLoop();
+    mc->getUndoManager().beginNewTransaction();
+    mc->getUndoManager().perform (new ToggleLoop (mc));
 }
 
 void ActionHelper::rewind (MainComponent* mc)
@@ -169,50 +185,29 @@ void ActionHelper::rewind (MainComponent* mc)
 
 void ActionHelper::soloSelectedTrack (MainComponent* mc)
 {
-    SoloHelper::soloButtonPressed (mc->getTracks());
+    mc->getUndoManager().beginNewTransaction();
+    mc->getUndoManager().perform (new SoloAction (mc->getTracks()));
     mc->repaint();
 }
 
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
-    Track* trackToDelete = nullptr;
-    for (int i = 0; i < mc->getTracks().size(); i++)
+    auto selectedTrack = getSelectedTrack (mc);
+    if (selectedTrack != nullptr)
     {
-        if (mc->getTracks()[i]->getIsSelected())
-        {
-            trackToDelete = mc->getTracks().removeAndReturn (i);
-            mc->getAutoPaths().remove (i);
-
-            mc->getWaveform()->deleteTrack (trackToDelete, i);
-
-            for (int j = i; j < mc->getTracks().size(); j++)
-                mc->getTracks()[j]->setIndex (j);
-        }
+        mc->getUndoManager().beginNewTransaction();
+        mc->getUndoManager().perform (new DeleteTrack (mc, selectedTrack->getUuid()));
     }
-
-    if (trackToDelete != nullptr)
-        mc->getMaster()->removeTrack (trackToDelete);
-    delete trackToDelete;
-
-    mc->repaint();
 }
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 {
-    Track* trackToDuplicate = nullptr;
-    for (int i = 0; i < mc->getTracks().size(); i++)
+    auto selectedTrack = getSelectedTrack (mc);
+    if (selectedTrack != nullptr)
     {
-        if (mc->getTracks()[i]->getIsSelected())
-        {
-            trackToDuplicate = mc->getTracks()[i];
-            break;
-        }
+        mc->getUndoManager().beginNewTransaction();
+        mc->getUndoManager().perform (new DuplicateTrack (mc, selectedTrack->getUuid()));
     }
-
-    if (trackToDuplicate != nullptr)
-        addTrack (new Track (*trackToDuplicate), mc, 
-            trackToDuplicate->getX() + TrackConstants::width * 3 / 4,
-            trackToDuplicate->getY() + TrackConstants::width * 3 / 4);
 }
 
 void ActionHelper::clearSelectedTrack (MainComponent* mc)
@@ -321,6 +316,28 @@ void ActionHelper::addTrack (Track* track, MainComponent* mc, int x, int y)
     track->setAutoPath (autoPath);
 }
 
+void ActionHelper::deleteTrack (Track* track, MainComponent* mc)
+{
+    Track* trackToDelete = nullptr;
+    for (int i = 0; i < mc->getTracks().size(); i++)
+    {
+        if (mc->getTracks()[i] == track)
+        {
+            trackToDelete = mc->getTracks().removeAndReturn (i);
+            mc->getAutoPaths().remove (i);
+
+            mc->getWaveform()->deleteTrack (trackToDelete, i);
+
+            for (int j = i; j < mc->getTracks().size(); j++)
+                mc->getTracks()[j]->setIndex (j);
+        }
+    }
+
+    if (trackToDelete != nullptr)
+        mc->getMaster()->removeTrack (trackToDelete);
+    delete trackToDelete;
+}
+
 bool ActionHelper::validTrackFile (Track* firstTrack, Track* newTrack, MainComponent* mc)
 {
     if (newTrack->getProcessor()->getLengthSamples() == firstTrack->getProcessor()->getLengthSamples())
@@ -370,4 +387,26 @@ void ActionHelper::exportSession (MainComponent* mc)
     rewind (mc);
     
     mc->getExportWindow().reset (new ExportWindow (mc->getMaster(), mc->getSessionLength(), mc->getSessionFile()));
+}
+
+Track* ActionHelper::getSelectedTrack (MainComponent* mc)
+{
+    for (int i = 0; i < mc->getTracks().size(); i++)
+    {
+        if (mc->getTracks()[i]->getIsSelected())
+            return mc->getTracks()[i];
+    }
+
+    return nullptr;
+}
+
+Track* ActionHelper::getTrackWithUuid (MainComponent* mc, String uuid)
+{
+    for (auto* track : mc->getTracks())
+    {
+        if (track->getUuid() == uuid)
+            return track;
+    }
+
+    return nullptr;
 }

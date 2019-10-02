@@ -45,10 +45,10 @@ public:
         duplicateTrack,
     };
 
-    Track (File& file, String name, String shortName, Colour colour);
-    Track (MemoryInputStream* input, String name, String shortName, Colour colour);
-    Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour);
-    Track (const Track& track);
+    Track (File& file, String name, String shortName, Colour colour, String uuid = "");
+    Track (MemoryInputStream* input, String name, String shortName, Colour colour, String uuid = "");
+    Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour, String uuid = "");
+    Track (const Track& track, String uuid = "");
     void initialise (int x, int y, int ind);
     ~Track();
 
@@ -66,7 +66,7 @@ public:
     bool isSoloed() { return processor->getSoloed() == TrackBase::SoloState::thisTrack; }
     void setSoloed (TrackBase::SoloState state) { processor->setSoloed (state); }
 
-    bool toggleMute();
+    void toggleMute();
     void togglePlay();
 
     void trackMoved();
@@ -117,6 +117,7 @@ public:
     float getRelX() const { return relX; }
     float getRelY() const { return relY; }
 
+    String getUuid() const noexcept { return uuid; }
     void setIndex (int ind) { index = ind; }
 
     void setAutoPath (AutomationPath* ap) { autoPath = ap; }
@@ -146,6 +147,7 @@ private:
     float relX = 0.0f;
     float relY = 0.0f;
 
+    const String uuid;
     String name;
     String shortName;
     Colour trackColour;

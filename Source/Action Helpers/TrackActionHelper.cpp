@@ -1,6 +1,9 @@
 #include "TrackActionHelper.h"
 #include "InputTrackProcessor.h"
 #include "MainComponent.h"
+#include "ToggleMute.h"
+#include "MoveTrack.h"
+#include "ChangeTrackVolume.h"
 
 void TrackActionHelper::rightClickMenu (Track* track)
 {
@@ -44,7 +47,7 @@ void TrackActionHelper::rightClickCallback (int result, Track* track)
         return;
 
     case TrackCmds::mute:
-        track->toggleMute();
+        toggleMute (track);
         return;
 
     case TrackCmds::solo:
@@ -96,7 +99,10 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
     if (key.getModifiers().isAltDown())                           //Change volume
         TrackActionHelper::changeSize (track);
     else if (key == KeyPress::createFromDescription ("m"))        //Mute Track
-        return track->toggleMute();
+    {
+        toggleMute (track);
+        return true;
+    }
     else if (key == KeyPress::createFromDescription ("a"))        //Automate
     {
         track->getAutoHelper()->arm();
@@ -110,14 +116,14 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
             track->repaint();
         }
     }
-    else if (key == KeyPress::createFromDescription ("r"))        //Record
+    else if (key == KeyPress::createFromDescription ("r"))         //Record Track
     {
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
         if (inputProcessor != nullptr)
             inputProcessor->arm (NumLoops::One, true);
         track->repaint();
     }
-    else if (key == KeyPress::createFromDescription ("SHIFT + R"))        //Record
+    else if (key == KeyPress::createFromDescription ("SHIFT + R")) //Record
     {
         auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track->getProcessor());
         if (inputProcessor != nullptr)
@@ -126,23 +132,28 @@ bool TrackActionHelper::doKeyPressed (Track* track, const KeyPress& key)
     }
     else if (key == KeyPress::createFromDescription ("CMD + R"))
         track->trackRename();
-    else                                                          // Normal move
+    else                                                           // Normal move
         TrackActionHelper::changePosition (track);
 
     return true;
 }
 
+void TrackActionHelper::toggleMute (Track* track)
+{
+    auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+    auto& undoManager = mc->getUndoManager();
+
+    undoManager.beginNewTransaction();
+    undoManager.perform (new ToggleMute (mc, track->getUuid()));
+}
+
 void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
 {
     e.source.enableUnboundedMouseMovement (true);
-    const float initValue = track->getDiameter();
     const int curY = e.getDistanceFromDragStartY();
     auto lastDragLocation = track->getLastDrag();
 
-    if (curY < lastDragLocation)
-        setSizeConstrained (track, initValue, 1.0f); //up
-    else if (curY > lastDragLocation)
-        setSizeConstrained (track, initValue, -1.0f); //down
+    changeSize (track, curY < lastDragLocation, curY > lastDragLocation);
 
     track->setDragging (true);
     track->setLastDrag (curY);
@@ -152,21 +163,32 @@ void TrackActionHelper::changeSize (Track* track, const MouseEvent& e)
 
 void TrackActionHelper::changeSize (Track* track)
 {
-    const float initValue = track->getDiameter(); 
-
-    if (KeyPress::isKeyCurrentlyDown (KeyPress::upKey))
-        setSizeConstrained (track, initValue, 1.0f); //up
-    else if (KeyPress::isKeyCurrentlyDown (KeyPress::downKey))
-        setSizeConstrained (track, initValue, -1.0f); //down
+    changeSize (track, KeyPress::isKeyCurrentlyDown (KeyPress::upKey),
+                       KeyPress::isKeyCurrentlyDown (KeyPress::downKey));
 
     track->resized();
+}
+
+void TrackActionHelper::changeSize (Track* track, bool shouldChangeUp, bool shouldChangeDown)
+{
+    auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+    auto& undoManager = mc->getUndoManager();
+
+    String newActionName = "Changing Track Volume: " + track->getUuid();
+    if (! (undoManager.getCurrentTransactionName() == newActionName))
+        undoManager.beginNewTransaction (newActionName);
+
+    if (shouldChangeUp)
+        undoManager.perform (new ChangeTrackVolume (mc, track->getUuid(), 1.0f));
+    else if (shouldChangeDown)
+        undoManager.perform (new ChangeTrackVolume (mc, track->getUuid(), -1.0f));
 }
 
 void TrackActionHelper::setSizeConstrained (Track* track, float oldSize, float change)
 {
     float newSize = jlimit<float> (TrackConstants::minDiameter, TrackConstants::maxDiameter, (oldSize + change));
 
-    if (newSize == oldSize)
+    if (newSize == track->getDiameter())
         return;
 
     track->setDiameter (newSize);
@@ -181,9 +203,7 @@ void TrackActionHelper::changePosition (Track* track, const MouseEvent& e)
     newPos.x -= TrackConstants::width / 2;
     newPos.y -= TrackConstants::width / 2;
 
-    setPositionConstrained (track, newPos);
-    setRelPosition (track, newPos);
-    track->resized();
+    changePosition (track, newPos);
 }
 
 void TrackActionHelper::changePosition (Track* track)
@@ -200,9 +220,19 @@ void TrackActionHelper::changePosition (Track* track)
     if (KeyPress::isKeyCurrentlyDown (KeyPress::rightKey))
         pos.x += changeVal; //right
 
-    setRelPosition (track, pos);
-    setPositionConstrained (track, pos);
-    track->trackMoved();
+    changePosition (track, pos);
+}
+
+void TrackActionHelper::changePosition (Track* track, Point<int> newPos)
+{
+    auto mc = dynamic_cast<MainComponent*> (track->getParentComponent());
+    auto& undoManager = mc->getUndoManager();
+
+    String newActionName = "Moving Track: " + track->getUuid();
+    if (! (undoManager.getCurrentTransactionName() == newActionName || undoManager.getCurrentTransactionName() == "Recording Automation"))
+        undoManager.beginNewTransaction (newActionName);
+
+    undoManager.perform (new MoveTrack (mc, track->getUuid(), newPos));
 }
 
 void TrackActionHelper::setRelPosition (Track* track, Point<int> pos)

@@ -1,7 +1,7 @@
 #include "Track.h"
 #include "TrackProcessor.h"
 #include "InputTrackProcessor.h"
-#include "TrackHelpers/TrackActionHelper.h"
+#include "TrackActionHelper.h"
 #include "TrackHelpers/PaintHelper.h"
 #include "MainComponent.h"
 #include "TrackPluginMenu.h"
@@ -9,7 +9,13 @@
 
 using namespace TrackConstants;
 
-Track::Track (File& file, String name, String shortName, Colour colour) : 
+enum
+{
+    uuidSize = 6,
+};
+
+Track::Track (File& file, String name, String shortName, Colour colour, String uuid) : 
+    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
     name (name),
     shortName (shortName),
     trackColour (colour)
@@ -21,7 +27,8 @@ Track::Track (File& file, String name, String shortName, Colour colour) :
     processor->addListener (this);
 }
 
-Track::Track (MemoryInputStream* input, String name, String shortName, Colour colour) : 
+Track::Track (MemoryInputStream* input, String name, String shortName, Colour colour, String uuid) : 
+    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
     name (name),
     shortName (shortName),
     trackColour (colour)
@@ -33,7 +40,8 @@ Track::Track (MemoryInputStream* input, String name, String shortName, Colour co
     processor->addListener (this);
 }
 
-Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour) :
+Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour, String uuid) :
+    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
     name (name),
     shortName (shortName),
     trackColour (colour),
@@ -46,7 +54,8 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     processor->addListener (this);
 }
 
-Track::Track (const Track& track) :
+Track::Track (const Track& track, String uuid) :
+    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
     name (track.getName()),
     shortName (track.getShortName()),
     trackColour (track.getColour()),
@@ -105,7 +114,7 @@ Track::~Track()
 void Track::timerCallback()
 {
     if (autoHelper->isRecording())
-        autoHelper->addAutoPoint (relX, relY, diameter, processor->getStartSample());
+        autoHelper->recordAutoPoint (this, relX, relY, diameter, processor->getStartSample());
     else if (autoHelper->isRecorded())
     {
         if (playheadPos >= 0)
@@ -309,11 +318,10 @@ void Track::mouseUp (const MouseEvent& /*e*/)
 #endif
 }
 
-bool Track::toggleMute()
+void Track::toggleMute()
 {
     processor->setMute (! processor->getIsMute());
     repaint();
-    return true;
 }
 
 void Track::togglePlay()
