@@ -6,9 +6,9 @@
 class DuplicateTrack : public UndoableAction
 {
 public:
-    DuplicateTrack (MainComponent* mc, Track* track) :
+    DuplicateTrack (MainComponent* mc, String uuid) :
         mc (mc),
-        trackUuidToDuplicate (track->getUuid())
+        trackUuidToDuplicate (uuid)
     {}
 
     bool perform() override

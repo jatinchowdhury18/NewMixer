@@ -192,14 +192,22 @@ void ActionHelper::soloSelectedTrack (MainComponent* mc)
 
 void ActionHelper::deleteSelectedTrack (MainComponent* mc)
 {
-    mc->getUndoManager().beginNewTransaction();
-    mc->getUndoManager().perform (new DeleteTrack (mc, getSelectedTrack (mc)->getUuid()));
+    auto selectedTrack = getSelectedTrack (mc);
+    if (selectedTrack != nullptr)
+    {
+        mc->getUndoManager().beginNewTransaction();
+        mc->getUndoManager().perform (new DeleteTrack (mc, selectedTrack->getUuid()));
+    }
 }
 
 void ActionHelper::duplicateSelectedTrack (MainComponent* mc)
 {
-    mc->getUndoManager().beginNewTransaction();
-    mc->getUndoManager().perform (new DuplicateTrack (mc, getSelectedTrack (mc)));
+    auto selectedTrack = getSelectedTrack (mc);
+    if (selectedTrack != nullptr)
+    {
+        mc->getUndoManager().beginNewTransaction();
+        mc->getUndoManager().perform (new DuplicateTrack (mc, selectedTrack->getUuid()));
+    }
 }
 
 void ActionHelper::clearSelectedTrack (MainComponent* mc)
