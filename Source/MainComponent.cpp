@@ -169,7 +169,7 @@ int64 MainComponent::getSessionLength() const
 #include "UnitTests/AddRemoveTracksTest.h"
 #include "UnitTests/SavingTest.h"
 
-static PlayTest playTest;
+// static PlayTest playTest;
 static AutomationTest autoTest;
 static AddRemoveTracksTest arTracksTest;
 static SavingTest savingTest;
