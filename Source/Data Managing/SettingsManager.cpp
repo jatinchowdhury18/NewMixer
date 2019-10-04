@@ -29,7 +29,12 @@ File& SettingsManager::getSettingsFile()
 std::unique_ptr<XmlElement> SettingsManager::getAudioDeviceState()
 {
     std::unique_ptr<XmlElement> settingsXML (parseXML (settingsFile));
-    return std::make_unique<XmlElement> (*settingsXML->getChildByName (deviceSettingsName));
+
+    auto deviceStateXML = settingsXML->getChildByName (deviceSettingsName);
+    if (deviceStateXML == nullptr)
+        return nullptr;
+
+    return std::make_unique<XmlElement> (*deviceStateXML);
 }
 
 void SettingsManager::updateAudioDeviceState (XmlElement* newDeviceState)
