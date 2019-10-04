@@ -1,4 +1,5 @@
 #include "PluginManager.h"
+#include "SettingsManager.h"
 
 #include <unordered_map>
 
@@ -46,17 +47,7 @@ void PluginManager::showPluginListWindow()
 
 void PluginManager::setPluginFolder (String folder)
 {
-    File appDataFolder = File::getSpecialLocation (File::userApplicationDataDirectory).getChildFile ("NewMixer");
-    File settingsFile = appDataFolder.getChildFile ("Settings.xml");
-
-    if (settingsFile.exists())
-    {
-        std::unique_ptr<XmlElement> settingsXml (parseXML (settingsFile));
-        if (settingsXml.get() != nullptr)
-            settingsXml->setAttribute ("pluginsPath", folder);
-        
-        settingsXml->writeTo (settingsFile, {});
-    }
+    SettingsManager::getInstance()->setPluginFolder (folder);
 }
 
 FileSearchPath PluginManager::getPluginFolder()
@@ -64,40 +55,20 @@ FileSearchPath PluginManager::getPluginFolder()
 # if JUCE_DEBUG
     return getTestPluginFolder();
 #else
+    return SettingsManager::getInstance()->getPluginFolder();
+#endif
+}
 
-    File appDataFolder = File::getSpecialLocation (File::userApplicationDataDirectory).getChildFile ("NewMixer");
-    if (! appDataFolder.exists())
-        appDataFolder.createDirectory();
-
-    File settingsFile = appDataFolder.getChildFile ("Settings.xml");
-
-    if (settingsFile.exists())
-    {
-        std::unique_ptr<XmlElement> settingsXml (parseXML (settingsFile));
-        if (settingsXml.get() != nullptr)
-        {
-            auto folder = settingsXml->getStringAttribute ("pluginsPath");
-            return FileSearchPath (folder);
-        }
-    }
-    
-    //Loading path from settings failed
-    std::unique_ptr<XmlElement> settingsXml (new XmlElement ("GlobalSettings"));
-
-    FileSearchPath folder;
+FileSearchPath PluginManager::getDefaultPluginFolder()
+{
     for (int i = 0; i < pluginFormatManager.getNumFormats(); i++)
     {
         auto pluginFormat = pluginFormatManager.getFormat (i);
         if (pluginFormat->getName() == "VST" || pluginFormat->getName() == "VST3")
-        {
-            folder = pluginFormat->getDefaultLocationsToSearch();
-            break;
-        }
+            return pluginFormat->getDefaultLocationsToSearch();
     }
-    settingsXml->setAttribute ("pluginsPath", folder.toString());
-    settingsXml->writeTo (settingsFile, {});
-    return folder;
-#endif
+
+    return FileSearchPath();
 }
 
 FileSearchPath PluginManager::getTestPluginFolder()

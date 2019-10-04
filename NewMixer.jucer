@@ -59,6 +59,10 @@
               file="Source/Data Managing/SessionManager.cpp"/>
         <FILE id="tTsnbp" name="SessionManager.h" compile="0" resource="0"
               file="Source/Data Managing/SessionManager.h"/>
+        <FILE id="oTG4jC" name="SettingsManager.cpp" compile="1" resource="0"
+              file="Source/Data Managing/SettingsManager.cpp"/>
+        <FILE id="gsLKLL" name="SettingsManager.h" compile="0" resource="0"
+              file="Source/Data Managing/SettingsManager.h"/>
       </GROUP>
       <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
         <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>

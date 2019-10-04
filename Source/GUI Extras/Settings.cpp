@@ -1,6 +1,7 @@
 #include "Settings.h"
 #include "WindowHelper.h"
 #include "Data Managing/PluginManager.h"
+#include "Data Managing/SettingsManager.h"
 
 SettingsWindow::SettingsWindow (const String& name, AudioDeviceManager& manager)
     : DocumentWindow (name, Desktop::getInstance().getDefaultLookAndFeel()
@@ -28,7 +29,7 @@ AudioSettings::AudioSettings (AudioDeviceManager& manager) : audioDeviceManager 
     });
     */
     audioSetupComp.reset (new AudioDeviceSelectorComponent (audioDeviceManager,
-        0, 256, 0, 256, true, true, true, false));
+                                                            0, 256, 0, 256, false, false, true, false));
     addAndMakeVisible (audioSetupComp.get());
 
     addAndMakeVisible (pluginsLabel);
@@ -117,6 +118,7 @@ void AudioSettings::logMessage (const String& m)
 void AudioSettings::changeListenerCallback (ChangeBroadcaster*)
 {
     dumpDeviceInfo();
+    SettingsManager::getInstance()->updateAudioDeviceState (audioSetupComp->deviceManager.createStateXml().release());
 }
 
 void AudioSettings::lookAndFeelChanged()

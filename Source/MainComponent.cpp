@@ -3,6 +3,7 @@
 #include "ActionHelper.h"
 #include "Data Managing/SessionManager.h"
 #include "Data Managing/PluginManager.h"
+#include "Data Managing/SettingsManager.h"
 
 //==============================================================================
 MainComponent::MainComponent (String mode)
@@ -11,6 +12,7 @@ MainComponent::MainComponent (String mode)
     setWantsKeyboardFocus (true);
 
     PluginManager::getInstance();
+    SettingsManager::getInstance();
 
     master.reset (new MasterTrackProcessor (tracks));
 
@@ -42,6 +44,9 @@ MainComponent::~MainComponent()
         track->removeListener (this);
 
     PluginManager::deleteInstance();
+
+    SettingsManager::getInstance()->updateAudioDeviceState (master->getDeviceManager().createStateXml().release());
+    SettingsManager::deleteInstance();
 }
 
 void MainComponent::initSettings()

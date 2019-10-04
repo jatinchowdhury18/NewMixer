@@ -1,12 +1,13 @@
 #include "MasterTrackProcessor.h"
 #include "TrackProcessor.h"
+#include "Data Managing/SettingsManager.h"
 
 MasterTrackProcessor::MasterTrackProcessor (OwnedArray<Track>& tracks) :
     tracks (tracks)
 {
     formatManager.registerBasicFormats();
 
-    deviceManager.initialiseWithDefaultDevices (2, 2);
+    deviceManager.initialise (2, 2, SettingsManager::getInstance()->getAudioDeviceState().get(), true);
     deviceManager.addAudioCallback (&player);
 
     audioOutputNode = addNode (std::make_unique<AudioGraphIOProcessor> (AudioGraphIOProcessor::audioOutputNode));

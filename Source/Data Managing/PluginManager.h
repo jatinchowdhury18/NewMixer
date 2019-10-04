@@ -19,6 +19,8 @@ public:
     FileSearchPath getPluginFolder();
     void setPluginFolder (String folder);
 
+    FileSearchPath getDefaultPluginFolder();
+
     JUCE_DECLARE_SINGLETON (PluginManager, false)
 
 private:
