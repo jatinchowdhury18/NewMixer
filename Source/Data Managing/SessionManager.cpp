@@ -160,12 +160,9 @@ void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
     {
         newTrack->getAutoHelper()->setRecorded (true);
 
-        XmlElement* pointXml (automationXml->getFirstChildElement());
-        while (pointXml != nullptr)
-        {
-            parseAutomationXml (newTrack, pointXml);
-            pointXml = pointXml->getNextElement();
-        }
+        XmlElement* autoValueTreeXML (automationXml->getFirstChildElement());
+        if(autoValueTreeXML != nullptr)
+            newTrack->getAutoHelper()->getPoints() = ValueTree::fromXml (*autoValueTreeXML);
     }
 
     XmlElement* pluginListXml (trackXml->getChildByName ("Plugins"));
@@ -178,16 +175,6 @@ void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
             pluginXml = pluginXml->getNextElement();
         }
     }
-}
-
-void SessionManager::parseAutomationXml (Track* newTrack, XmlElement* pointXml)
-{
-    auto pointX = (float) pointXml->getDoubleAttribute ("xPos");
-    auto pointY = (float) pointXml->getDoubleAttribute ("yPos");
-    auto pointDiameter = (float) pointXml->getDoubleAttribute ("diameter");
-    auto sample = (int64) pointXml->getIntAttribute ("sampleTime");
-
-    newTrack->getAutoHelper()->addAutoPoint (pointX, pointY, pointDiameter, sample);
 }
 
 void SessionManager::parsePluginXml (Track* newTrack, XmlElement* pluginXml)
@@ -276,9 +263,7 @@ void SessionManager::copyTrackFiles (MainComponent* mc, OwnedArray<Track>& track
                 newTrack->toggleMute();
 
             newTrack->getAutoHelper()->setRecorded (track->getAutoHelper()->isRecorded());
-            auto& autoPoints = track->getAutoHelper()->getPoints();
-            for (auto point : autoPoints)
-                newTrack->getAutoHelper()->addAutoPoint (point->x, point->y, point->diameter, point->sample);
+            newTrack->getAutoHelper()->getPoints() = track->getAutoHelper()->getPoints().createCopy();
 
             newTrack->getProcessor()->setPluginChain (track->getProcessor()->getPluginChain());
 
@@ -328,19 +313,8 @@ void SessionManager::saveAutomationToXml (Track* track, XmlElement* xmlTrack)
     if (trackAutomation->isRecorded())
     {
         std::unique_ptr<XmlElement> xmlAutomation (new XmlElement ("Automation"));
-
-        for (const auto point : trackAutomation->getPoints())
-        {
-            std::unique_ptr<XmlElement> xmlAutomationPoint (new XmlElement ("Point"));
-
-            xmlAutomationPoint->setAttribute ("xPos", point->x);
-            xmlAutomationPoint->setAttribute ("yPos", point->y);
-            xmlAutomationPoint->setAttribute ("diameter", point->diameter);
-            xmlAutomationPoint->setAttribute ("sampleTime", (int) point->sample);
-
-            xmlAutomation->addChildElement (xmlAutomationPoint.release());
-        }
-
+        auto autoValueTreeXML = track->getAutoHelper()->getPoints().createXml();
+        xmlAutomation->addChildElement (autoValueTreeXML.release());    
         xmlTrack->addChildElement (xmlAutomation.release());
     }
 }

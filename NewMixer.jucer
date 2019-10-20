@@ -28,8 +28,6 @@
     </GROUP>
     <GROUP id="{20A44B39-BC8A-0BE9-8917-03DF8F6E7E0F}" name="Source">
       <GROUP id="{DA1D1A37-AF8D-EDC7-FCBA-36CBCCE94F4B}" name="Action Helpers">
-        <FILE id="gIpOqU" name="RecordAutomation.h" compile="0" resource="0"
-              file="Source/Action Helpers/RecordAutomation.h"/>
         <FILE id="iDHQWX" name="ChangeTrackVolume.h" compile="0" resource="0"
               file="Source/Action Helpers/ChangeTrackVolume.h"/>
         <FILE id="jYW8OH" name="MoveTrack.h" compile="0" resource="0" file="Source/Action Helpers/MoveTrack.h"/>

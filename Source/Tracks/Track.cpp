@@ -20,7 +20,7 @@ Track::Track (File& file, String name, String shortName, Colour colour, String u
     shortName (shortName),
     trackColour (colour)
 {
-    autoHelper.reset (new AutoHelper);
+    autoHelper.reset (new AutoHelper (this));
 
     initProcessor.reset (new TrackProcessor (file));
     processor = initProcessor.get();
@@ -33,7 +33,7 @@ Track::Track (MemoryInputStream* input, String name, String shortName, Colour co
     shortName (shortName),
     trackColour (colour)
 {
-    autoHelper.reset (new AutoHelper);
+    autoHelper.reset (new AutoHelper (this));
 
     initProcessor.reset (new TrackProcessor (input));
     processor = initProcessor.get();
@@ -47,7 +47,7 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
     trackColour (colour),
     isPlaying (playing)
 {
-    autoHelper.reset (new AutoHelper);
+    autoHelper.reset (new AutoHelper (this));
 
     initProcessor.reset (new InputTrackProcessor (sampleLength, startSample));
     processor = initProcessor.get();
@@ -62,11 +62,9 @@ Track::Track (const Track& track, String uuid) :
     diameter (track.diameter),
     isPlaying (track.getIsPlaying())
 {
-    autoHelper.reset (new AutoHelper);
+    autoHelper.reset (new AutoHelper (this));
     autoHelper->setRecorded (track.autoHelper->isRecorded());
-    auto& autoPoints = track.autoHelper->getPoints();
-    for (auto point : autoPoints)
-        autoHelper->addAutoPoint (point->x, point->y, point->diameter, point->sample);
+    autoHelper->getPoints() = track.autoHelper->getPoints().createCopy();
 
     auto* inputProcessor = dynamic_cast<InputTrackProcessor*> (track.getProcessor());
     if (inputProcessor == nullptr) //File track
@@ -114,7 +112,7 @@ Track::~Track()
 void Track::timerCallback()
 {
     if (autoHelper->isRecording())
-        autoHelper->recordAutoPoint (this, relX, relY, diameter, processor->getStartSample());
+        autoHelper->recordAutoPoint (relX, relY, diameter, processor->getStartSample());
     else if (autoHelper->isRecorded())
     {
         if (playheadPos >= 0)
