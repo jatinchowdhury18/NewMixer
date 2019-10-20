@@ -15,7 +15,6 @@ private:
     static void clearTracks (MainComponent* mc, OwnedArray<Track>& tracks);
 
     static void parseTrackXml (MainComponent* mc, XmlElement* trackXml);
-    static void parseAutomationXml (Track* newTrack, XmlElement* pointXml);
     static void parsePluginXml (Track* newTrack, XmlElement* pluginXml);
     static bool validateTrackFile (File& file);
     

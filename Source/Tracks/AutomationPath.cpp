@@ -19,22 +19,22 @@ void AutomationPath::paint (Graphics& g)
 {
     auto* ah = track->getAutoHelper();
 
-    if (ah->getPoints().isEmpty())
+    if (ah->getPoints().getNumChildren() == 0)
         return;
 
     const auto* parent = getParentComponent();
     
     g.setColour (track->getColour());
     
-    auto point1 = ah->getPoints()[0];
-    auto lastX = (float) (point1->x * parent->getWidth()) + center;
-    auto lastY = (float) (point1->y * parent->getHeight()) + center;
+    auto point1 = ah->getPoints().getChild (0);
+    auto lastX = (float) (ah->getPointX (point1) * parent->getWidth()) + center;
+    auto lastY = (float) (ah->getPointY (point1) * parent->getHeight()) + center;
 
-    for (int i = 1; i < ah->getPoints().size(); i++)
+    for (int i = 1; i < ah->getPoints().getNumChildren(); i++)
     {
-        auto point = ah->getPoints()[i];
-        const auto x = (float) (point->x * parent->getWidth())  + center;
-        const auto y = (float) (point->y * parent->getHeight()) + center;
+        auto point = ah->getPoints().getChild (i);
+        const auto x = (float) (ah->getPointX (point) * parent->getWidth())  + center;
+        const auto y = (float) (ah->getPointY (point) * parent->getHeight()) + center;
 
         //const auto thick = 5.0f * (point->diameter / TrackConstants::maxDiameter);
 
