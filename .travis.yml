@@ -3,6 +3,8 @@ notifications:
 
 language: cpp
 sudo: false
+git:
+  submodules: false
 
 # if pull request: always build
 # if push: only build for master branch

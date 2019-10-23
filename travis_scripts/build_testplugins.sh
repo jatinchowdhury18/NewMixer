@@ -4,6 +4,7 @@ if [ -f $1/Mac/CHOW.component ]
     echo "Test Plugins already built!"
 else
     echo "Building Test plugin..."
+    git submodule update --init
     cd $1/CHOW
     $2 --resave CHOW.jucer
     cd Builds/MacOSX
