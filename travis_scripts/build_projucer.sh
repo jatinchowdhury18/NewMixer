@@ -10,7 +10,7 @@ else
     elif [ "$3" == "windows" ]
         then
         msbuild.exe -v:quiet Projucer.sln
-    elif
+    elif [ "$3" == "linux" ]
         then
         make
     fi
