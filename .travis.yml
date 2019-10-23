@@ -6,7 +6,11 @@ sudo: false
 
 # if pull request: always build
 # if push: only build for master branch
-if: (type != push) OR (type = push AND branch = master)
+if: (type != push) OR (type = push AND branch = ci-testing)
+
+cache:
+  directories:
+  - $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/
 
 matrix:
   include:
