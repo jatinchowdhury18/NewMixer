@@ -8,6 +8,11 @@ sudo: false
 # if push: only build for master branch
 if: (type != push) OR (type = push AND branch = master)
 
+cache:
+  directories:
+  - $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/
+  - $TRAVIS_BUILD_DIR/TestPlugins/Mac/
+
 matrix:
   include:
     - name: "unit-tests"
@@ -68,10 +73,9 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
 
   # Build Projucer
-  - cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
-  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
-  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then make; fi
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then sh travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then sh travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then bash travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME; fi
 
 script:
   - cd $TRAVIS_BUILD_DIR/
@@ -92,18 +96,8 @@ script:
       # Build debug mode
       xcodebuild -project NewMixer.xcodeproj/ -configuration Debug | xcpretty -s -f `xcpretty-travis-formatter`
 
-      echo "Building Test plugin..."
-      cd $TRAVIS_BUILD_DIR/TestPlugins/CHOW/
-      $PROJUCER --resave CHOW.jucer
-      cd Builds/$BUILD_FOLDER/
-      xcodebuild -project CHOW.xcodeproj/ clean
-      xcodebuild -project CHOW.xcodeproj/ -configuration Release > /dev/null
-
-      echo "Copying test plugin"
-      cd $TRAVIS_BUILD_DIR/
-      cp -R $TRAVIS_BUILD_DIR/TestPlugins/CHOW/Builds/MacOSX/build/Release/CHOW.component $TRAVIS_BUILD_DIR/TestPlugins/Mac/CHOW.component
-      cp -R $TRAVIS_BUILD_DIR/TestPlugins/CHOW/Builds/MacOSX/build/Release/CHOW.vst $TRAVIS_BUILD_DIR/TestPlugins/Mac/CHOW.vst
-      cp -R $TRAVIS_BUILD_DIR/TestPlugins/CHOW/Builds/MacOSX/build/Release/CHOW.vst3 $TRAVIS_BUILD_DIR/TestPlugins/Mac/CHOW.vst3
+      # Build test plugins
+      sh $TRAVIS_BUILD_DIR/travis_scripts/build_testplugins.sh $TRAVIS_BUILD_DIR/TestPlugins/ $PROJUCER
 
       echo "Running unit test"
       cd $TRAVIS_BUILD_DIR/Builds/$BUILD_FOLDER/build/Debug/NewMixer.app/Contents/MacOS
