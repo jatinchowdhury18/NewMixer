@@ -72,10 +72,14 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
 
   # Build Projucer
-  - cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER
-  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
-  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
-  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then make; fi
+  - ls -R $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/ 
+  - |
+    if [[ -f $PROJUCER_EXPORT ]]; then
+      cd $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER
+      if [[ $TRAVIS_OS_NAME == 'osx' ]]; then xcodebuild -project Projucer.xcodeproj > /dev/null; fi
+      if [[ $TRAVIS_OS_NAME == 'windows' ]]; then msbuild.exe -v:quiet Projucer.sln; fi
+      if [[ $TRAVIS_OS_NAME == 'linux' ]]; then make; fi
+    fi
 
 script:
   - cd $TRAVIS_BUILD_DIR/
