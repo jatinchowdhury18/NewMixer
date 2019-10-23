@@ -4,7 +4,6 @@ if [ -f $1 ]
     echo "Projucer already built!"
 else
     echo "Building Projucer..."
-    git submodule update --init
     cd $2
     if [ "$3" == "osx" ]
         then
