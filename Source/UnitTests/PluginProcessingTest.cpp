@@ -17,7 +17,7 @@ void PluginProcessingTest::runTest()
             track->getProcessor()->getPluginChain()->addPlugin (&plugin);
     }
     track->openPluginWindow (0);
-
+    
     beginTest ("Audio Processing Test");
     AudioBuffer<float> buffer (numChannels, blockSize);
     MidiBuffer midiBuffer;
@@ -34,7 +34,7 @@ void PluginProcessingTest::runTest()
             expect (x[n] < chowLimit);
         }
     }
-
+    
     beginTest ("Unloading plugin");
     track->closePluginWindow();
     track->getProcessor()->getPluginChain()->removePlugin (0);

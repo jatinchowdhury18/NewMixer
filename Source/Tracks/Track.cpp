@@ -9,17 +9,28 @@
 
 using namespace TrackConstants;
 
-enum
+namespace
 {
-    uuidSize = 6,
-};
+    const Identifier trackType = Identifier ("Track");
+    const Identifier trackName = Identifier ("Name");
+    const Identifier trackShortName = Identifier ("ShortName");
+    const Identifier trackX = Identifier ("X");
+    const Identifier trackY = Identifier ("Y");
+    const Identifier trackDiameter = Identifier ("Diameter");
+
+    enum
+    {
+        uuidSize = 6,
+    };
+}
 
 Track::Track (File& file, String name, String shortName, Colour colour, String uuid) : 
+    trackValueTree (trackType),
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    name (name),
-    shortName (shortName),
     trackColour (colour)
 {
+    setupValueTree (name, shortName);
+
     autoHelper.reset (new AutoHelper (this));
 
     initProcessor.reset (new TrackProcessor (file));
@@ -28,11 +39,12 @@ Track::Track (File& file, String name, String shortName, Colour colour, String u
 }
 
 Track::Track (MemoryInputStream* input, String name, String shortName, Colour colour, String uuid) : 
+    trackValueTree (trackType),
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    name (name),
-    shortName (shortName),
     trackColour (colour)
 {
+    setupValueTree (name, shortName);
+
     autoHelper.reset (new AutoHelper (this));
 
     initProcessor.reset (new TrackProcessor (input));
@@ -41,12 +53,13 @@ Track::Track (MemoryInputStream* input, String name, String shortName, Colour co
 }
 
 Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour, String uuid) :
+    trackValueTree (trackType),
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    name (name),
-    shortName (shortName),
     trackColour (colour),
     isPlaying (playing)
 {
+    setupValueTree (name, shortName);
+
     autoHelper.reset (new AutoHelper (this));
 
     initProcessor.reset (new InputTrackProcessor (sampleLength, startSample));
@@ -56,12 +69,12 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
 
 Track::Track (const Track& track, String uuid) :
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    name (track.getName()),
-    shortName (track.getShortName()),
     trackColour (track.getColour()),
     diameter (track.diameter),
     isPlaying (track.getIsPlaying())
 {
+    trackValueTree = track.trackValueTree.createCopy();
+
     autoHelper.reset (new AutoHelper (this));
     autoHelper->setRecorded (track.autoHelper->isRecorded());
     autoHelper->getPoints() = track.autoHelper->getPoints().createCopy();
@@ -77,6 +90,12 @@ Track::Track (const Track& track, String uuid) :
 
     if (! track.getProcessor()->getIsMute())
         toggleMute();
+}
+
+void Track::setupValueTree (String name, String shortName)
+{
+    setName (name);
+    setShortName (shortName);
 }
 
 void Track::initialise (int x, int y, int ind)
@@ -96,7 +115,7 @@ void Track::initialise (int x, int y, int ind)
     setBounds (x, y, width, width);
     setBroughtToFrontOnMouseClick (true);
 
-    setTooltip (name);
+    setTooltip (getName());
     startTimer (AutoHelper::timerInterval);
 }
 
@@ -126,6 +145,18 @@ void Track::timerCallback()
 
         trackMoved();
     }
+}
+
+UndoManager* Track::getUndoManager() const noexcept
+{
+    auto mc = dynamic_cast<MainComponent*> (getParentComponent());
+    if (mc == nullptr)
+    {
+        // The main component should always exist, except for some unit tests
+        return nullptr; 
+    }
+
+    return &mc->getUndoManager();
 }
 
 void Track::renderAutomationExport()
@@ -166,9 +197,30 @@ void Track::endReached()
     repaint();
 }
 
+String Track::getName() const noexcept
+{
+    return trackValueTree.getProperty (trackName).toString();
+}
+
+void Track::setName (String name)
+{
+    trackValueTree.setProperty (trackName, name, getUndoManager());
+}
+
+String Track::getShortName() const noexcept
+{
+    return trackValueTree.getProperty (trackShortName).toString();
+}
+
+void Track::setShortName (String shortName)
+{
+    trackValueTree.setProperty (trackShortName, shortName, getUndoManager());
+}
+
 void Track::trackRename()
 {
-    renameWindow.reset (new TrackRenameWindow (name));
+    getUndoManager()->beginNewTransaction();
+    renameWindow.reset (new TrackRenameWindow (getName()));
     renameWindow->getComp()->addListener (this);
     renameWindow->getComp()->setFocused();
 }
@@ -177,15 +229,15 @@ void Track::trackNameChanged (String newName, String newShortName)
 {
     if (newName.isNotEmpty())
     {
-        name = newName;
+        setName (newName);
 
         if (newShortName.isNotEmpty())
-            shortName = newShortName;
+            setShortName (newShortName);
         else
-            shortName = name.substring (0, jmin<int> (4, name.length()));
+            setShortName (getName().substring (0, jmin<int> (4, getName().length())));
     }
 
-    setTooltip (name);
+    setTooltip (getName());
     repaint();
 
     if (renameWindow.get() != nullptr)

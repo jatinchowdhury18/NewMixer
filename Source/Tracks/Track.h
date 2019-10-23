@@ -92,8 +92,8 @@ public:
     void setLastDrag (int drag) { lastDragLocation = drag; }
     void setDragging (bool drag) { isDragging = drag; }
 
-    String getName() const { return name; }
-    String getShortName() const { return shortName; }
+    String getName() const noexcept;
+    String getShortName() const noexcept;
 
     bool getIsPlaying() const { return isPlaying; }
 
@@ -126,6 +126,8 @@ public:
     void openPluginWindow (int pluginIndex);
     void closePluginWindow();
 
+    ValueTree& getValueTree() { return trackValueTree; }
+
 private:
 #if JUCE_DEBUG
     friend class NameTest;
@@ -144,12 +146,17 @@ private:
 
     ListenerList<Listener> listeners;
 
+    void setupValueTree (String name, String shortName);
+    UndoManager* getUndoManager() const noexcept;
+    ValueTree trackValueTree;
+
+    void setName (String name);
+    void setShortName (String shortName);
+
     float relX = 0.0f;
     float relY = 0.0f;
 
     const String uuid;
-    String name;
-    String shortName;
     Colour trackColour;
     TrackColours colours;
 
