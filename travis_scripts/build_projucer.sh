@@ -3,6 +3,7 @@ if [ -f $1 ]
     then
     echo "Projucer already built!"
 else
+    echo "Building Projucer..."
     cd $2
     if [ "$3" == "osx" ]
         then

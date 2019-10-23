@@ -73,7 +73,9 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then export PATH=$MSBUILD_PATH:$PATH; fi
 
   # Build Projucer
-  - sh travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then sh travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME; fi
+  - if [[ $TRAVIS_OS_NAME == 'windows' ]]; then sh travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME; fi
+  - if [[ $TRAVIS_OS_NAME == 'linux' ]]; then bash travis_scripts/build_projucer.sh $PROJUCER_EXPORT $TRAVIS_BUILD_DIR/JUCE/extras/Projucer/Builds/$BUILD_FOLDER $TRAVIS_OS_NAME; fi
 
 script:
   - cd $TRAVIS_BUILD_DIR/
@@ -95,7 +97,7 @@ script:
       xcodebuild -project NewMixer.xcodeproj/ -configuration Debug | xcpretty -s -f `xcpretty-travis-formatter`
 
       # Build test plugins
-      sh travis_scripts/build_testplugins.sh $TRAVIS_BUILD_DIR/TestPlugins/ $PROJUCER
+      sh $TRAVIS_BUILD_DIR/travis_scripts/build_testplugins.sh $TRAVIS_BUILD_DIR/TestPlugins/ $PROJUCER
 
       echo "Running unit test"
       cd $TRAVIS_BUILD_DIR/Builds/$BUILD_FOLDER/build/Debug/NewMixer.app/Contents/MacOS
