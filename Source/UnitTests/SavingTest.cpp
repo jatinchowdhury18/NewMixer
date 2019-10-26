@@ -1,5 +1,6 @@
 #include "SavingTest.h"
 #include "Data Managing/PluginManager.h"
+#include "TrackActionHelper.h"
 
 void SavingTest::runTest()
 {
@@ -26,6 +27,7 @@ void SavingTest::normalTest()
 
     main.getTracks()[indexTrackAutomate]->getAutoHelper()->setRecorded (true);
     main.getTracks()[indexTrackUnmute]->toggleMute();
+    TrackActionHelper::changeColour (main.getTracks()[indexTrackColour], 0);
 
     auto saveFolder = save (main, root);
     testSave (saveFolder, stems);
@@ -86,6 +88,8 @@ void SavingTest::testOpen (MainComponent& main)
     expect (main.getTracks()[indexTrackAutomate]->getAutoHelper()->isRecorded(), "Automation not saved!");
 
     expect (main.getTracks()[indexTrackUnmute]->getProcessor()->getIsMute() == false, "Mute information not saved!");
+
+    expect (main.getTracks()[indexTrackColour]->getColour() == TrackColours::getInstance()->getColour (0), "Track Colour not saved!");
 }
 
 void SavingTest::testPluginOpen (Track* track)

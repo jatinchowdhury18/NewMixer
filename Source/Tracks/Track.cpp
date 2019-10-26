@@ -14,6 +14,7 @@ namespace
     const Identifier trackType = Identifier ("Track");
     const Identifier trackName = Identifier ("Name");
     const Identifier trackShortName = Identifier ("ShortName");
+    const Identifier trackColour = Identifier ("Colour");
     const Identifier trackX = Identifier ("X");
     const Identifier trackY = Identifier ("Y");
     const Identifier trackDiameter = Identifier ("Diameter");
@@ -26,10 +27,9 @@ namespace
 
 Track::Track (File& file, String name, String shortName, Colour colour, String uuid) : 
     trackValueTree (trackType),
-    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    trackColour (colour)
+    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid)
 {
-    setupValueTree (name, shortName);
+    setupValueTree (name, shortName, colour);
 
     autoHelper.reset (new AutoHelper (this));
 
@@ -40,10 +40,9 @@ Track::Track (File& file, String name, String shortName, Colour colour, String u
 
 Track::Track (MemoryInputStream* input, String name, String shortName, Colour colour, String uuid) : 
     trackValueTree (trackType),
-    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    trackColour (colour)
+    uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid)
 {
-    setupValueTree (name, shortName);
+    setupValueTree (name, shortName, colour);
 
     autoHelper.reset (new AutoHelper (this));
 
@@ -55,10 +54,9 @@ Track::Track (MemoryInputStream* input, String name, String shortName, Colour co
 Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, String shortName, Colour colour, String uuid) :
     trackValueTree (trackType),
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    trackColour (colour),
     isPlaying (playing)
 {
-    setupValueTree (name, shortName);
+    setupValueTree (name, shortName, colour);
 
     autoHelper.reset (new AutoHelper (this));
 
@@ -69,7 +67,6 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
 
 Track::Track (const Track& track, String uuid) :
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
-    trackColour (track.getColour()),
     diameter (track.diameter),
     isPlaying (track.getIsPlaying())
 {
@@ -92,10 +89,11 @@ Track::Track (const Track& track, String uuid) :
         toggleMute();
 }
 
-void Track::setupValueTree (String name, String shortName)
+void Track::setupValueTree (String name, String shortName, Colour colour)
 {
     setName (name);
     setShortName (shortName);
+    setTrackColour (colour);
 }
 
 void Track::initialise (int x, int y, int ind)
@@ -121,6 +119,7 @@ void Track::initialise (int x, int y, int ind)
 
 Track::~Track()
 {
+    TrackColours::deleteInstance();
     processor->removeListener (this);
     
 #if JUCE_IOS || JUCE_ANDROID
@@ -195,6 +194,16 @@ void Track::endReached()
 
     MessageManagerLock mml;
     repaint();
+}
+
+Colour Track::getColour() const noexcept
+{
+    return Colour ((uint32) (int) trackValueTree.getProperty (trackColour));
+}
+
+void Track::setTrackColour (Colour newColour)
+{
+    trackValueTree.setProperty (trackColour, (int) newColour.getARGB(), getUndoManager());
 }
 
 String Track::getName() const noexcept

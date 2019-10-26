@@ -63,6 +63,7 @@
               file="Source/Data Managing/SettingsManager.h"/>
       </GROUP>
       <GROUP id="{3AA603C5-C489-B461-3491-4EA0DC5625F4}" name="GUI Extras">
+        <FILE id="rmuZ2m" name="Colours.cpp" compile="1" resource="0" file="Source/GUI Extras/Colours.cpp"/>
         <FILE id="Upr2sd" name="Colours.h" compile="0" resource="0" file="Source/GUI Extras/Colours.h"/>
         <FILE id="Mj1GRP" name="PluginListWindow.cpp" compile="1" resource="0"
               file="Source/GUI Extras/PluginListWindow.cpp"/>

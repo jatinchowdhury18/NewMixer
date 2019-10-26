@@ -139,10 +139,7 @@ void SessionManager::parseTrackXml (MainComponent* mc, XmlElement* trackXml)
     if (! validateTrackFile (trackFile))
         return;
 
-    // String trackName (trackXml->getStringAttribute ("name"));
-    // String trackShortName (trackXml->getStringAttribute ("shortName"));
-    Colour trackColour = Colour::fromString (trackXml->getStringAttribute ("colour"));
-    auto* newTrack = new Track (trackFile, "", "", trackColour);
+    auto* newTrack = new Track (trackFile, "", "", Colour());
     newTrack->getValueTree() = ValueTree::fromXml (*trackXml);
 
     auto trackX = (int) (trackXml->getDoubleAttribute ("xPos") * mc->getWidth()) + TrackConstants::width / 2;
@@ -289,7 +286,6 @@ void SessionManager::saveTracksToXml (const OwnedArray<Track>& tracks, XmlElemen
 {
     for (auto track : tracks)
     {
-        // std::unique_ptr<XmlElement> xmlTrack (new XmlElement ("Track"));
         auto xmlTrack = track->getValueTree().createXml();
         
         xmlTrack->setAttribute ("xPos", track->getRelX());
@@ -298,7 +294,6 @@ void SessionManager::saveTracksToXml (const OwnedArray<Track>& tracks, XmlElemen
         xmlTrack->setAttribute ("mute", track->getProcessor()->getIsMute());
 
         xmlTrack->setAttribute ("filePath", track->getFilePath());
-        xmlTrack->setAttribute ("colour", track->getColour().toString());
 
         saveAutomationToXml (track, xmlTrack.get());
         savePluginsToXml (track, xmlTrack.get());

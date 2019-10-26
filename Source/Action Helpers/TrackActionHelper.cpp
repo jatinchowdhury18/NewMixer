@@ -10,9 +10,9 @@ void TrackActionHelper::rightClickMenu (Track* track)
     PopupMenu m;
 
     PopupMenu colorMenu;
-    for (int ind = 1; ind <= track->getColours().getNumColours(); ind++)  
-        colorMenu.addItem (ind, track->getColours().getColourName (ind - 1), true,
-                           track->getColour() == track->getColours().getColour (ind - 1));
+    for (int ind = 1; ind <= TrackColours::getInstance()->getNumColours(); ind++)  
+        colorMenu.addItem (ind, TrackColours::getInstance()->getColourName (ind - 1), true,
+                           track->getColour() == TrackColours::getInstance()->getColour (ind - 1));
 
     PopupMenu recordMenu;
     recordMenu.addItem (NumLoops::One, "1 Loop");
@@ -253,7 +253,9 @@ void TrackActionHelper::setPositionConstrained (Track* track, Point<int> pos)
 
 void TrackActionHelper::changeColour (Track* track, int index)
 { 
-    track->setTrackColour (track->getColours().getColour (index));
+    track->getUndoManager()->beginNewTransaction ("Change Track Colour");
+
+    track->setTrackColour (TrackColours::getInstance()->getColour (index));
     track->repaint();
     track->getListeners().call (&Track::Listener::trackColourChanged, track, index);
 }
