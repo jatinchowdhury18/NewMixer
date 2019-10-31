@@ -13,6 +13,7 @@ class SavingTest : public UnitTest
         indexTrackAutomate = 0,
         indexTrackUnmute   = 1,
         indexTrackColour   = 2,
+        indexPosAndRadius  = 3,
     };
 
 public:

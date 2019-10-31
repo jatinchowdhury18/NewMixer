@@ -28,6 +28,8 @@ void SavingTest::normalTest()
     main.getTracks()[indexTrackAutomate]->getAutoHelper()->setRecorded (true);
     main.getTracks()[indexTrackUnmute]->toggleMute();
     TrackActionHelper::changeColour (main.getTracks()[indexTrackColour], 0);
+    TrackActionHelper::changePosition (main.getTracks()[indexPosAndRadius], Point<int> (0, 0));
+    TrackActionHelper::changeSize (main.getTracks()[indexPosAndRadius], true, false);
 
     auto saveFolder = save (main, root);
     testSave (saveFolder, stems);
@@ -90,6 +92,10 @@ void SavingTest::testOpen (MainComponent& main)
     expect (main.getTracks()[indexTrackUnmute]->getProcessor()->getIsMute() == false, "Mute information not saved!");
 
     expect (main.getTracks()[indexTrackColour]->getColour() == TrackColours::getInstance()->getColour (0), "Track Colour not saved!");
+
+    expect (main.getTracks()[indexPosAndRadius]->getRelX() == 0.0f, "Track X informarion not saved!");
+    expect (main.getTracks()[indexPosAndRadius]->getRelY() == 0.0f, "Track Y informarion not saved!");
+    expect (main.getTracks()[indexPosAndRadius]->getDiameter() > TrackConstants::defaultDiameter, "Track Diameter informarion not saved!");
 }
 
 void SavingTest::testPluginOpen (Track* track)
