@@ -17,15 +17,15 @@ void PluginProcessingTest::runTest()
             track->getProcessor()->getPluginChain()->addPlugin (&plugin);
     }
     track->openPluginWindow (0);
-
+   
     beginTest ("Audio Processing Test");
     AudioBuffer<float> buffer (numChannels, blockSize);
     MidiBuffer midiBuffer;
-
+    
     track->getProcessor()->prepareToPlay (sampleRate, blockSize);
     track->getProcessor()->processBlock (buffer, midiBuffer);
     track->getProcessor()->releaseResources();
-
+    
     for (int ch = 0; ch <  numChannels; ch++)
     {
         auto x = buffer.getReadPointer (ch);
@@ -34,7 +34,7 @@ void PluginProcessingTest::runTest()
             expect (x[n] < chowLimit);
         }
     }
-
+   
     beginTest ("Unloading plugin");
     track->closePluginWindow();
     track->getProcessor()->getPluginChain()->removePlugin (0);
@@ -49,6 +49,7 @@ void PluginProcessingTest::initialise()
 
 void PluginProcessingTest::shutdown()
 {
+    PluginManager::deleteInstance();
     delete dynamic_cast<TrackProcessor*> (track->getProcessor())->getReader();
     delete track;
 }

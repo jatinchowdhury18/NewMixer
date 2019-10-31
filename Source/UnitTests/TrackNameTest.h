@@ -8,9 +8,9 @@ public:
 
     void checkNames (String expName, String expShort)
     {
-        expect (expName == track->name, "Track name incorrect: " + track->name
+        expect (expName == track->getName(), "Track name incorrect: " + track->getName()
                 + ", expected: " + expName);
-        expect (expShort == track->shortName, "Track short name incorrect, got: " + track->shortName
+        expect (expShort == track->getShortName(), "Track short name incorrect, got: " + track->getShortName()
                 + ", expected: " + expShort);
     }
 

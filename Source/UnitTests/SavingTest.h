@@ -11,7 +11,9 @@ class SavingTest : public UnitTest
         numTestTracks = 5,
 
         indexTrackAutomate = 0,
-        indexTrackUnmute = 1,
+        indexTrackUnmute   = 1,
+        indexTrackColour   = 2,
+        indexPosAndRadius  = 3,
     };
 
 public:

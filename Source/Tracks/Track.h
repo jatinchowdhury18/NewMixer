@@ -2,7 +2,6 @@
 #define TRACK_H_INCLUDED
 
 #include "TrackBase.h"
-#include "Colours.h"
 #include "TrackHelpers/AutomationHelper.h"
 #include "TrackRenameWindow.h"
 #include "TrackMeter.h"
@@ -79,9 +78,8 @@ public:
     void trackRename();
     void trackNameChanged (String newName, String newShortName = {}) override;
 
-    TrackColours& getColours() { return colours; }
-    Colour getColour() const { return trackColour; }
-    void setTrackColour (Colour newColour) { trackColour = newColour; }
+    Colour getColour() const noexcept;
+    void setTrackColour (Colour newColour);
 
     AutoHelper* getAutoHelper() { return autoHelper.get(); }
 
@@ -92,8 +90,8 @@ public:
     void setLastDrag (int drag) { lastDragLocation = drag; }
     void setDragging (bool drag) { isDragging = drag; }
 
-    String getName() const { return name; }
-    String getShortName() const { return shortName; }
+    String getName() const noexcept;
+    String getShortName() const noexcept;
 
     bool getIsPlaying() const { return isPlaying; }
 
@@ -125,6 +123,10 @@ public:
 
     void openPluginWindow (int pluginIndex);
     void closePluginWindow();
+    PluginWindow* getPluginWindow() const noexcept { return pluginWindow.get(); }
+
+    ValueTree& getValueTree() { return trackValueTree; }
+    UndoManager* getUndoManager() const noexcept;
 
 private:
 #if JUCE_DEBUG
@@ -144,14 +146,16 @@ private:
 
     ListenerList<Listener> listeners;
 
+    void setupValueTree (String name, String shortName, Colour colour);
+    ValueTree trackValueTree;
+
+    void setName (String name);
+    void setShortName (String shortName);
+
     float relX = 0.0f;
     float relY = 0.0f;
 
     const String uuid;
-    String name;
-    String shortName;
-    Colour trackColour;
-    TrackColours colours;
 
     float diameter = TrackConstants::defaultDiameter;
     bool isDragging = false;
