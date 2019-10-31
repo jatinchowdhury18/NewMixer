@@ -68,10 +68,9 @@ Track::Track (int64 sampleLength, int64 startSample, bool playing, String name, 
 Track::Track (const Track& track, String uuid) :
     uuid (uuid == "" ? Uuid().toString().substring (0, uuidSize) : uuid),
     diameter (track.diameter),
-    isPlaying (track.getIsPlaying())
+    isPlaying (track.getIsPlaying()),
+    trackValueTree (track.trackValueTree.createCopy())
 {
-    trackValueTree = track.trackValueTree.createCopy();
-
     autoHelper.reset (new AutoHelper (this));
     autoHelper->setRecorded (track.autoHelper->isRecorded());
     autoHelper->getPoints() = track.autoHelper->getPoints().createCopy();
