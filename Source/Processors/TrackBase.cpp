@@ -82,6 +82,8 @@ void TrackBase::releaseResources()
 
 void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
+    const int numChannels = 2;
+
     for (auto* processor : processors)
         processor->processBlock (buffer, midiMessages);
     
@@ -89,10 +91,10 @@ void TrackBase::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessag
         buffer.clear();
     
     float rmsSum = 0;
-    for (int ch = 0; ch < buffer.getNumChannels(); ch++)
+    for (int ch = 0; ch < numChannels; ch++)
         rmsSum += buffer.getRMSLevel (ch, 0, buffer.getNumSamples());
     
-    lastRMS = rmsSum / buffer.getNumChannels();
+    lastRMS = rmsSum / numChannels;
 }
 
 void TrackBase::trackMoved (int x, int y, int width, int screenWidth, int screenHeight)

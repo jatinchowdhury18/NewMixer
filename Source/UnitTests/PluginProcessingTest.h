@@ -20,7 +20,7 @@ private:
 
     enum
     {
-        numChannels = 2,
+        numChannels = 4,
         blockSize = 512,
     };
 

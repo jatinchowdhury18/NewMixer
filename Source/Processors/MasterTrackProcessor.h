@@ -66,6 +66,7 @@ public:
 
 private:
     void connectTracks();
+    void connectSingleTrack (Node::Ptr node);
 
     ListenerList<Listener> exportListeners;
 
@@ -75,6 +76,7 @@ private:
 
     Node::Ptr audioOutputNode;
     Node::Ptr audioInputNode;
+    Node::Ptr reverbNode;
     ReferenceCountedArray<Node> trackNodes;
     OwnedArray<Track>& tracks;
 

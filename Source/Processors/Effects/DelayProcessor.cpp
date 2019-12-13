@@ -50,7 +50,7 @@ void DelayProcessor::releaseResources()
 
 void DelayProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& /*midiBuffer*/)
 {
-    for (int channel = 0; channel < buffer.getNumChannels(); channel++)
+    for (int channel = 0; channel < 2; channel++)
     {
         float* x = buffer.getWritePointer(channel);
         for (int n = 0; n < buffer.getNumSamples(); n++)

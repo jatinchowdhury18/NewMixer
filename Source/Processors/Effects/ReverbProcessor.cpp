@@ -2,9 +2,12 @@
 
 ReverbProcessor::ReverbProcessor() : ProcessorBase (String ("Reverb Processor"))
 {
+    setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
+
+    dsp::Reverb::Parameters params;
     params.roomSize = 0.8f;
-    params.wetLevel = 0.0f;
-    params.dryLevel = 1.0f;
+    params.wetLevel = 1.0f;
+    params.dryLevel = 0.0f;
     reverbDsp.setParameters (params);
 }
 
@@ -37,10 +40,7 @@ void ReverbProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& /*mi
     reverbDsp.process (context);
 }
 
-void ReverbProcessor::setDryWet (float wetAmt)
+void ReverbProcessor::setParameters (dsp::Reverb::Parameters& params)
 {
-    params = reverbDsp.getParameters();
-    params.wetLevel = wetAmt;
-    params.dryLevel = 1.0f - wetAmt;
     reverbDsp.setParameters (params);
 }

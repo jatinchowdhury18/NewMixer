@@ -12,12 +12,9 @@ public:
     void releaseResources() override;
     void processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer) override;
 
-    void setDryWet (float wetAmt);
-    float getWet() const { return reverbDsp.getParameters().wetLevel; }
+    void setParameters (dsp::Reverb::Parameters& params);
 
 private:
-    
-    dsp::Reverb::Parameters params;
     dsp::Reverb reverbDsp;
 
     bool starting = false;
