@@ -102,6 +102,10 @@
                 file="Source/Processors/Effects/ReverbProcessor.cpp"/>
           <FILE id="AfJ63c" name="ReverbProcessor.h" compile="0" resource="0"
                 file="Source/Processors/Effects/ReverbProcessor.h"/>
+          <FILE id="MKWMvc" name="SplitterProcessor.cpp" compile="1" resource="0"
+                file="Source/Processors/Effects/SplitterProcessor.cpp"/>
+          <FILE id="JA3NZO" name="SplitterProcessor.h" compile="0" resource="0"
+                file="Source/Processors/Effects/SplitterProcessor.h"/>
         </GROUP>
         <FILE id="XD4Qae" name="InputTrackProcessor.cpp" compile="1" resource="0"
               file="Source/Processors/InputTrackProcessor.cpp"/>

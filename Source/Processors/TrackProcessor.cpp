@@ -9,7 +9,7 @@ TrackProcessor::TrackProcessor (File& file, int64 startSample) :
     formatManager.registerBasicFormats();
     setupTransportSource (file.createInputStream());
 
-    setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
+    setPlayConfigDetails (0, 4, getSampleRate(), getBlockSize());
 }
 
 TrackProcessor::TrackProcessor (MemoryInputStream* input, int64 startSample) : TrackBase (String ("Track Processor"))
@@ -19,7 +19,7 @@ TrackProcessor::TrackProcessor (MemoryInputStream* input, int64 startSample) : T
     formatManager.registerBasicFormats();
     setupTransportSource (input);
 
-    setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
+    setPlayConfigDetails (0, 4, getSampleRate(), getBlockSize());
 }
 
 TrackProcessor::TrackProcessor (const TrackProcessor& processor) :
@@ -39,7 +39,7 @@ TrackProcessor::TrackProcessor (const TrackProcessor& processor) :
     if (file.exists())
         setupTransportSource (file.createInputStream());
 
-    setPlayConfigDetails (0, 2, getSampleRate(), getBlockSize());
+    setPlayConfigDetails (0, 4, getSampleRate(), getBlockSize());
 }
 
 void TrackProcessor::setFile (File& newFile)

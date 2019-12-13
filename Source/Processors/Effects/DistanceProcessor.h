@@ -3,7 +3,7 @@
 
 #include "GainProcessor.h"
 #include "FilterProcessor.h"
-#include "ReverbProcessor.h"
+#include "SplitterProcessor.h"
 
 class DistanceProcessor : public ProcessorBase
 {
@@ -20,14 +20,14 @@ public:
     void setGain (float newGain) { gainProcessor->setGain (newGain); }
     float getGain() const { return gainProcessor->getGain(); }
 
-    void setVerb (float wetAmt) { reverbProcessor->setDryWet (wetAmt); }
-    float getVerb() const { return reverbProcessor->getWet(); }
+    void setVerb (float wetAmt) { splitterProcessor->setWetGain (wetAmt); }
+    float getVerb() const { return splitterProcessor->getWetGain(); }
 
 private:
     Array<AudioProcessor*> processors;
     std::unique_ptr<FilterProcessor> filterProcessor;
     std::unique_ptr<GainProcessor> gainProcessor;
-    std::unique_ptr<ReverbProcessor> reverbProcessor;
+    std::unique_ptr<SplitterProcessor> splitterProcessor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DistanceProcessor)
 };

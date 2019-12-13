@@ -13,7 +13,8 @@ enum
 };
 
 PluginWindow::PluginWindow (AudioPluginInstance* plugin, Track* track) :
-    DocumentWindow (track->getName(), Colours::lightgrey, DocumentWindow::closeButton),
+    DocumentWindow (track != nullptr ? track->getName() : "Master",
+                    Colours::lightgrey, DocumentWindow::closeButton),
     comp (plugin)
 {
     WindowHelper::setupDefaultDocumentWindow (*this, &comp);
@@ -22,7 +23,7 @@ PluginWindow::PluginWindow (AudioPluginInstance* plugin, Track* track) :
     setVisible (true);
     setAlwaysOnTop (true);
 
-    setName (plugin->getPluginDescription().name + "-" + track->getName());
+    setName (plugin->getPluginDescription().name + "-" + (track != nullptr ? track->getName() : "Master"));
 }
 
 void PluginWindow::closeButtonPressed()
@@ -50,8 +51,12 @@ PluginContainerComponent::PluginContainerComponent (AudioPluginInstance* plugin)
         addAndMakeVisible (button);
     };
 
-    setupButton (bypassButton, "BYPASS",
-                [this, plugin] { plugin->getBypassParameter()->setValueNotifyingHost (bypassButton.getToggleState()); });
+    setupButton (bypassButton, "BYPASS", [this, plugin]
+        { 
+            if (auto* bypassParam = plugin->getBypassParameter())
+                bypassParam->setValueNotifyingHost (bypassButton.getToggleState());
+        });
+
     setupProgramsBox (plugin);
 }
 

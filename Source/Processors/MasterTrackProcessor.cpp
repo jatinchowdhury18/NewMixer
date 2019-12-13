@@ -16,6 +16,8 @@ MasterTrackProcessor::MasterTrackProcessor (OwnedArray<Track>& tracks) :
     audioInputNode = addNode (std::make_unique<AudioGraphIOProcessor> (AudioGraphIOProcessor::audioInputNode));
     audioInputNode->getProcessor()->setPlayConfigDetails (2, 2, getSampleRate(), getBlockSize());
 
+    reverbNode = addNode (std::make_unique<ReverbProcessor> ());
+
     for (auto track : tracks)
     {
         trackNodes.add (addNode (track->getProcessorPtr()));
@@ -33,15 +35,30 @@ MasterTrackProcessor::~MasterTrackProcessor()
     deviceManager.removeAudioCallback (&player);
 }
 
+void MasterTrackProcessor::connectSingleTrack (Node::Ptr trackNode)
+{
+    for (int channel = 0; channel < 2; ++channel)
+    {
+        addConnection ({ { audioInputNode->nodeID, channel },
+                         { trackNode->nodeID,      channel } });
+
+        addConnection ({ { trackNode->nodeID,       channel },
+                         { audioOutputNode->nodeID, channel } });
+
+        addConnection ({ { trackNode->nodeID,  channel + 2 },
+                         { reverbNode->nodeID, channel } });
+    }
+}
+
 void MasterTrackProcessor::connectTracks()
 {
     for (auto trackNode : trackNodes)
+        connectSingleTrack (trackNode);
+
+    for (int channel = 0; channel < 2; ++channel)
     {
-        for (int channel = 0; channel < 2; ++channel)
-        {
-            addConnection ({ { trackNode->nodeID,       channel },
-                             { audioOutputNode->nodeID, channel } });
-        }
+        addConnection ({ { reverbNode->nodeID,      channel },
+                         { audioOutputNode->nodeID, channel } });
     }
 }
 
@@ -72,14 +89,7 @@ void MasterTrackProcessor::addTrack (Track* track)
     auto trackNode = trackNodes.getLast();
     track->setProcessor (trackNode->getProcessor());
 
-    for (int channel = 0; channel < 2; ++channel)
-    {
-        addConnection ({ { audioInputNode->nodeID, channel },
-                         { trackNode->nodeID,      channel } });
-
-        addConnection ({ { trackNode->nodeID,       channel },
-                         { audioOutputNode->nodeID, channel } });
-    }
+    connectSingleTrack (trackNode);
 }
 
 void MasterTrackProcessor::removeTrack (Track* track)
