@@ -8,6 +8,7 @@
 #include "Timeline/WaveformViewer.h"
 #include "AutomationPath.h"
 #include "Data Managing/ExportWindow.h"
+#include "PluginWindow.h"
 
 namespace MainConstants
 {
@@ -96,6 +97,9 @@ private:
 
     TextButton settingsButton;
     std::unique_ptr<SettingsWindow> settingsWindow;
+
+    TextButton spaceButton;
+    std::unique_ptr<PluginWindow> reverbWindow;
 
     TextButton pluginsButton;
 

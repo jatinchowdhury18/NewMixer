@@ -67,6 +67,8 @@ void MainComponent::initSettings()
     setupButton (pluginsButton, "Plugins",
                 [this] { PluginManager::getInstance()->showPluginListWindow(); });
 
+    setupButton (spaceButton, "Space", [this] { reverbWindow.reset (new PluginWindow (master->getReverbProcessor(), nullptr)); });
+
     setupButton (undoButton, "Undo", [this] { undoManager.undo(); });
     setupButton (redoButton, "Redo", [this] { undoManager.redo(); });
 }
@@ -109,8 +111,12 @@ void MainComponent::resized()
     using namespace MainConstants;
     settingsButton.setBounds ((int) (getWidth() * (1 - buttonWidthFactor)), 0,
                               (int) (getWidth() * buttonWidthFactor), (int) (getHeight() * buttonHeightFactor));
+    
     pluginsButton.setBounds (settingsButton.getX(), settingsButton.getBottom(),
                              settingsButton.getWidth(), settingsButton.getHeight());
+
+    spaceButton.setBounds (settingsButton.getX(), pluginsButton.getBottom(),
+                           settingsButton.getWidth(),  settingsButton.getHeight());
 
 #if ! (JUCE_IOS || JUCE_ANDROID)
     undoButton.setBounds (0, 0,                      settingsButton.getWidth(), settingsButton.getHeight());

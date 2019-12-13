@@ -13,7 +13,7 @@ void SplitterProcessor::releaseResources()
 {
 }
 
-void SplitterProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiBuffer)
+void SplitterProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer&)
 {
     for (int ch = 0; ch < 2; ++ch)
         buffer.copyFrom (ch + 2, 0, buffer.getReadPointer (ch), buffer.getNumSamples());

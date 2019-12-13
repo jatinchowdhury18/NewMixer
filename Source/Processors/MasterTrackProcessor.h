@@ -64,6 +64,8 @@ public:
     void addListener (Listener* listener) { exportListeners.add (listener); }
     void removeListener (Listener* listener) { exportListeners.remove (listener); }
 
+    AudioPluginInstance* getReverbProcessor() { return dynamic_cast<ReverbProcessor*> (reverbNode->getProcessor()); }
+
 private:
     void connectTracks();
     void connectSingleTrack (Node::Ptr node);
